@@ -1,5 +1,7 @@
 import { createStore, Plugin } from 'vuex';
 
+import persistence from '@/lib/persistence';
+
 /**
  * Plugin array that should *only* be used in dev mode.
  * @private

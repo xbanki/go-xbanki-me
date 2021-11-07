@@ -17,6 +17,7 @@
         "@typescript-eslint"
       ],
       "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
         "comma-dangle": "off",
         "constructor-super": "off",
         "new-cap": "off",

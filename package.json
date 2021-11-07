@@ -10,6 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "deepmerge": "^4.2.2",
+    "localforage": "^1.10.0",
     "vue": "^3.2.16",
     "vuex": "^4.0.2"
   },
