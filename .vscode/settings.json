@@ -1,0 +1,44 @@
+{
+    "[javascript]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "[json]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "[jsonc]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "[sass]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "[scss]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "[typescript]": {
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 4
+    },
+    "[yaml]": {
+      "editor.quickSuggestions": {
+        "comments": false,
+        "other": true,
+        "strings": true
+      },
+      "editor.detectIndentation": false,
+      "editor.insertSpaces": true,
+      "editor.tabSize": 2
+    },
+    "editor.detectIndentation": false,
+    "html.format.indentInnerHtml": true
+  }

@@ -1,0 +1,86 @@
+{
+  "env": {
+    "browser": true,
+    "worker": true
+  },
+  "extends": "eslint:recommended",
+  "ignorePatterns": "/node_modules/",
+  "overrides": [
+    {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "files": "**/*.ts",
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "rules": {
+        "comma-dangle": "off",
+        "constructor-super": "off",
+        "new-cap": "off",
+        "no-new-symbol": "off",
+        "no-this-before-super": "off",
+        "no-unused-vars": "off",
+        "padded-blocks": "off",
+        "prefer-const": [
+          "error",
+          {
+            "destructuring": "all"
+          }
+        ],
+        "valid-typeof": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/comma-dangle": "error"
+      }
+    }
+  ],
+  "parser": "Espree",
+  "rules": {
+    "constructor-super": "error",
+    "comma-dangle": "error",
+    "guard-for-in": "error",
+    "linebreak-style": "error",
+    "no-array-constructor": "error",
+    "no-caller": "error",
+    "no-extend-native": "error",
+    "no-extra-bind": "error",
+    "no-invalid-this": "error",
+    "no-mixed-spaces-and-tabs": "warn",
+    "no-multi-str": "error",
+    "no-new-object": "error",
+    "no-new-symbol": "error",
+    "no-new-wrappers": "error",
+    "no-this-before-super": "error",
+    "no-throw-literal": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "none"
+      }
+    ],
+    "no-var": "error",
+    "no-with": "error",
+    "semi": "warn",
+    "semi-spacing": "warn",
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "prefer-spread": "error",
+    "quotes": [
+      "warn",
+      "single",
+      {
+        "allowTemplateLiterals": true
+      }
+    ],
+    "quote-props": [
+      "warn",
+      "consistent"
+    ]
+  }
+}
