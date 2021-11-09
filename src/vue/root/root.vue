@@ -1,10 +1,7 @@
 <template>
 
     <!-- Content display master element //-->
-    <main class="component-root">
-        <!-- This is supposed to have an inline comment //-->
-        <p> Inline comment example </p>
-    </main>
+    <main class="component-root"/>
 </template>
 
 <script lang="ts" src="./root.ts"></script>
