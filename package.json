@@ -7,7 +7,7 @@
     "lint": "eslint ./**/*.{js,jsx,ts,tsx} --format table",
     "lint:fix": "eslint ./**/*.{js,jsx,ts,tsx} --fix --format table",
     "postinstall": "husky install",
-    "serve": "vite preview"
+    "serve": "vercel dev"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
@@ -28,6 +28,7 @@
     "husky": "^7.0.4",
     "sass": "^1.43.4",
     "typescript": "^4.4.3",
+    "vercel": "^23.1.2",
     "vite": "^2.6.4",
     "vue-tsc": "^0.3.0"
   },
