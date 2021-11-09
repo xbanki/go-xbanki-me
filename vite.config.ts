@@ -5,16 +5,25 @@ import path from 'path';
 
 
 export default defineConfig(
-  {
-    plugins: [ vue() ],
+    {
+        build: {
+            terserOptions: {
+                mangle: true,
+                parse: {
+                    html5_comments: false
+                }
+            }
+        },
 
-    resolve: {
-      alias: {
-        '@': path.resolve(process.cwd(), 'src/'),
-        '~': path.resolve(process.cwd())
-      }
-    },
+        plugins: [vue()],
 
-    server: { open: true }
-  }
+        resolve: {
+            alias: {
+                '@': path.resolve(process.cwd(), 'src/'),
+                '~': path.resolve(process.cwd())
+            }
+        },
+
+        server: { open: true }
+    }
 );
