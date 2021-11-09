@@ -4,7 +4,6 @@ import vue  from '@vitejs/plugin-vue';
 import html from 'vite-plugin-html';
 import path from 'path';
 
-
 export default defineConfig(
     {
         build: {

@@ -10,14 +10,18 @@
     "serve": "vercel dev"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "deepmerge": "^4.2.2",
+    "flatted": "^3.2.2",
     "localforage": "^1.10.0",
+    "luxon": "^2.1.1",
     "vue": "^3.2.16",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
     "@commitlint/config-conventional": "^14.1.0",
+    "@types/luxon": "^2.0.7",
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
