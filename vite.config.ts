@@ -1,21 +1,20 @@
 import { defineConfig } from 'vite';
 
 import vue  from '@vitejs/plugin-vue';
+import html from 'vite-plugin-html';
 import path from 'path';
 
 
 export default defineConfig(
     {
         build: {
-            terserOptions: {
-                mangle: true,
-                parse: {
-                    html5_comments: false
-                }
-            }
+            terserOptions: { mangle: true }
         },
 
-        plugins: [vue()],
+        plugins: [
+            vue(),
+            html()
+        ],
 
         resolve: {
             alias: {
