@@ -1,4 +1,5 @@
 <template>
+    <background-component/>
 
     <!-- Content display master element //-->
     <main class="component-root"/>
