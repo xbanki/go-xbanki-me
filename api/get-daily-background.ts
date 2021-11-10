@@ -1,8 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { DateTime }                      from 'luxon';
 
-import flatted from 'flatted';
-import axios   from 'axios';
+import axios from 'axios';
 
 /*
  * `api/get-daily-background` returns new png image data from Bing Image Archive, which can
@@ -75,5 +74,8 @@ export default async function(request: VercelRequest, response: VercelResponse):
         status: 200
     };
 
-    response.status(200).send(flatted.stringify(response_object));
+    response.status(200)
+        .setHeader('Access-Control-Allow-Methods', 'GET')
+        .setHeader('Access-Control-Allow-Origin', '*')
+        .send(JSON.stringify(response_object));
 }
