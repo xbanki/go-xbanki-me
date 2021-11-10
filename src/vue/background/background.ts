@@ -1,6 +1,7 @@
 import { DateTime }        from 'luxon';
 import { defineComponent } from 'vue';
 
+import anime from 'animejs';
 import axios from 'axios';
 
 import { GetDailyBackgroundData } from '@/lib/http';
@@ -80,6 +81,14 @@ export default defineComponent({
             });
         },
 
+        create_image_animation: (el: HTMLImageElement, reverse = false) => anime.timeline({ autoplay:false })
+            .add({
+                opacity: reverse ? [1, 0] : [0, 1],
+                easing: 'linear',
+                duration: 120,
+                targets: el
+            }),
+
         update_current_background(el: HTMLImageElement) {
 
             const root = this.$refs.root as HTMLElement;
@@ -91,17 +100,33 @@ export default defineComponent({
                 this.state.current_image = el;
                 root.appendChild(this.state.current_image);
 
+                const anim = this.create_image_animation(this.state.current_image);
+                
+                anim.play();
                 return;
             }
 
-            // Handle multi-image setup
-            root.removeChild(this.data.image_data.shift() as HTMLImageElement);
-
-            this.$nextTick(() => {
+            const anim = this.create_image_animation(this.state.current_image, true)
+                .add({
+                    targets: this.state.current_image,
+                    easing: 'linear',
+                    endDelay: 240
+                });
+            
+            // Set up animation hook for element swap
+            anim.complete = () => this.$nextTick(() => {
+                root.removeChild(this.state.current_image as HTMLElement);
 
                 this.state.current_image = el;
                 root.appendChild(this.state.current_image);
+
+                const anim = this.create_image_animation(this.state.current_image);
+
+                anim.play();
+                return;
             });
+
+            anim.play();
         }
     }
 });
