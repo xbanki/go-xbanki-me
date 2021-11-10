@@ -1,11 +1,7 @@
 <template>
 
     <!-- Background element display wrapper //-->
-    <main class="component-background">
-
-        <!-- Dynamically rendered background image //-->
-        <img ref="image" v-show="!state.loading" alt="Background Image">
-    </main>
+    <main class="component-background" ref="root"/>
 </template> 
 
 <script lang="ts" src="./background.ts"></script>

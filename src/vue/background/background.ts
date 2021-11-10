@@ -17,7 +17,7 @@ interface ComponentData {
      * @type {GetDailyBackgroundData}
      * @see {GetDailyBackgroundData}
      */
-    image_data: undefined | GetDailyBackgroundData;
+    image_data: HTMLImageElement[];
 }
 
 /**
@@ -26,54 +26,82 @@ interface ComponentData {
 interface ComponentState {
 
     /**
-     * Is the img element loading.
-     * @type {boolean}
+     * Currently displayed image element.
+     * @type {HTMLImageElement}
      */
-    loading: boolean;
+    current_image: HTMLImageElement | undefined;
 }
 
 export default defineComponent({
+    mounted() { this.$nextTick(() => this.get_daily_background_image()); },
 
     data() {
-        const data: ComponentData = { image_data: undefined };
+        const data: ComponentData = { image_data: [] };
 
-        const state: ComponentState = { loading: true };
+        const state: ComponentState = { current_image: undefined };
 
         return { state, data };
     },
 
-    mounted() {
-        this.$nextTick(() => {
+    methods: {
+        get_daily_background_image() {
+            this.$nextTick(() => {
 
-            axios.get(`${config.api_url}/get-daily-background`)
+                axios.get(`${config.api_url}/get-daily-background`)
+    
+                    // Parse image data
+                    .then(data => data.data as GetDailyBackgroundData)
 
-                // Parse image data
-                .then(data => data.data as GetDailyBackgroundData)
-                .then(
-                    (data) => {
-                        const expires_on = DateTime.fromISO(data.data.expires_on as unknown as string);
+                    // Fix DateTime
+                    .then(
+                        (data) => {
+                            const expires_on = DateTime.fromISO(data.data.expires_on as unknown as string);
+    
+                            return { ...data, data: { ...Object.assign(data.data, { expires_on }) }};
+                        }
+                    )
 
-                        return { ...data, data: { ...Object.assign(data.data, { expires_on }) }};
-                    }
-                )
-                .then(
-                    (data) => {
-                        if (!data) return;
+                    // Update background data
+                    .then(
+                        (data) => {
+                            if (!data) return;
+    
+                            const image = new Image;
+    
+                            image.crossOrigin = 'Anonymous';
+                            image.src = data.data.url;
+    
+                            // Handle loaded event
+                            image.onload = () => {
+                                if (image.complete || image.complete === undefined) this.update_current_background(image);
+                            };
+                        }
+                    );
+            });
+        },
 
-                        const image = this.$refs.image as HTMLImageElement;
+        update_current_background(el: HTMLImageElement) {
 
-                        image.crossOrigin = 'Anonymous';
-                        image.src = data.data.url;
+            const root = this.$refs.root as HTMLElement;
+            this.data.image_data.push(el);
 
-                        // Handle loaded event
-                        image.onload = () => {
-                            if (image.complete || image.complete === undefined) {
-                                this.state.loading = false;
-                                return;
-                            }
-                        };
-                    }
-                );
-        });
-    } 
+            // Handle first-time setup
+            if (!this.state.current_image) {
+
+                this.state.current_image = el;
+                root.appendChild(this.state.current_image);
+
+                return;
+            }
+
+            // Handle multi-image setup
+            root.removeChild(this.data.image_data.shift() as HTMLImageElement);
+
+            this.$nextTick(() => {
+
+                this.state.current_image = el;
+                root.appendChild(this.state.current_image);
+            });
+        }
+    }
 });
