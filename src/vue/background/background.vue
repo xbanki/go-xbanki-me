@@ -1,9 +1,7 @@
 <template>
 
     <!-- Background element display wrapper //-->
-    <main class="component-background">
-        {{ data.data }}
-    </main>
+    <main class="component-background"/>
 </template> 
 
 <script lang="ts" src="./background.ts"></script>
