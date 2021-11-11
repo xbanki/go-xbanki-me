@@ -1,20 +1,14 @@
-import { createStore, Plugin } from 'vuex';
+import { createStore } from 'vuex';
 
-import persistence from '@/lib/persistence';
+import settingsStore from '@/lib/store_settings';
+import persistence   from '@/lib/persistence';
 
-/**
- * Plugin array that should *only* be used in dev mode.
- * @private
- */
-const plugins: Array<Plugin<unknown>> = [];
+const plugins = [
+    persistence({ prefectch: true, name: 'settingsStore' })
+];
 
-/**
- * VueX "module" stores, or nested state objects.
- * @private
- */
-const modules = {};
+const modules = {
+    settingsStore
+};
 
-export default createStore({
-    plugins,
-    modules
-});
+export default createStore({ plugins,  modules });

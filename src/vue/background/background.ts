@@ -1,4 +1,5 @@
 import { DateTime }        from 'luxon';
+import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
 import anime from 'animejs';
@@ -129,5 +130,7 @@ export default defineComponent({
 
             anim.play();
         }
-    }
+    },
+
+    computed: mapState(['settingsStore'])
 });
