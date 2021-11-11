@@ -5,7 +5,8 @@ import { defineComponent } from 'vue';
 import anime from 'animejs';
 import axios from 'axios';
 
-import { GetDailyBackgroundData } from '@/lib/http';
+import { BackgroundDisplayMethod } from '@/lib/store_settings';
+import { GetDailyBackgroundData }  from '@/lib/http';
 
 import config from '@/lib/config';
 
@@ -100,6 +101,18 @@ export default defineComponent({
             if (!this.state.current_image) {
 
                 this.state.current_image = el;
+                this.state.current_image.classList.add('background-image');
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
+                    
+                    case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
+                    
+                    // Skip fit because we already have CSS for that by default
+                    case BackgroundDisplayMethod.FIT: break;
+                }
+
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
@@ -120,6 +133,18 @@ export default defineComponent({
                 root.removeChild(this.state.current_image as HTMLElement);
 
                 this.state.current_image = el;
+                this.state.current_image.classList.add('background-image');
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
+                    
+                    case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
+                    
+                    // Skip fit because we already have CSS for that by default
+                    case BackgroundDisplayMethod.FIT: break;
+                }
+
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
@@ -129,6 +154,42 @@ export default defineComponent({
             });
 
             anim.play();
+        }
+    },
+
+    watch: {
+
+        'settingsStore.background_display_method': {
+
+            handler(state: BackgroundDisplayMethod) {
+                
+                if (!state || !this.state.current_image) return;
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH:
+
+                        if (this.state.current_image.classList.contains('fill')) this.state.current_image.classList.remove('fill');
+                        this.state.current_image.classList.add('stretch');
+
+                    break;
+                    
+                    case BackgroundDisplayMethod.FILL:
+
+                        if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
+                        this.state.current_image.classList.add('fill');
+                    break;
+                    
+                    case BackgroundDisplayMethod.FIT:
+
+                        if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
+                        if (this.state.current_image.classList.contains('fill')) this.state.current_image.classList.remove('fill');
+
+                    break;
+                }
+            },
+
+            deep: true
         }
     },
 

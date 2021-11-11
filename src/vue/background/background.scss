@@ -6,6 +6,16 @@ main.component-background {
   width: 100%;
 
   img.background-image {
+    transition-timing-function: ease-in-out;
+    transition: width 0.12s, height 0.12s;
+    object-position: center;
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
     opacity: 0;
+
+    &.stretch { object-fit: fill }
+
+    &.fill { object-fit: cover }
   }
 }
