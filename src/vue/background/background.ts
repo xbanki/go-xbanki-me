@@ -94,8 +94,6 @@ export default defineComponent({
 
         update_current_background(el: HTMLImageElement) {
 
-            console.log(this.settingsStore);
-
             const root = this.$refs.root as HTMLElement;
             this.data.image_data.push(el);
 
