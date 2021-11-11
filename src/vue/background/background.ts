@@ -34,6 +34,7 @@ interface ComponentState {
 }
 
 export default defineComponent({
+    
     mounted() { this.$nextTick(() => this.get_daily_background_image()); },
 
     data() {
