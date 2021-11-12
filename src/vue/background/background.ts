@@ -36,7 +36,7 @@ interface ComponentState {
 }
 
 export default defineComponent({
-    
+
     mounted() { this.$nextTick(() => this.get_daily_background_image()); },
 
     data() {
@@ -52,7 +52,7 @@ export default defineComponent({
             this.$nextTick(() => {
 
                 axios.get(`${config.api_url}/get-daily-background`)
-    
+
                     // Parse image data
                     .then(data => data.data as GetDailyBackgroundData)
 
@@ -60,7 +60,7 @@ export default defineComponent({
                     .then(
                         (data) => {
                             const expires_on = DateTime.fromISO(data.data.expires_on as unknown as string);
-    
+
                             return { ...data, data: { ...Object.assign(data.data, { expires_on }) }};
                         }
                     )
@@ -69,12 +69,12 @@ export default defineComponent({
                     .then(
                         (data) => {
                             if (!data) return;
-    
+
                             const image = new Image;
-    
+
                             image.crossOrigin = 'Anonymous';
                             image.src = data.data.url;
-    
+
                             // Handle loaded event
                             image.onload = () => {
                                 if (image.complete || image.complete === undefined) this.update_current_background(image);
@@ -106,9 +106,9 @@ export default defineComponent({
                 switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
 
                     case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
-                    
+
                     case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
-                    
+
                     // Skip fit because we already have CSS for that by default
                     case BackgroundDisplayMethod.FIT: break;
                 }
@@ -116,7 +116,7 @@ export default defineComponent({
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
-                
+
                 anim.play();
                 return;
             }
@@ -127,7 +127,7 @@ export default defineComponent({
                     easing: 'linear',
                     endDelay: 240
                 });
-            
+
             // Set up animation hook for element swap
             anim.complete = () => this.$nextTick(() => {
                 root.removeChild(this.state.current_image as HTMLElement);
@@ -138,9 +138,9 @@ export default defineComponent({
                 switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
 
                     case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
-                    
+
                     case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
-                    
+
                     // Skip fit because we already have CSS for that by default
                     case BackgroundDisplayMethod.FIT: break;
                 }
@@ -162,7 +162,7 @@ export default defineComponent({
         'settingsStore.background_display_method': {
 
             handler(state: BackgroundDisplayMethod) {
-                
+
                 if (!state || !this.state.current_image) return;
 
                 switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
@@ -173,13 +173,13 @@ export default defineComponent({
                         this.state.current_image.classList.add('stretch');
 
                     break;
-                    
+
                     case BackgroundDisplayMethod.FILL:
 
                         if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
                         this.state.current_image.classList.add('fill');
                     break;
-                    
+
                     case BackgroundDisplayMethod.FIT:
 
                         if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
