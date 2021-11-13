@@ -11,6 +11,8 @@
 
                 <!-- Modal display bounding box //-->
                 <div class="modal-parent">
+
+                    <!-- Modal content slot //-->
                     <slot name="default"/>
                 </div>
             </main>

@@ -1,0 +1,17 @@
+@import '~/src/scss';
+
+main.component-modal {
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  div.modal-parent {
+    padding: $COMPONENT-SPACING;
+    background: white;
+    height: fit-content;
+    width: fit-content;
+  }
+}
