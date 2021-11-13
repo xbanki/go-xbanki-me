@@ -26,11 +26,11 @@ export default defineComponent({
 
     methods: {
 
-        animate_enter(el: HTMLElement, done: () => void) {
+        animate_enter(el: Element, done: () => void) {
             return done();
         },
 
-        animate_exit(el: HTMLElement, done: () => void) {
+        animate_exit(el: Element, done: () => void) {
             return done();
         },
 
