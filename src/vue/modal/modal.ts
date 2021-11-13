@@ -32,8 +32,13 @@ export default defineComponent({
 
         animate_exit(el: HTMLElement, done: () => void) {
             return done();
+        },
+
+        emit_confirm() {
+            this.state.render = false;
+            this.$emit('confirm');
         }
     },
 
-    emits: ['ready']
+    emits: ['ready', 'confirm']
 });

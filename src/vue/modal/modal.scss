@@ -13,5 +13,11 @@ main.component-modal {
     background: white;
     height: fit-content;
     width: fit-content;
+
+    div.modal-footer {
+      margin-top: 16px;
+      display: block;
+      width: 100%;
+    }
   }
 }

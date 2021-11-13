@@ -1,0 +1,14 @@
+main.component-init {
+  max-width: 768px;
+
+  div.init-display {
+    flex-direction: row;
+    margin-top: 16px;
+    display: flex;
+    width: 100%;
+
+    div.display-fit, div.display-fill, div.display-stretch {
+      flex: 1;
+    }
+  }
+}
