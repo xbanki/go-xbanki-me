@@ -9,6 +9,7 @@ import { BackgroundDisplayMethod } from '@/lib/store_settings';
 import { GetDailyBackgroundData }  from '@/lib/http';
 
 import config from '@/lib/config';
+import store  from '@/lib/store';
 
 /**
  * Component data internal description interface.
@@ -79,6 +80,8 @@ export default defineComponent({
                             image.onload = () => {
                                 if (image.complete || image.complete === undefined) this.update_current_background(image);
                             };
+
+                            image.onerror = () => store.commit('eventBusStore/UPDATE_IMAGE_LOAD_FAIL_STATE');
                         }
                     );
             });
@@ -116,6 +119,8 @@ export default defineComponent({
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
+
+                anim.complete = () => store.commit('eventBusStore/UPDATE_IMAGE_LOADED_STATE', true);
 
                 anim.play();
                 return;

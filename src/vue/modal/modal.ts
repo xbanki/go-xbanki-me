@@ -19,7 +19,7 @@ export default defineComponent({
 
     data() {
 
-        const state: ComponentState = { render: true };
+        const state: ComponentState = { render: false };
 
         return { state };
     },

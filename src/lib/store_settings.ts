@@ -17,9 +17,15 @@ export interface ModuleState {
 
     /**
      * Background image fitting method.
-     * @enum 
+     * @enum {BackgroundDisplayMethod}
      */
     background_display_method: BackgroundDisplayMethod
+
+    /**
+     * Indicates wether the user has completed first-time initialization.
+     * @type {boolean}
+     */
+    initialized: boolean;
 }
 
 const store: { state: ModuleState, [name: string]: any } = {
@@ -27,11 +33,14 @@ const store: { state: ModuleState, [name: string]: any } = {
     namespaced: true,
 
     state: {
-        background_display_method: BackgroundDisplayMethod.FIT
+        background_display_method: BackgroundDisplayMethod.FIT,
+        initialized: false
     },
 
     mutations: {
-        SET_BACKGROUND_DISPLAY_METHOD: (state: any, payload: BackgroundDisplayMethod): BackgroundDisplayMethod => state.background_display_method = payload
+        SET_BACKGROUND_DISPLAY_METHOD: (state: any, payload: BackgroundDisplayMethod): BackgroundDisplayMethod => state.background_display_method = payload,
+
+        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean): boolean => state.initialized = payload
     },
 
     actions: {
@@ -44,6 +53,16 @@ const store: { state: ModuleState, [name: string]: any } = {
             if (context.background_display_method == payload) return;
 
             context.commit('SET_BACKGROUND_DISPLAY_METHOD', payload);
+        },
+
+        /**
+         * Applies user initialization.
+         */
+        InitializeUser: (context: any) => {
+
+            if (context.initialized == true) return;
+
+            context.commit('UPDATE_USER_INITIALIZATION', true);
         }
     }
 };
