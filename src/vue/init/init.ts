@@ -17,6 +17,12 @@ import store          from '@/lib/store';
      * @return {void}
      */
     ev?: () => void;
+
+    /**
+     * Snapshot of the original state.
+     * @type {ComponentState}
+     */
+     original_state: ComponentState
 }
 
 /**
@@ -40,7 +46,7 @@ export default defineComponent({
 
         const state: ComponentState = { selected_background_display_method: settingsState.settingsStore.background_display_method ?? BackgroundDisplayMethod.FIT };
 
-        const data: ComponentData = { ev: undefined };
+        const data: ComponentData = { ev: undefined, original_state: Object.assign({}, state) };
 
         return { state, data };
     },
@@ -48,8 +54,22 @@ export default defineComponent({
     methods: {
         handle_ready_events() {
             if (!this.data.ev || this.settingsStore.initialized) return;
-
             this.data.ev();
+        },
+
+        update_realtime_options(event: BackgroundDisplayMethod) {
+            if (this.settingsStore.background_display_method == event || this.settingsStore.initialized) return;
+
+            store.dispatch('settingsStore/UpdateDisplayMethod', event);
+        },
+
+        revert_realtime_options() {
+            if (this.settingsStore.initialized) return;
+
+            // We are manually reverting all changes cus javascript sucks
+            if (this.data.original_state.selected_background_display_method != this.settingsStore.background_display_method) {
+                store.dispatch('settingsStore/UpdateDisplayMethod', this.data.original_state.selected_background_display_method);
+            }
         },
 
         confirm_init_settings() {

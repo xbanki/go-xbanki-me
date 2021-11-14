@@ -14,6 +14,15 @@ main.component-modal {
     height: fit-content;
     width: fit-content;
 
+    div.modal-header {
+      flex-direction: row;
+      margin-bottom: 16px;
+      display: flex;
+      width: 100%;
+
+      button.header-close { margin-left: auto }
+    }
+
     div.modal-footer {
       margin-top: 16px;
       display: block;

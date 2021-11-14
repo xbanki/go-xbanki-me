@@ -11,6 +11,13 @@
 
                 <!-- Modal display bounding box //-->
                 <div class="modal-parent">
+                    
+                    <!-- Modal heading close button //-->
+                    <div class="modal-header">
+
+                        <!-- Modal closing button //-->
+                        <button class="header-close" v-on:click="emit_cancel"> × </button>
+                    </div>
 
                     <!-- Modal content slot //-->
                     <slot name="default"/>

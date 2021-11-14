@@ -37,8 +37,13 @@ export default defineComponent({
         emit_confirm() {
             this.state.render = false;
             this.$emit('confirm');
+        },
+
+        emit_cancel() {
+            this.state.render = false;
+            this.$emit('cancel');
         }
     },
 
-    emits: ['ready', 'confirm']
+    emits: ['ready', 'confirm', 'cancel']
 });
