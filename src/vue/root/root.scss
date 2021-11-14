@@ -1,11 +1,27 @@
 @import '~/src/scss';
 
 html, body {
+  background: var(--bg);
+  color: var(--color);
   z-index: 100;
   height: 100%;
   width: 100%;
   padding: 0;
   margin: 0;
+
+  &.theme-dark {
+    transition: background 0.12s, color 0.24s;
+    transition-timing-function: ease;
+    --color: #fff;
+    --bg:    #000;
+  }
+
+  &.theme-light {
+    transition: background 0.12s, color 0.24s;
+    transition-timing-function: ease;
+    --color: #000;
+    --bg:    #fff;
+  }
 
   #go-xbanki-ui, #go-xbanki-application {
     pointer-events: none;

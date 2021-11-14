@@ -14,4 +14,7 @@ $COMPONENT-SPACING-NARROW: 8px;
 
 // We are setting all the theme specific variables on to the root scope, so we
 // can use them in a theme-switching feature.
-:root { }
+:root {
+  --color: #000;
+  --bg:    #fff;
+}

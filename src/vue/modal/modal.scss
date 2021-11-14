@@ -10,7 +10,7 @@ main.component-modal {
 
   div.modal-parent {
     padding: $COMPONENT-SPACING;
-    background: white;
+    background: var(--bg);
     height: fit-content;
     width: fit-content;
 
