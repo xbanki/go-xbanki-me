@@ -1,11 +1,13 @@
 import { defineComponent } from 'vue';
 import { mapState }        from 'vuex';
 
-import { BackgroundDisplayMethod } from '@/lib/store_settings';
-import { ModuleState }             from '@/lib/store_settings';
+import { BackgroundDisplayMethod, AvaillableThemes } from '@/lib/store_settings';
+import { ModuleState }                               from '@/lib/store_settings';
 
 import modalComponent from '@/vue/modal/modal.vue';
 import store          from '@/lib/store';
+
+// TO-DO (xbanki): Write a mutex for the image loaded & ready event handler
 
 /**
  * Component data internal description interface.
@@ -34,7 +36,13 @@ import store          from '@/lib/store';
      * Active background display method.
      * @enum {BackgroundDisplayMethod}
      */
-    selected_background_display_method: BackgroundDisplayMethod
+    selected_background_display_method: BackgroundDisplayMethod;
+
+    /**
+     * Active application theme.
+     * @enum {AvaillableThemes}
+     */
+    selected_application_theme: AvaillableThemes;
 }
 
 export default defineComponent({
@@ -44,7 +52,10 @@ export default defineComponent({
     data() {
         const settingsState = store.state as { settingsStore: ModuleState };
 
-        const state: ComponentState = { selected_background_display_method: settingsState.settingsStore.background_display_method ?? BackgroundDisplayMethod.FIT };
+        const state: ComponentState = {
+            selected_background_display_method: settingsState.settingsStore.background_display_method ?? BackgroundDisplayMethod.FIT,
+            selected_application_theme: settingsState.settingsStore.selected_theme ?? AvaillableThemes.LIGHT
+        };
 
         const data: ComponentData = { ev: undefined, original_state: Object.assign({}, state) };
 
@@ -57,28 +68,39 @@ export default defineComponent({
             this.data.ev();
         },
 
-        update_realtime_options(event: BackgroundDisplayMethod) {
-            if (this.settingsStore.background_display_method == event || this.settingsStore.initialized) return;
+        update_realtime_options() {
+            if (this.settingsStore.initialized) return;
 
-            store.dispatch('settingsStore/UpdateDisplayMethod', event);
+            if (this.settingsStore.background_display_method != this.state.selected_background_display_method) {
+                store.dispatch('settingsStore/UpdateDisplayMethod', this.state.selected_background_display_method);
+            }
+
+            if (this.settingsStore.selected_theme != this.state.selected_application_theme) {
+                store.dispatch('settingsStore/SwitchTheme', this.state.selected_application_theme);
+            }
         },
 
         revert_realtime_options() {
             if (this.settingsStore.initialized) return;
 
-            // We are manually reverting all changes cus javascript sucks
             if (this.data.original_state.selected_background_display_method != this.settingsStore.background_display_method) {
                 store.dispatch('settingsStore/UpdateDisplayMethod', this.data.original_state.selected_background_display_method);
+            }
+
+            if (this.data.original_state.selected_application_theme != this.settingsStore.selected_theme) {
+                store.dispatch('settingsStore/SwitchTheme', this.data.original_state.selected_application_theme);
             }
         },
 
         confirm_init_settings() {
-            if (this.settingsStore.ininitialized) {
-                return;
-            }
+            if (this.settingsStore.ininitialized) return;
 
             if (this.settingsStore.background_display_method != this.state.selected_background_display_method) {
                 store.dispatch('settingsStore/UpdateDisplayMethod', this.state.selected_background_display_method);
+            }
+
+            if (this.settingsStore.selected_theme != this.state.selected_application_theme) {
+                store.dispatch('settingsStore/SwitchTheme', this.state.selected_application_theme);
             }
 
             store.dispatch('settingsStore/InitializeUser', true);

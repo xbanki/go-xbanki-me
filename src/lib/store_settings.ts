@@ -10,6 +10,19 @@ export enum BackgroundDisplayMethod {
 }
 
 /**
+ * User theme preference, which we dynamically animate transitions
+ * between. The first two options are self-explanatory, but the
+ * `SYSTEM` option signals for us to fetch the theme from the
+ * browser.
+ * @see {ModuleState}
+ */
+export enum AvaillableThemes {
+    DARK = 'THEME_DARK',
+    LIGHT = 'THEME_LIGHT',
+    SYSTEM = 'THEME_SYSTEM'
+}
+
+/**
  * Settings VueX module interface.
  * @see {VueX}
  */
@@ -20,6 +33,12 @@ export interface ModuleState {
      * @enum {BackgroundDisplayMethod}
      */
     background_display_method: BackgroundDisplayMethod
+
+    /**
+     * User-selected display theme.
+     * @enum {AvaillableThemes}
+     */
+    selected_theme: AvaillableThemes;
 
     /**
      * Indicates wether the user has completed first-time initialization.
@@ -34,13 +53,16 @@ const store: { state: ModuleState, [name: string]: any } = {
 
     state: {
         background_display_method: BackgroundDisplayMethod.FIT,
+        selected_theme: AvaillableThemes.LIGHT,
         initialized: false
     },
 
     mutations: {
         SET_BACKGROUND_DISPLAY_METHOD: (state: any, payload: BackgroundDisplayMethod): BackgroundDisplayMethod => state.background_display_method = payload,
 
-        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean): boolean => state.initialized = payload
+        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean): boolean => state.initialized = payload,
+
+        UPDATE_USED_THEME: (state: any, payload: AvaillableThemes): AvaillableThemes => state.selected_theme = payload
     },
 
     actions: {
@@ -63,6 +85,13 @@ const store: { state: ModuleState, [name: string]: any } = {
             if (context.initialized == true) return;
 
             context.commit('UPDATE_USER_INITIALIZATION', true);
+        },
+
+        SwitchTheme: (context: any, payload: BackgroundDisplayMethod) => {
+
+            if (context.selected_theme == payload) return;
+
+            context.commit('UPDATE_USED_THEME', payload);
         }
     }
 };

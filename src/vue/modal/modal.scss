@@ -24,9 +24,13 @@ main.component-modal {
     }
 
     div.modal-footer {
+      flex-direction: row;
       margin-top: 16px;
       display: block;
+      display: flex;
       width: 100%;
+
+      button.footer-confirm { margin-left: auto }
     }
   }
 }

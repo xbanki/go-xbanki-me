@@ -1,13 +1,21 @@
 main.component-init {
   max-width: 768px;
 
-  div.init-display {
-    flex-direction: row;
+  span.init-title {
+    font-weight: 700;
     margin-top: 16px;
+    font-size: 18px;
+    display: block;
+  }
+
+  div.init-display, div.init-theme {
+    flex-direction: row;
+    margin-top: 8px;
     display: flex;
     width: 100%;
 
-    div.display-fit, div.display-fill, div.display-stretch {
+    div.display-fit, div.display-fill, div.display-stretch,
+    div.theme-light, div.theme-dark, div.theme-system {
       flex: 1;
     }
   }
