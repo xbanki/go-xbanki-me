@@ -52,8 +52,8 @@
 
                 <!-- Light Theme //-->
                 <div class="theme-system">
-                    <input type="radio" name="theme-system" id="init-theme-system" value="THEME_SYSTEM" v-on:change="update_realtime_options" v-model="state.selected_application_theme">
-                    <label for="theme-system"> System </label>
+                    <input type="radio" name="theme-system" id="init-theme-system" value="THEME_SYSTEM" v-on:change="update_realtime_options" v-model="state.selected_application_theme" v-bind:disabled="!eventBusStore.supports_system_theme_switch">
+                    <label for="theme-system" v-bind:class="{ disabled: !eventBusStore.supports_system_theme_switch }"> System </label>
                 </div>
             </div>
         </main>
