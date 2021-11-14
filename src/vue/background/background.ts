@@ -5,9 +5,11 @@ import { defineComponent } from 'vue';
 import anime from 'animejs';
 import axios from 'axios';
 
-import { GetDailyBackgroundData } from '@/lib/http';
+import { BackgroundDisplayMethod } from '@/lib/store_settings';
+import { GetDailyBackgroundData }  from '@/lib/http';
 
 import config from '@/lib/config';
+import store  from '@/lib/store';
 
 /**
  * Component data internal description interface.
@@ -35,7 +37,7 @@ interface ComponentState {
 }
 
 export default defineComponent({
-    
+
     mounted() { this.$nextTick(() => this.get_daily_background_image()); },
 
     data() {
@@ -51,7 +53,7 @@ export default defineComponent({
             this.$nextTick(() => {
 
                 axios.get(`${config.api_url}/get-daily-background`)
-    
+
                     // Parse image data
                     .then(data => data.data as GetDailyBackgroundData)
 
@@ -59,7 +61,7 @@ export default defineComponent({
                     .then(
                         (data) => {
                             const expires_on = DateTime.fromISO(data.data.expires_on as unknown as string);
-    
+
                             return { ...data, data: { ...Object.assign(data.data, { expires_on }) }};
                         }
                     )
@@ -68,16 +70,18 @@ export default defineComponent({
                     .then(
                         (data) => {
                             if (!data) return;
-    
+
                             const image = new Image;
-    
+
                             image.crossOrigin = 'Anonymous';
                             image.src = data.data.url;
-    
+
                             // Handle loaded event
                             image.onload = () => {
                                 if (image.complete || image.complete === undefined) this.update_current_background(image);
                             };
+
+                            image.onerror = () => store.commit('eventBusStore/UPDATE_IMAGE_LOAD_FAIL_STATE');
                         }
                     );
             });
@@ -100,10 +104,24 @@ export default defineComponent({
             if (!this.state.current_image) {
 
                 this.state.current_image = el;
+                this.state.current_image.classList.add('background-image');
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
+
+                    case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
+
+                    // Skip fit because we already have CSS for that by default
+                    case BackgroundDisplayMethod.FIT: break;
+                }
+
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
-                
+
+                anim.complete = () => store.commit('eventBusStore/UPDATE_IMAGE_LOADED_STATE', true);
+
                 anim.play();
                 return;
             }
@@ -114,12 +132,24 @@ export default defineComponent({
                     easing: 'linear',
                     endDelay: 240
                 });
-            
+
             // Set up animation hook for element swap
             anim.complete = () => this.$nextTick(() => {
                 root.removeChild(this.state.current_image as HTMLElement);
 
                 this.state.current_image = el;
+                this.state.current_image.classList.add('background-image');
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH: this.state.current_image.classList.add('stretch'); break;
+
+                    case BackgroundDisplayMethod.FILL: this.state.current_image.classList.add('fill'); break;
+
+                    // Skip fit because we already have CSS for that by default
+                    case BackgroundDisplayMethod.FIT: break;
+                }
+
                 root.appendChild(this.state.current_image);
 
                 const anim = this.create_image_animation(this.state.current_image);
@@ -129,6 +159,42 @@ export default defineComponent({
             });
 
             anim.play();
+        }
+    },
+
+    watch: {
+
+        'settingsStore.background_display_method': {
+
+            handler(state: BackgroundDisplayMethod) {
+
+                if (!state || !this.state.current_image) return;
+
+                switch(this.settingsStore.background_display_method as BackgroundDisplayMethod) {
+
+                    case BackgroundDisplayMethod.STRETCH:
+
+                        if (this.state.current_image.classList.contains('fill')) this.state.current_image.classList.remove('fill');
+                        this.state.current_image.classList.add('stretch');
+
+                    break;
+
+                    case BackgroundDisplayMethod.FILL:
+
+                        if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
+                        this.state.current_image.classList.add('fill');
+                    break;
+
+                    case BackgroundDisplayMethod.FIT:
+
+                        if (this.state.current_image.classList.contains('stretch')) this.state.current_image.classList.remove('stretch');
+                        if (this.state.current_image.classList.contains('fill')) this.state.current_image.classList.remove('fill');
+
+                    break;
+                }
+            },
+
+            deep: true
         }
     },
 

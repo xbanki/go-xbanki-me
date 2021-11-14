@@ -1,14 +1,15 @@
 import { createStore } from 'vuex';
 
-import settingsStore from '@/lib/store_settings';
-import persistence   from '@/lib/persistence';
+import persistence from 'vuex-persistedstate';
 
-const plugins = [
-    persistence({ prefectch: true, name: 'settingsStore' })
-];
+import eventBusStore from '@/lib/store_event_bus';
+import settingsStore from '@/lib/store_settings';
+
+const plugins = [  persistence({ key: 'settings', paths: ['settingsStore'] }) ];
 
 const modules = {
-    settingsStore
+    settingsStore,
+    eventBusStore
 };
 
 export default createStore({ plugins,  modules });

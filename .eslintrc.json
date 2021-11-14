@@ -55,6 +55,7 @@
     "no-new-wrappers": "error",
     "no-this-before-super": "error",
     "no-throw-literal": "error",
+    "no-trailing-spaces": ["warn", { "skipBlankLines": false, "ignoreComments": true }],
     "no-unused-vars": [
       "error",
       {

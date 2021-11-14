@@ -1,0 +1,20 @@
+/**
+ * Universal component spacing, which should only be applied in cases where
+ * we do not have a content divider, in which case `$COMPONENT-SPACING-NARROW`
+ * should be used instead.
+ */
+$COMPONENT-SPACING: 16px;
+
+/**
+ * Component spacing for full-size dividers or inner components that should
+ * sit snugly against the parent component. Using this variable also requires
+ * other child components to have this variable in use as well.
+ */
+$COMPONENT-SPACING-NARROW: 8px;
+
+// We are setting all the theme specific variables on to the root scope, so we
+// can use them in a theme-switching feature.
+:root {
+  --color: #000;
+  --bg:    #fff;
+}

@@ -18,7 +18,8 @@
     "luxon": "^2.1.1",
     "rxjs": "^7.4.0",
     "vue": "^3.2.16",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
