@@ -57,7 +57,6 @@ export default async function(request: VercelRequest, response: VercelResponse):
         response.status(500).send({ status: 400, message: 'Internal server error occurred, please try again later' });
         return;
     }
-
     /**
      * First image of the daily images archive which is the only one we care about.
      * @see {ImageArchiveImage}
@@ -66,7 +65,7 @@ export default async function(request: VercelRequest, response: VercelResponse):
 
     const response_object = {
         data: {
-            expires_on: DateTime.fromFormat(image_data.enddate, 'yyyyMMdd'),
+            expires_on: DateTime.fromFormat(`${image_data.enddate}${image_data.fullstartdate.slice(8)}`, 'yyyyMMddHHmm'),
             copyright: image_data.copyright,
             url: `${BingBaseURL}${image_data.url}`
         },

@@ -22,6 +22,27 @@ interface ComponentData {
      * @see {GetDailyBackgroundData}
      */
     image_data: HTMLImageElement[];
+
+    /**
+     * Epoch callback function which is executed once we have passed
+     * the current image's set expiery date.
+     * @type {void}
+     */
+    epoch_function: () => void;
+
+    /**
+     * NodeJS `setInterval` callback which checks how far away we are
+     * from the current epoch date.
+     * @type {NodeJS.Timer}
+     */
+    epoch_checker?: NodeJS.Timer;
+
+    /**
+     * NodeJS `setTimeout` callback which counts down and runs the epoch
+     * function once the timer hits zero.
+     * @type {NodeJS.Timer}
+     */
+    epoch_runner?: NodeJS.Timer;
 }
 
 /**
@@ -38,10 +59,23 @@ interface ComponentState {
 
 export default defineComponent({
 
-    mounted() { this.$nextTick(() => this.get_daily_background_image()); },
+    mounted() {
+
+        this.data.epoch_function = () => {
+            this.data.epoch_runner = undefined;
+            this.get_daily_background_image();
+        };
+
+        this.$nextTick(() => this.get_daily_background_image());
+    },
 
     data() {
-        const data: ComponentData = { image_data: [] };
+        const data: ComponentData = {
+            epoch_function: () => undefined,
+            epoch_checker: undefined,
+            epoch_runner: undefined,
+            image_data: []
+        };
 
         const state: ComponentState = { current_image: undefined };
 
@@ -79,12 +113,40 @@ export default defineComponent({
                             // Handle loaded event
                             image.onload = () => {
                                 if (image.complete || image.complete === undefined) this.update_current_background(image);
+
+                                this.set_up_epoch(data.data.expires_on);
                             };
 
                             image.onerror = () => store.commit('eventBusStore/UPDATE_IMAGE_LOAD_FAIL_STATE');
                         }
                     );
             });
+        },
+
+        set_up_epoch(expires_on: DateTime) {
+
+            const hour = 3600000;
+
+            // Handle epoch case within one hour
+            if ((expires_on.toMillis() - DateTime.now().toMillis()) <= hour) {
+                this.data.epoch_runner = setTimeout(this.data.epoch_function, expires_on.toMillis() - DateTime.now().toMillis());
+                return;
+            }
+
+            this.data.epoch_checker = setInterval(
+
+                () => {
+                    if (expires_on.toMillis() - DateTime.now().toMillis() <= hour) {
+
+                        this.data.epoch_runner = setTimeout(this.data.epoch_function, expires_on.toMillis() - DateTime.now().toMillis());
+
+                        // Unset the epoch checker because we re-set it later
+                        this.data.epoch_checker = undefined;
+                    }
+                },
+
+                hour
+            );
         },
 
         create_image_animation: (el: HTMLImageElement, reverse = false) => anime.timeline({ autoplay:false })
