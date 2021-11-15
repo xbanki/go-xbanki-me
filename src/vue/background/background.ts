@@ -43,6 +43,25 @@ interface ComponentData {
      * @type {NodeJS.Timer}
      */
     epoch_runner?: NodeJS.Timer;
+
+    /**
+     * Copyright holder data.
+     * @type {object}
+     */
+    copyright?: {
+
+        /**
+         * Copyright holder information.
+         * @type {string}
+         */
+        holder: string;
+
+        /**
+         * Image miscellaneous description.
+         * @type {string}
+         */
+        description: string;
+    };
 }
 
 /**
@@ -114,6 +133,7 @@ export default defineComponent({
                             image.onload = () => {
                                 if (image.complete || image.complete === undefined) this.update_current_background(image);
 
+                                this.set_up_copyright(data.data.copyright);
                                 this.set_up_epoch(data.data.expires_on);
                             };
 
@@ -121,6 +141,19 @@ export default defineComponent({
                         }
                     );
             });
+        },
+
+        set_up_copyright(str: string) {
+
+            const holder_data = str.match(/(?<=\().*(?=\))/);
+
+            if (str?.length >= 1 && holder_data) {
+
+                const description = str.replace(/\((.*)/, '');
+                const holder = holder_data[0];
+
+                this.data.copyright = { holder, description };
+            }
         },
 
         set_up_epoch(expires_on: DateTime) {

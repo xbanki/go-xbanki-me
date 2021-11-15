@@ -15,7 +15,22 @@ main.component-background {
     opacity: 0;
 
     &.stretch { object-fit: fill }
-
     &.fill { object-fit: cover }
   }
+}
+
+div.background-copyright {
+  position: absolute;
+  color: var(--bg);
+  padding: 16px;
+  bottom: 0;
+  right: 0;
+
+  span.copyright-description, span.copyright-holder {
+    text-align: right;
+    display: block;
+    width: 100%;
+  }
+
+  span.copyright-description { margin-bottom: 4px }
 }
