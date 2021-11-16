@@ -21,13 +21,14 @@ main.component-background {
 
 div.background-copyright {
   position: absolute;
-  color: var(--bg);
   padding: 16px;
   bottom: 0;
   right: 0;
 
   span.copyright-description, span.copyright-holder {
+    text-shadow: var(--color) 0px 0px 4px;
     text-align: right;
+    color: var(--bg);
     display: block;
     width: 100%;
   }
