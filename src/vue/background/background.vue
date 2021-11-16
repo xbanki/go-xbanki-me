@@ -4,7 +4,7 @@
     <teleport to="main#go-xbanki-ui">
 
         <!-- AnimeJS based animation hooks //-->
-        <transition>
+        <transition v-on:enter="animate_copyright_enter" v-on:leave="animate_copyright_exit">
 
             <!-- Copyright holder & image description displays //-->
             <div class="background-copyright" v-if="data.copyright">

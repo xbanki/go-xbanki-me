@@ -131,9 +131,7 @@ export default defineComponent({
 
                             // Handle loaded event
                             image.onload = () => {
-                                if (image.complete || image.complete === undefined) this.update_current_background(image);
-
-                                this.set_up_copyright(data.data.copyright);
+                                if (image.complete || image.complete === undefined) this.update_current_background(image, data.data.copyright);
                                 this.set_up_epoch(data.data.expires_on);
                             };
 
@@ -190,7 +188,22 @@ export default defineComponent({
                 targets: el
             }),
 
-        update_current_background(el: HTMLImageElement) {
+        delay_for_copyright_exit(): Promise<void> {
+
+            // This is an ugly way to guarantee we can animate the
+            // copyright information fade out in time.
+            return new Promise<void>(
+
+                (resolve) => {
+                    this.data.copyright = undefined;
+
+                    setTimeout(resolve, 390);
+                }
+
+            );
+        },
+
+        async update_current_background(el: HTMLImageElement, copyright: string) {
 
             const root = this.$refs.root as HTMLElement;
             this.data.image_data.push(el);
@@ -215,11 +228,17 @@ export default defineComponent({
 
                 const anim = this.create_image_animation(this.state.current_image);
 
-                anim.complete = () => store.commit('eventBusStore/UPDATE_IMAGE_LOADED_STATE', true);
+                anim.complete = () => {
+                    store.commit('eventBusStore/UPDATE_IMAGE_LOADED_STATE', true);
+                    this.set_up_copyright(copyright);
+                };
 
                 anim.play();
                 return;
             }
+
+            // Unset copyright for animation purpouses
+            await this.delay_for_copyright_exit();
 
             const anim = this.create_image_animation(this.state.current_image, true)
                 .add({
@@ -249,11 +268,39 @@ export default defineComponent({
 
                 const anim = this.create_image_animation(this.state.current_image);
 
+                anim.complete = () => this.set_up_copyright(copyright);
+
                 anim.play();
                 return;
             });
 
             anim.play();
+        },
+
+        animate_copyright_enter(el: Element, done: () => void) {
+
+            const anim = anime({
+                delay: anime.stagger(150, { start: 240 }),
+                targets: el.children,
+                easing: 'linear',
+                opacity: [0, 1],
+                duration: 120
+            });
+
+            anim.complete = () => done();
+        },
+
+        animate_copyright_exit(el: Element, done: () => void) {
+
+            const anim = anime({
+                delay: anime.stagger(150),
+                targets: el.children,
+                easing: 'linear',
+                opacity: [1, 0],
+                duration: 120
+            });
+
+            anim.complete = () => done();
         }
     },
 
