@@ -56,6 +56,14 @@
                     <label for="theme-system" v-bind:class="{ disabled: !eventBusStore.supports_system_theme_switch }"> System </label>
                 </div>
             </div>
+
+            <!-- Clock display settings title //-->
+            <span class="init-title"> Clock Settings </span>
+
+            <!-- Clock component settings //-->
+            <div class="init-clock">
+                <init-clock-component/>
+            </div>
         </main>
     </modal-component>
 </template>

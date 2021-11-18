@@ -4,8 +4,9 @@ import { mapState }        from 'vuex';
 import { BackgroundDisplayMethod, AvaillableThemes } from '@/lib/store_settings';
 import { ModuleState }                               from '@/lib/store_settings';
 
-import modalComponent from '@/vue/modal/modal.vue';
-import store          from '@/lib/store';
+import initClockComponent from '@/vue/init_clock/init_clock.vue';
+import modalComponent     from '@/vue/modal/modal.vue';
+import store              from '@/lib/store';
 
 // TO-DO (xbanki): Write a mutex for the image loaded & ready event handler
 
@@ -47,7 +48,10 @@ import store          from '@/lib/store';
 
 export default defineComponent({
 
-    components: { modalComponent },
+    components: {
+        initClockComponent,
+        modalComponent
+    },
 
     data() {
         const settingsState = store.state as { settingsStore: ModuleState };

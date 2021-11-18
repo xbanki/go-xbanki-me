@@ -1,0 +1,23 @@
+section.component-init-clock {
+  flex-direction: column;
+  height: fit-content;
+  padding-top: 16px;
+  display: flex;
+  width: 100%;
+
+  span.init-clock-title {
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 18px;
+    display: block;
+  }
+
+  div.init-clock-convention {
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+    width: 100%;
+
+    div.convention-european, div.convention-american { flex: 1 }
+  }
+}

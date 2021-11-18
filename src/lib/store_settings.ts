@@ -10,6 +10,16 @@ export enum BackgroundDisplayMethod {
 }
 
 /**
+ * User-defined clock convention, which we use in the
+ * clock component as the display method.
+ * @see {ModuleState}
+ */
+export enum ClockConvention {
+    EUROPEAN = 'CONVENTION_24H',
+    AMERICAN = 'CONVENTION_AM_PM'
+}
+
+/**
  * User theme preference, which we dynamically animate transitions
  * between. The first two options are self-explanatory, but the
  * `SYSTEM` option signals for us to fetch the theme from the
