@@ -5,19 +5,39 @@ section.component-init-clock {
   display: flex;
   width: 100%;
 
-  span.init-clock-title {
-    margin-bottom: 8px;
-    font-weight: 500;
-    font-size: 18px;
-    display: block;
-  }
-
-  div.init-clock-convention {
+  div.component-init-upper {
     flex-direction: row;
-    margin-bottom: 16px;
     display: flex;
-    width: 100%;
 
-    div.convention-european, div.convention-american { flex: 1 }
+    div.upper-right, div.upper-left { flex: 1 }
+
+    div.upper-right {
+
+      span.right-title {
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 18px;
+        display: block;
+      }
+    
+      div.right-convention {
+        flex-direction: row;
+        margin-bottom: 16px;
+        display: flex;
+        width: 100%;
+    
+        div.convention-european, div.convention-american { flex: 1 }
+      }
+
+      div.right-delimiter {
+        flex-direction: row;
+        margin-bottom: 16px;
+        display: flex;
+        width: 100%;
+
+        div.delimiter-space, div.delimiter-comma, div.delimiter-slash,
+        div.delimiter-dash, div.delimiter-dot { flex: 1 }
+      }
+    }
   }
 }

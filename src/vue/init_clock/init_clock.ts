@@ -2,7 +2,7 @@ import { defineComponent } from 'vue';
 
 import draggable from 'vuedraggable';
 
-import { ClockConvention } from '@/lib/store_settings';
+import { ClockConvention, FormatDelimiter } from '@/lib/store_settings';
 
 /**
  * Comonent internal state.
@@ -14,6 +14,12 @@ interface ComponentState {
      * @enum {ClockConvention}
      */
     active_clock_convention: ClockConvention;
+
+    /**
+     * Currently selected format delimeter (separator).
+     * @enum {FormatDelimiter}
+     */
+     active_format_delimiter: FormatDelimiter;
 }
 
 export default defineComponent({
@@ -21,8 +27,14 @@ export default defineComponent({
     components: { draggable },
 
     data() {
-        const state: ComponentState = { active_clock_convention: ClockConvention.EUROPEAN };
+        const state: ComponentState = {
+            active_clock_convention: ClockConvention.EUROPEAN,
+            active_format_delimiter: FormatDelimiter.SPACE
+        };
 
         return { state };
     }
 });
+
+// Size:       Large, Medium, Small
+//             [Position matrix]

@@ -1,5 +1,5 @@
 main.component-init {
-  max-width: 768px;
+  width: 768px;
 
   span.init-title {
     margin-bottom: 8px;
@@ -10,6 +10,7 @@ main.component-init {
 
   span.init-warning {
     margin-bottom: 32px;
+    text-align: center;
     display: block;
     opacity: 80%;
   }

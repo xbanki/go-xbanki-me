@@ -20,6 +20,19 @@ export enum ClockConvention {
 }
 
 /**
+ * Specifies the delimiter, or separator between sections
+ * of the clock display.
+ * @see {ModuleState}
+ */
+export enum FormatDelimiter {
+    SPACE = 'DELIMITER_SPACE',
+    COMMA = 'DELIMITER_COMMA',
+    SLASH = 'DELIMITER_SLASH',
+    DASH = 'DELIMITER_DASH',
+    DOT = 'DELIMITER_DOT'
+}
+
+/**
  * User theme preference, which we dynamically animate transitions
  * between. The first two options are self-explanatory, but the
  * `SYSTEM` option signals for us to fetch the theme from the
