@@ -32,13 +32,25 @@ export interface ModuleState {
      * Background image fitting method.
      * @enum {BackgroundDisplayMethod}
      */
-    background_display_method: BackgroundDisplayMethod
+    background_display_method: BackgroundDisplayMethod;
 
     /**
      * User-selected display theme.
      * @enum {AvaillableThemes}
      */
     selected_theme: AvaillableThemes;
+
+    /**
+     * Clock component current time display format.
+     * @type {string}
+     */
+    time_display_format: string;
+
+    /**
+     * Clock component date display format.
+     * @type {string}
+     */
+    date_display_format: string;
 
     /**
      * Indicates wether the user has completed first-time initialization.
@@ -54,6 +66,8 @@ const store: { state: ModuleState, [name: string]: any } = {
     state: {
         background_display_method: BackgroundDisplayMethod.FIT,
         selected_theme: AvaillableThemes.LIGHT,
+        date_display_format: 'cccc, MMMM d, kkkk',
+        time_display_format: 'mm:HH:ss',
         initialized: false
     },
 
@@ -67,9 +81,6 @@ const store: { state: ModuleState, [name: string]: any } = {
 
     actions: {
 
-        /**
-         * Updates current background display method.
-         */
         UpdateDisplayMethod: (context: any, payload: BackgroundDisplayMethod) => {
 
             if (context.background_display_method == payload) return;
@@ -77,9 +88,6 @@ const store: { state: ModuleState, [name: string]: any } = {
             context.commit('SET_BACKGROUND_DISPLAY_METHOD', payload);
         },
 
-        /**
-         * Applies user initialization.
-         */
         InitializeUser: (context: any) => {
 
             if (context.initialized == true) return;
