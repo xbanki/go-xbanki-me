@@ -88,6 +88,24 @@ export interface ModuleState {
     date_display_format: string;
 
     /**
+     * Selected display time convention.
+     * @enum {ClockConvention}
+     */
+    time_convention: ClockConvention;
+
+    /**
+     * Date display delimiter.
+     * @enum {FormatDelimiter}
+     */
+    date_delimiter: FormatDelimiter;
+
+    /**
+     * Location (around the counting clock) of the date display.
+     * @enum {DateDisplayLocation}
+     */
+    date_display_position: DateDisplayLocation;
+
+    /**
      * Indicates wether the user has completed first-time initialization.
      * @type {boolean}
      */
@@ -100,18 +118,27 @@ const store: { state: ModuleState, [name: string]: any } = {
 
     state: {
         background_display_method: BackgroundDisplayMethod.FIT,
+        date_display_position: DateDisplayLocation.BOTTOM,
+        time_convention: ClockConvention.AMERICAN,
         selected_theme: AvaillableThemes.LIGHT,
+        date_delimiter: FormatDelimiter.SPACE,
         date_display_format: 'cccc, MMMM d, kkkk',
         time_display_format: 'mm:HH:ss',
         initialized: false
     },
 
     mutations: {
-        SET_BACKGROUND_DISPLAY_METHOD: (state: any, payload: BackgroundDisplayMethod): BackgroundDisplayMethod => state.background_display_method = payload,
+        SET_BACKGROUND_DISPLAY_METHOD: (state: any, payload: BackgroundDisplayMethod) => state.background_display_method = payload,
 
-        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean): boolean => state.initialized = payload,
+        SET_DATE_DISPLAY_POSITION: (state: any, payload: DateDisplayLocation) => state.date_display_position = payload,
 
-        UPDATE_USED_THEME: (state: any, payload: AvaillableThemes): AvaillableThemes => state.selected_theme = payload
+        SET_CLOCK_CONVENTION: (state: any, payload: ClockConvention) => state.time_convention = payload,
+
+        UPDATE_DATE_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.date_delimiter = payload,
+
+        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
+
+        UPDATE_USED_THEME: (state: any, payload: AvaillableThemes) => state.selected_theme = payload
     },
 
     actions: {
