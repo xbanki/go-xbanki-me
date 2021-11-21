@@ -1,3 +1,5 @@
+$POSITION_COMPONENT_SIZE: 160px;
+
 section.component-init-clock {
   flex-direction: column;
   height: fit-content;
@@ -39,5 +41,47 @@ section.component-init-clock {
         div.delimiter-dash, div.delimiter-dot { flex: 1 }
       }
     }
+
+    div.upper-left {
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      display: flex;
+
+      span.left-title {
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 18px;
+      }
+
+      div.left-parent {
+        height: $POSITION_COMPONENT_SIZE;
+        width: $POSITION_COMPONENT_SIZE;
+        flex-direction: row;
+        display: flex;
+
+        div.parent-left, div.parent-right, div.parent-middle {
+          flex-direction: column;
+          display: flex;
+          height: 100%;
+          flex: 1;
+
+          div.column-cell {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+span, label {
+  &.disabled {
+    cursor: not-allowed;
+    color: gray;
   }
 }

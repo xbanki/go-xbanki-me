@@ -2,7 +2,7 @@ import { defineComponent } from 'vue';
 
 import draggable from 'vuedraggable';
 
-import { ClockConvention, FormatDelimiter } from '@/lib/store_settings';
+import { ClockConvention, FormatDelimiter, DateDisplayLocation } from '@/lib/store_settings';
 
 /**
  * Comonent internal state.
@@ -20,6 +20,12 @@ interface ComponentState {
      * @enum {FormatDelimiter}
      */
      active_format_delimiter: FormatDelimiter;
+
+    /**
+     * Location where the date should be displayed on the clock component.
+     * @enum {DateDisplayLocation}
+     */
+     active_date_display_location: DateDisplayLocation;
 }
 
 export default defineComponent({
@@ -28,6 +34,7 @@ export default defineComponent({
 
     data() {
         const state: ComponentState = {
+            active_date_display_location: DateDisplayLocation.BOTTOM,
             active_clock_convention: ClockConvention.EUROPEAN,
             active_format_delimiter: FormatDelimiter.SPACE
         };

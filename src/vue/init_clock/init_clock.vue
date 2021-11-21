@@ -37,7 +37,7 @@
                 </div>
 
                 <!-- Clock format delimiter title //-->
-                <span class="right-title"> Format Delimiter </span>
+                <span class="right-title"> Date Format Delimiter </span>
 
                 <!-- Clock format delimiter, or separator //-->
                 <div class="right-delimiter">
@@ -90,6 +90,68 @@
 
                         <!-- Radio label element //-->
                         <label for="delimiter-dot"> Period </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left-hand-side wrapper, for date display location //-->
+            <div class="upper-left">
+
+                <!-- Positioning section title //-->
+                <span class="left-title"> Date Display Position </span>
+
+                <!-- Positioning parent //-->
+                <div class="left-parent">
+
+                    <!-- Left-side column //-->
+                    <div class="parent-left">
+
+                        <!-- Automatically generated column cells //-->
+                        <div v-for="n in 3" v-bind:key="n" class="column-cell">
+
+                            <!-- Only display middle cell //-->
+                            <input v-if="n == 2" type="radio" name="location-left" id="location-left" value="LOCATION_LEFT" v-model="state.active_date_display_location">
+
+                            <!-- Cell label //-->
+                            <label v-if="n == 2" for="location-left"> Left </label>
+                        </div>
+                    </div>
+
+                    <!-- Middle column //-->
+                    <div class="parent-middle">
+
+                        <!-- Automatically generated column cells //-->
+                        <div v-for="n in 3" v-bind:key="n" class="column-cell">
+
+                            <!-- Only display top cell //-->
+                            <input v-if="n == 1" type="radio" name="location-top" id="location-top" value="LOCATION_TOP" v-model="state.active_date_display_location">
+
+                            <!-- Cell label //-->
+                            <label v-if="n == 1" for="location-top"> Top </label>
+
+                            <!-- Middle cell label //-->
+                            <span v-if="n == 2" class="disabled"> Middle </span>
+
+                            <!-- Only display bottom cell //-->
+                            <input v-if="n == 3" type="radio" name="location-bottom" id="location-bottom" value="LOCATION_BOTTOM" v-model="state.active_date_display_location">
+
+                            <!-- Cell label //-->
+                            <label v-if="n == 3" for="location-bottom"> Bottom </label>
+                        </div>
+                    </div>
+
+                    <!-- Right-side column //-->
+                    <div class="parent-right">
+
+                        <!-- Automatically generated column cells //-->
+                        <div v-for="n in 3" v-bind:key="n" class="column-cell">
+
+                            <!-- Only display middle cell //-->
+                            <input v-if="n == 2" type="radio" name="location-right" id="location-right" value="LOCATION_RIGHT" v-model="state.active_date_display_location">
+
+                            <!-- Cell label //-->
+                            <label v-if="n == 2" for="location-right"> Right </label>
+                        </div>
                     </div>
                 </div>
             </div>

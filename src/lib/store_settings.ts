@@ -33,6 +33,18 @@ export enum FormatDelimiter {
 }
 
 /**
+ * Specifies where the date stamp is displayed around the
+ * current moment in time display wrapper.
+ * @see {ModuleState}
+ */
+export enum DateDisplayLocation {
+    BOTTOM = 'LOCATION_BOTTOM',
+    RIGHT = 'LOCATION_RIGHT',
+    LEFT = 'LOCATION_LEFT',
+    TOP = 'LOCATION_TOP'
+}
+
+/**
  * User theme preference, which we dynamically animate transitions
  * between. The first two options are self-explanatory, but the
  * `SYSTEM` option signals for us to fetch the theme from the
