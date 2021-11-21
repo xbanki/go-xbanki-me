@@ -19,7 +19,7 @@
                     <div class="convention-european">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="convention-european" value="CONVENTION_24H" id="convention-european" v-model="state.active_clock_convention">
+                        <input type="radio" name="convention-european" value="CONVENTION_24H" id="convention-european" v-on:change="update_realtime_options" v-model="state.active_clock_convention">
 
                         <!-- Radio label element //-->
                         <label for="convention-european"> 24 Hour Clock </label>
@@ -29,7 +29,7 @@
                     <div class="convention-american">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="convention-american" value="CONVENTION_AM_PM" id="convention-american" v-model="state.active_clock_convention">
+                        <input type="radio" name="convention-american" value="CONVENTION_AM_PM" id="convention-american" v-on:change="update_realtime_options" v-model="state.active_clock_convention">
 
                         <!-- Radio label element //-->
                         <label for="convention-american"> 12 Hour Clock </label>
@@ -46,7 +46,7 @@
                     <div class="delimiter-space">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-space"> Blank </label>
@@ -56,7 +56,7 @@
                     <div class="delimiter-comma">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-comma"> Comma </label>
@@ -66,7 +66,7 @@
                     <div class="delimiter-slash">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-slash"> Slash </label>
@@ -76,7 +76,7 @@
                     <div class="delimiter-dash">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-dash"> Dash </label>
@@ -86,7 +86,7 @@
                     <div class="delimiter-dot">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-dot"> Period </label>
@@ -110,7 +110,7 @@
                         <div v-for="n in 3" v-bind:key="n" class="column-cell">
 
                             <!-- Only display middle cell //-->
-                            <input v-if="n == 2" type="radio" name="location-left" id="location-left" value="LOCATION_LEFT" v-model="state.active_date_display_location">
+                            <input v-if="n == 2" type="radio" name="location-left" id="location-left" value="LOCATION_LEFT" v-on:change="update_realtime_options" v-model="state.active_date_display_location">
 
                             <!-- Cell label //-->
                             <label v-if="n == 2" for="location-left"> Left </label>
@@ -124,7 +124,7 @@
                         <div v-for="n in 3" v-bind:key="n" class="column-cell">
 
                             <!-- Only display top cell //-->
-                            <input v-if="n == 1" type="radio" name="location-top" id="location-top" value="LOCATION_TOP" v-model="state.active_date_display_location">
+                            <input v-if="n == 1" type="radio" name="location-top" id="location-top" value="LOCATION_TOP" v-on:change="update_realtime_options" v-model="state.active_date_display_location">
 
                             <!-- Cell label //-->
                             <label v-if="n == 1" for="location-top"> Top </label>
@@ -133,7 +133,7 @@
                             <span v-if="n == 2" class="disabled"> Middle </span>
 
                             <!-- Only display bottom cell //-->
-                            <input v-if="n == 3" type="radio" name="location-bottom" id="location-bottom" value="LOCATION_BOTTOM" v-model="state.active_date_display_location">
+                            <input v-if="n == 3" type="radio" name="location-bottom" id="location-bottom" value="LOCATION_BOTTOM"  v-on:change="update_realtime_options" v-model="state.active_date_display_location">
 
                             <!-- Cell label //-->
                             <label v-if="n == 3" for="location-bottom"> Bottom </label>
@@ -147,7 +147,7 @@
                         <div v-for="n in 3" v-bind:key="n" class="column-cell">
 
                             <!-- Only display middle cell //-->
-                            <input v-if="n == 2" type="radio" name="location-right" id="location-right" value="LOCATION_RIGHT" v-model="state.active_date_display_location">
+                            <input v-if="n == 2" type="radio" name="location-right" id="location-right" value="LOCATION_RIGHT" v-on:change="update_realtime_options" v-model="state.active_date_display_location">
 
                             <!-- Cell label //-->
                             <label v-if="n == 2" for="location-right"> Right </label>

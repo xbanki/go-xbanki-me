@@ -119,7 +119,7 @@ const store: { state: ModuleState, [name: string]: any } = {
     state: {
         background_display_method: BackgroundDisplayMethod.FIT,
         date_display_position: DateDisplayLocation.BOTTOM,
-        time_convention: ClockConvention.AMERICAN,
+        time_convention: ClockConvention.EUROPEAN,
         selected_theme: AvaillableThemes.LIGHT,
         date_delimiter: FormatDelimiter.SPACE,
         date_display_format: 'cccc, MMMM d, kkkk',
