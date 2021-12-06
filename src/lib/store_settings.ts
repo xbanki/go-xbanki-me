@@ -10,6 +10,17 @@ export enum BackgroundDisplayMethod {
 }
 
 /**
+ * Date or Time display component sizing setting.
+ * @see {ModuleState}
+ */
+export enum DateTimeSize {
+    MEDIUM = 'SIZE_MEDIUM',
+    LARGE = 'SIZE_LARGE',
+    SMALL = 'SIZE_SMALL',
+    NONE = 'SIZE_NONE'
+}
+
+/**
  * User-defined clock convention, which we use in the
  * clock component as the display method.
  * @see {ModuleState}
@@ -106,6 +117,18 @@ export interface ModuleState {
     date_display_position: DateDisplayLocation;
 
     /**
+     * Date display size.
+     * @enum {DateTimeSize}
+     */
+    date_size: DateTimeSize;
+
+    /**
+     * Time display size.
+     * @enum {DateTimeSize}
+     */
+    time_size: DateTimeSize;
+
+    /**
      * Indicates wether the user has completed first-time initialization.
      * @type {boolean}
      */
@@ -123,6 +146,8 @@ const store: { state: ModuleState, [name: string]: any } = {
         selected_theme: AvaillableThemes.LIGHT,
         date_delimiter: FormatDelimiter.SPACE,
         date_display_format: 'cccc, MMMM d, kkkk',
+        date_size: DateTimeSize.SMALL,
+        time_size: DateTimeSize.MEDIUM,
         time_display_format: 'mm:HH:ss',
         initialized: false
     },
@@ -137,6 +162,10 @@ const store: { state: ModuleState, [name: string]: any } = {
         UPDATE_DATE_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.date_delimiter = payload,
 
         UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
+
+        UPDATE_DATE_SIZE: (state: any, payload: DateTimeSize) => state.date_size = payload,
+
+        UPDATE_TIME_SIZE: (state: any, payload: DateTimeSize) => state.time_size = payload,
 
         UPDATE_USED_THEME: (state: any, payload: AvaillableThemes) => state.selected_theme = payload
     },

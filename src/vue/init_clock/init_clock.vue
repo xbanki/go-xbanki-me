@@ -156,6 +156,112 @@
                 </div>
             </div>
         </div>
+
+        <!-- Lower half of the clock component settings //-->
+        <div class="component-init-lower">
+            
+            <!-- Left-hand-side of the lower element, containing time display settings //-->
+            <div class="lower-left">
+                
+                <!-- Time display sizing title //-->
+                <span class="left-title"> Time Display Size </span>
+
+                <!-- Time size options //-->
+                <div class="left-size">
+
+                    <!-- Size none //-->
+                    <div class="size-none">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-none" id="date-size-none" value="SIZE_NONE" v-on:change="update_realtime_options" v-model="state.active_date_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-none"> Hidden </label>
+                    </div>
+
+                    <!-- Size small //-->
+                    <div class="size-small">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-small" id="date-size-small" value="SIZE_SMALL" v-on:change="update_realtime_options" v-model="state.active_date_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-small"> Small </label>
+                    </div>
+
+                    <!-- Size medium //-->
+                    <div class="size-medium">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-medium" id="date-size-medium" value="SIZE_MEDIUM" v-on:change="update_realtime_options" v-model="state.active_date_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-medium"> Medium </label>
+                    </div>
+
+                    <!-- Size large //-->
+                    <div class="size-large">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-large" id="date-size-large" value="SIZE_LARGE" v-on:change="update_realtime_options" v-model="state.active_date_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-large"> Large </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right-hand-side of the lower element, containing date display settings //-->
+            <div class="lower-right">
+                
+                <!-- Date display sizing title //-->
+                <span class="right-title"> Date Display Size </span>
+
+                <!-- Date size options //-->
+                <div class="right-size">
+                    
+                    <!-- Size none //-->
+                    <div class="size-none">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-none" id="time-size-none" value="SIZE_NONE" v-on:change="update_realtime_options" v-model="state.active_time_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-none"> Hidden </label>
+                    </div>
+
+                    <!-- Size small //-->
+                    <div class="size-small">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-small" id="time-size-small" value="SIZE_SMALL" v-on:change="update_realtime_options" v-model="state.active_time_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-small"> Small </label>
+                    </div>
+
+                    <!-- Size medium //-->
+                    <div class="size-medium">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-medium" id="time-size-medium" value="SIZE_MEDIUM" v-on:change="update_realtime_options" v-model="state.active_time_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-"> Medium </label>
+                    </div>
+
+                    <!-- Size large //-->
+                    <div class="size-large">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="size-" id="time-size-large" value="SIZE_LARGE" v-on:change="update_realtime_options" v-model="state.active_time_size">
+
+                        <!-- Radio label element //-->
+                        <label for="size-large"> Large </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </template>
 

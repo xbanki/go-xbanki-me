@@ -39,7 +39,7 @@ interface ImageArchiveData {
 export default async function(request: VercelRequest, response: VercelResponse): Promise<void> {
 
     if (request?.body) {
-        response.status(400).send({ status: 400, message: '"/api/get-daily-background" does not take in any body inputs' });
+        response.status(400).send({ status: 400, message: '"/api/get-daily-background" does not take in any body inputs', success: false });
         return;
     }
 
@@ -70,6 +70,7 @@ export default async function(request: VercelRequest, response: VercelResponse):
             url: `${BingBaseURL}${image_data.url}`
         },
         message: 'ok',
+        success: true,
         status: 200
     };
 

@@ -3,7 +3,7 @@ import { defineComponent } from 'vue';
 
 import draggable from 'vuedraggable';
 
-import { ClockConvention, FormatDelimiter, DateDisplayLocation } from '@/lib/store_settings';
+import { ClockConvention, FormatDelimiter, DateDisplayLocation, DateTimeSize } from '@/lib/store_settings';
 import { ModuleState } from '@/lib/store_settings';
 
 import store from '@/lib/store';
@@ -23,13 +23,25 @@ interface ComponentState {
      * Currently selected format delimeter (separator).
      * @enum {FormatDelimiter}
      */
-     active_format_delimiter: FormatDelimiter;
+    active_format_delimiter: FormatDelimiter;
 
     /**
      * Location where the date should be displayed on the clock component.
      * @enum {DateDisplayLocation}
      */
-     active_date_display_location: DateDisplayLocation;
+    active_date_display_location: DateDisplayLocation;
+
+    /**
+     * Date display sizing option.
+     * @enum {DateTimeSize}
+     */
+    active_date_size: DateTimeSize;
+
+    /**
+     * Time display sizing option.
+     * @enum {DateTimeSize}
+     */
+    active_time_size: DateTimeSize;
 }
 
 export default defineComponent({
@@ -42,7 +54,9 @@ export default defineComponent({
         const state: ComponentState = {
             active_date_display_location: settingsState.settingsStore.date_display_position ?? DateDisplayLocation.BOTTOM,
             active_clock_convention: settingsState.settingsStore.time_convention ?? ClockConvention.EUROPEAN,
-            active_format_delimiter: settingsState.settingsStore.date_delimiter ?? FormatDelimiter.SPACE
+            active_format_delimiter: settingsState.settingsStore.date_delimiter ?? FormatDelimiter.SPACE,
+            active_date_size: settingsState.settingsStore.date_size ?? DateTimeSize.SMALL,
+            active_time_size: settingsState.settingsStore.time_size ?? DateTimeSize.MEDIUM
         };
 
         return { state };
@@ -60,6 +74,14 @@ export default defineComponent({
 
             if (this.state.active_format_delimiter != this.settingsStore.date_delimiter) {
                 store.commit('settingsStore/UPDATE_DATE_FORMAT_DELIMITER', this.state.active_format_delimiter);
+            }
+
+            if (this.state.active_date_size != this.settingsStore.date_size) {
+                store.commit('settingsStore/UPDATE_DATE_SIZE', this.state.active_date_size);
+            }
+
+            if (this.state.active_time_size != this.settingsStore.time_size) {
+                store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
             }
         }
     },

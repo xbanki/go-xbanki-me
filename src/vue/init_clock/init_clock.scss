@@ -9,6 +9,7 @@ section.component-init-clock {
 
   div.component-init-upper {
     flex-direction: row;
+    margin-bottom: 8px;
     display: flex;
 
     div.upper-right, div.upper-left { flex: 1 }
@@ -73,6 +74,55 @@ section.component-init-clock {
             display: flex;
             flex: 1;
           }
+        }
+      }
+    }
+  }
+
+  div.component-init-lower {
+    flex-direction: row;
+    display: flex;
+
+    div.lower-right, div.lower-left { flex: 1 }
+
+    div.lower-right {
+
+      span.right-title {
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 18px;
+        display: block;
+      }
+
+      div.right-size {
+        flex-direction: row;
+        margin-bottom: 16px;
+        display: flex;
+
+        div.size-none, div.size-small,
+        div.size-medium, div.size-large {
+          flex: 1;
+        }
+      }
+    }
+
+    div.lower-left {
+      
+      span.left-title {
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 18px;
+        display: block;
+      }
+
+      div.left-size {
+        flex-direction: row;
+        margin-bottom: 16px;
+        display: flex;
+
+        div.size-none, div.size-small,
+        div.size-medium, div.size-large {
+          flex: 1;
         }
       }
     }
