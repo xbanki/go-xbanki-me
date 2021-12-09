@@ -46,7 +46,7 @@
                     <div class="delimiter-space">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-space"> Blank </label>
@@ -56,7 +56,7 @@
                     <div class="delimiter-comma">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-comma"> Comma </label>
@@ -66,7 +66,7 @@
                     <div class="delimiter-slash">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-slash"> Slash </label>
@@ -76,7 +76,7 @@
                     <div class="delimiter-dash">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-dash"> Dash </label>
@@ -86,7 +86,7 @@
                     <div class="delimiter-dot">
 
                         <!-- Radio input element //-->
-                        <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-on:change="update_realtime_options" v-model="state.active_format_delimiter">
+                        <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-dot"> Period </label>
@@ -209,6 +209,74 @@
                         <label for="size-large"> Large </label>
                     </div>
                 </div>
+
+                <!-- Time display format title //-->
+                <span class="left-title"> Time Display Format </span>
+
+                <!-- Time format options //-->
+                <div class="left-format">
+
+                    <!-- Upper un-used format items, delimiter add & remove //-->
+                    <div class="format-upper">
+
+                        <!-- VueDraggable based dragging container //-->
+                        <draggable
+
+                            v-bind:component-data="{
+                                type: 'transition-group',
+                                name: 'Foo',
+                                tag: 'ul'
+                            }"
+
+                            v-bind="{
+                                ghostClass: 'dragging',
+                                group: 'time-format',
+                                animation: 120
+                            }"
+
+                            v-on:start="state.date_format_dragging = true"
+
+                            v-on:end="state.date_format_dragging = false"
+
+                            v-model="data.time_format_inactive"
+                            
+                            tag="transition-group"
+
+                            class="upper-group"
+
+                            item-key="index"
+                        >
+
+                            <!-- Item element slot //-->
+                            <template v-slot:item="{ element }">
+
+                                <li class="group-item delimiter" v-if="discriminate_format_item_type(element)">
+
+                                    <!-- Delimiter format item //-->
+                                    {{ state.time_delimiter_display }}
+                                </li>
+                                <li class="group-item option" v-else>
+                                    
+                                    <!-- Format option item //-->
+                                    {{ element.name }}
+                                </li>
+                            </template>
+                        </draggable>
+
+                        <!-- Add & remove buttons //-->
+                        <div class="upper-buttons">
+
+                            <!-- Remove delimiter button //-->
+                            <button class="buttons-remove" v-on:click="remove_newest_delimiter" v-bind:disabled="state.disable_remove_delimiter"> - </button>
+
+                            <!-- Add delimiter button //-->
+                            <button class="buttons-add" v-on:click="add_new_delimiter" v-bind:disabled="state.disable_add_delimiter"> + </button>
+                        </div>
+                    </div>
+
+                    <!-- Lower active format items & delimiter separators //-->
+                    <div class="format-lower"/>
+                </div>
             </div>
 
             <!-- Right-hand-side of the lower element, containing date display settings //-->
@@ -260,6 +328,12 @@
                         <label for="size-large"> Large </label>
                     </div>
                 </div>
+
+                <!-- Date format selection title //-->
+                <span class="right-title"> Date Display Format </span>
+
+                <!-- Date format options //-->
+                <div class="right-format"></div>
             </div>
         </div>
     </section>

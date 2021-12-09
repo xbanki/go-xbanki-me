@@ -125,6 +125,25 @@ section.component-init-clock {
           flex: 1;
         }
       }
+
+      div.left-format, div.right-format {
+        flex-direction: column;
+        display: flex;
+
+        div.format-upper {
+          flex-direction: row;
+          margin-bottom: 8px;
+          display: flex;
+
+          div.upper-buttons {
+            padding-right: 2px;
+            padding-left: 4px;
+            margin-left: auto;
+
+            button.buttons-remove { margin-right: 4px }
+          }
+        }
+      }
     }
   }
 }

@@ -123,6 +123,12 @@ export interface ModuleState {
     date_size: DateTimeSize;
 
     /**
+     * Time display delimiter.
+     * @enum {FormatDelimiter}
+     */
+    time_delimiter: FormatDelimiter;
+
+    /**
      * Time display size.
      * @enum {DateTimeSize}
      */
@@ -145,6 +151,7 @@ const store: { state: ModuleState, [name: string]: any } = {
         time_convention: ClockConvention.EUROPEAN,
         selected_theme: AvaillableThemes.LIGHT,
         date_delimiter: FormatDelimiter.SPACE,
+        time_delimiter: FormatDelimiter.COMMA,
         date_display_format: 'cccc, MMMM d, kkkk',
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
@@ -160,6 +167,8 @@ const store: { state: ModuleState, [name: string]: any } = {
         SET_CLOCK_CONVENTION: (state: any, payload: ClockConvention) => state.time_convention = payload,
 
         UPDATE_DATE_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.date_delimiter = payload,
+
+        UPDATE_TIME_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.time_delimiter = payload,
 
         UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
 
