@@ -36,6 +36,7 @@ export enum ClockConvention {
  * @see {ModuleState}
  */
 export enum FormatDelimiter {
+    COLON = 'DELIMITER_COLON',
     SPACE = 'DELIMITER_SPACE',
     COMMA = 'DELIMITER_COMMA',
     SLASH = 'DELIMITER_SLASH',

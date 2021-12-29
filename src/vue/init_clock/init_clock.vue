@@ -1,5 +1,5 @@
 <template>
-    
+
     <!-- Clock & time of date component settings //-->
     <section class="component-init-clock">
 
@@ -8,7 +8,7 @@
 
             <!-- Right-hand-side wrapper //-->
             <div class="upper-right">
-                
+
                 <!-- Clock display format title //-->
                 <span class="right-title"> Time Convention </span>
 
@@ -91,6 +91,16 @@
                         <!-- Radio label element //-->
                         <label for="delimiter-dot"> Period </label>
                     </div>
+
+                    <!-- Colon delimiter //-->
+                    <div class="delimiter-colon">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-colon" id="delimiter-colon" value="DELIMITER_COLON" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-colon"> Colon </label>
+                    </div>
                 </div>
             </div>
 
@@ -159,14 +169,14 @@
 
         <!-- Lower half of the clock component settings //-->
         <div class="component-init-lower">
-            
-            <!-- Left-hand-side of the lower element, containing time display settings //-->
-            <div class="lower-left">
-                
-                <!-- Time display sizing title //-->
-                <span class="left-title"> Time Display Size </span>
 
-                <!-- Time size options //-->
+            <!-- Left-hand-side of the lower element, containing date display settings //-->
+            <div class="lower-left">
+
+                <!-- Date display sizing title //-->
+                <span class="left-title"> Date Display Size </span>
+
+                <!-- Date size options //-->
                 <div class="left-size">
 
                     <!-- Size none //-->
@@ -210,10 +220,10 @@
                     </div>
                 </div>
 
-                <!-- Time display format title //-->
-                <span class="left-title"> Time Display Format </span>
+                <!-- Date display format title //-->
+                <span class="left-title"> Date Display Format </span>
 
-                <!-- Time format options //-->
+                <!-- Date format options //-->
                 <div class="left-format">
 
                     <!-- Upper un-used format items, delimiter add & remove //-->
@@ -224,13 +234,12 @@
 
                             v-bind:component-data="{
                                 type: 'transition-group',
-                                name: 'Foo',
                                 tag: 'ul'
                             }"
 
                             v-bind="{
                                 ghostClass: 'dragging',
-                                group: 'time-format',
+                                group: 'date-format',
                                 animation: 120
                             }"
 
@@ -238,8 +247,8 @@
 
                             v-on:end="state.date_format_dragging = false"
 
-                            v-model="data.time_format_inactive"
-                            
+                            v-model="data.date_format_inactive"
+
                             tag="transition-group"
 
                             class="upper-group"
@@ -250,15 +259,15 @@
                             <!-- Item element slot //-->
                             <template v-slot:item="{ element }">
 
-                                <li class="group-item delimiter" v-if="discriminate_format_item_type(element)">
+                                <li class="group-item delimiter" v-if="element.delimiter">
 
                                     <!-- Delimiter format item //-->
-                                    {{ state.time_delimiter_display }}
+                                    {{ state.date_delimiter_display }}
                                 </li>
                                 <li class="group-item option" v-else>
-                                    
+
                                     <!-- Format option item //-->
-                                    {{ element.name }}
+                                    {{ element }}
                                 </li>
                             </template>
                         </draggable>
@@ -267,27 +276,71 @@
                         <div class="upper-buttons">
 
                             <!-- Remove delimiter button //-->
-                            <button class="buttons-remove" v-on:click="remove_newest_delimiter" v-bind:disabled="state.disable_remove_delimiter"> - </button>
+                            <button class="buttons-remove" v-on:click="remove_newest_date_delimiter" v-bind:disabled="state.disable_remove_date_delimiter"> - </button>
 
                             <!-- Add delimiter button //-->
-                            <button class="buttons-add" v-on:click="add_new_delimiter" v-bind:disabled="state.disable_add_delimiter"> + </button>
+                            <button class="buttons-add" v-on:click="add_new_date_delimiter" v-bind:disabled="state.disable_add_date_delimiter"> + </button>
                         </div>
                     </div>
 
                     <!-- Lower active format items & delimiter separators //-->
-                    <div class="format-lower"/>
+                    <div class="format-lower">
+
+                        <!-- VueDraggable based dragging container //-->
+                        <draggable
+
+                            v-bind:component-data="{
+                                type: 'transition-group',
+                                tag: 'ul'
+                            }"
+
+                            v-bind="{
+                                ghostClass: 'dragging',
+                                group: 'date-format',
+                                animation: 120
+                            }"
+
+                            v-on:start="state.date_format_dragging = true"
+
+                            v-on:end="state.date_format_dragging = false"
+
+                            v-model="data.date_format_active"
+
+                            tag="transition-group"
+
+                            class="lower-group"
+
+                            item-key="index"
+                        >
+
+                            <!-- Item element slot //-->
+                            <template v-slot:item="{ element }">
+
+                                <li class="group-item delimiter" v-if="element?.delimiter">
+
+                                    <!-- Delimiter format item //-->
+                                    {{ state.date_delimiter_display }}
+                                </li>
+                                <li class="group-item option" v-else>
+
+                                    <!-- Format option item //-->
+                                    {{ element }}
+                                </li>
+                            </template>
+                        </draggable>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right-hand-side of the lower element, containing date display settings //-->
+            <!-- Right-hand-side of the lower element, containing time display settings //-->
             <div class="lower-right">
-                
-                <!-- Date display sizing title //-->
-                <span class="right-title"> Date Display Size </span>
 
-                <!-- Date size options //-->
+                <!-- Time display sizing title //-->
+                <span class="right-title"> Time Display Size </span>
+
+                <!-- Time size options //-->
                 <div class="right-size">
-                    
+
                     <!-- Size none //-->
                     <div class="size-none">
 
@@ -329,10 +382,10 @@
                     </div>
                 </div>
 
-                <!-- Date format selection title //-->
-                <span class="right-title"> Date Display Format </span>
+                <!-- Time format selection title //-->
+                <span class="right-title"> Time Display Format </span>
 
-                <!-- Date format options //-->
+                <!-- Time format options //-->
                 <div class="right-format"></div>
             </div>
         </div>

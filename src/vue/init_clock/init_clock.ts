@@ -78,13 +78,13 @@ interface ComponentState {
      * Disables removing newest delimiters from the list.
      * @type {boolean}
      */
-    disable_remove_delimiter: boolean;
+    disable_remove_date_delimiter: boolean;
 
     /**
      * Disables adding new delimiters to the list.
      * @type {boolean}
      */
-    disable_add_delimiter: boolean;
+    disable_add_date_delimiter: boolean;
 
     /**
      * Time delimiter display.
@@ -106,15 +106,27 @@ interface ComponentData {
 
     /**
      * Time format availlable items.
-     * @type {Array<FormatItem | DelimiterItem>}
+     * @type {FormatToken}
      */
-    time_format_active: Array<FormatItem | DelimiterItem>;
+    time_format_active: Array<FormatToken>;
 
     /**
      * Time format items that have been disabled.
-     * @type {Array<FormatItem | DelimiterItem>}
+     * @type {Array<FormatToken>}
      */
-    time_format_inactive: Array<FormatItem | DelimiterItem>;
+    time_format_inactive: Array<FormatToken>;
+
+    /**
+     * Date format availlable items.
+     * @type {FormatToken}
+     */
+     date_format_active: Array<FormatToken>;
+
+     /**
+      * Date format items that have been disabled.
+      * @type {Array<FormatToken>}
+      */
+     date_format_inactive: Array<FormatToken>;
 
     /**
      * Minimum amount of delimiters allowed.
@@ -136,83 +148,95 @@ interface ComponentData {
 }
 
 /**
- * Non-delimiter format item.
+ * Time/ Date format item.
  */
-interface FormatItem {
+interface FormatToken {
 
     /**
-     * Starting index position inside of the format array(s).
+     * Order index which determines the *starting* position in the format array(s).
      * @type {number}
      */
     index: number;
 
     /**
-     * Display name which to show.
-     * @type {string}
-     */
-    name: string;
-}
-
-/**
- * Delimiter format item.
- */
-interface DelimiterItem {
-
-    /**
-     * Used to differentiate between a delimiter an non delimiter.
+     * Discriminates between a delimiter item and a format option item.
      * @type {boolean}
      */
     delimiter: boolean;
 
     /**
-     * Starting index position inside of the format array(s).
-     * @type {number}
+     * Description of item which is shown when the hover event is active.
+     * @type {string}
      */
-    index: number;
+    description: string;
+
+    /**
+     * If item is format token, specifies wether this token should have a special display.
+     * @type {boolean}
+     */
+    dynamic?: boolean;
+
+    /**
+     * Luxon format token which is ignored in cases:
+     * 
+     * `<FormatToken>.dynamic: true`
+     * 
+     * `<FormatToken>.delimiter: true`
+     * @type {string}
+     */
+    token?: string;
 }
 
 export default defineComponent({
 
     components: { draggable },
 
-    data() {
+    data( ) {
         const settingsState = store.state as { settingsStore: ModuleState };
 
         // NOTE(xbanki): this block looks fucking hideous?
         const state: ComponentState = {
             active_date_display_location: settingsState.settingsStore.date_display_position ?? DateDisplayLocation.BOTTOM,
             active_clock_convention: settingsState.settingsStore.time_convention ?? ClockConvention.EUROPEAN,
-            active_date_delimiter: settingsState.settingsStore.date_delimiter ?? FormatDelimiter.SPACE,
+            active_date_delimiter: settingsState.settingsStore.date_delimiter ?? FormatDelimiter.COLON,
             active_time_delimiter: settingsState.settingsStore.time_delimiter ?? FormatDelimiter.COMMA,
             active_time_size: settingsState.settingsStore.time_size ?? DateTimeSize.MEDIUM,
             active_date_size: settingsState.settingsStore.date_size ?? DateTimeSize.SMALL,
-            disable_remove_delimiter: false,
-            disable_add_delimiter: false,
+            disable_remove_date_delimiter: false,
+            disable_add_date_delimiter: false,
             date_format_dragging: false,
             time_format_dragging: false,
             active_date_delimiters: 2,
             active_time_delimiters: 2
         };
 
-        const time_format_inactive: Array<FormatItem | DelimiterItem> = [];
+        const delimiter_description = 'Display format items separator/ delimiter';
 
-        const time_format_active: Array<FormatItem | DelimiterItem> = [{ index: 0, delimiter: true }, { index: 1, delimiter: true }];
+        const time_format_inactive: Array<FormatToken> = [ ];
+
+        const time_format_active: Array<FormatToken> = [ ];
+
+        const date_format_inactive: Array<FormatToken> = [ ];
+
+        const date_format_active: Array<FormatToken> = [ ];
 
         const data: ComponentData = {
             maximum_inactive_delimiters: 3,
             maximum_overall_delimiters: 10,
             minimum_overall_delimiters: 0,
+            date_format_inactive,
             time_format_inactive,
+            date_format_active,
             time_format_active
         };
 
         return { state, data };
     },
 
-    mounted() { this.$nextTick(() => this.update_delimiter_display()); },
+    mounted( ) { this.$nextTick(( ) => this.update_delimiter_display( )); },
 
     methods: {
-        update_realtime_options() {
+        update_realtime_options( ) {
             if (this.state.active_date_display_location != this.settingsStore.date_display_position) {
                store.commit('settingsStore/SET_DATE_DISPLAY_POSITION', this.state.active_date_display_location);
             }
@@ -238,22 +262,22 @@ export default defineComponent({
             }
         },
 
-        remove_newest_delimiter() {
-            if (this.state.active_time_delimiters <= this.data.minimum_overall_delimiters) return;
+        remove_newest_date_delimiter( ) {
+            if (this.state.active_date_delimiters <= this.data.minimum_overall_delimiters) return;
 
-            this.state.active_time_delimiters--;
+            this.state.active_date_delimiters--;
 
-            if (this.state.active_time_delimiters == this.data.minimum_overall_delimiters) {
-                this.state.disable_remove_delimiter = true;
+            if (this.state.active_date_delimiters == this.data.minimum_overall_delimiters) {
+                this.state.disable_remove_date_delimiter = true;
             }
 
             let removed_latest_delimiter = false;
 
-            for (let i = this.data.time_format_inactive.length; i >= 0; i--) {
-                const item = this.data.time_format_inactive[i] as DelimiterItem;
+            for (let i = this.data.date_format_inactive.length; i >= 0; i--) {
+                const item = this.data.date_format_inactive[i];
 
                 if (item?.delimiter) {
-                    this.data.time_format_inactive.splice(i);
+                    this.data.date_format_inactive.splice(i, 1);
                     removed_latest_delimiter = true;
 
                     break;
@@ -261,35 +285,34 @@ export default defineComponent({
             }
 
             // We remove the first instead of last delimiter from the active pool
-            if (!removed_latest_delimiter) for (const target of this.data.time_format_active) {
-                const item = target as DelimiterItem;
+            if (!removed_latest_delimiter) for (const target of this.data.date_format_active) {
 
-                if (item?.delimiter) {
-                    this.data.time_format_active.splice(this.data.time_format_active.indexOf(item));
+                if (target?.delimiter) {
+                    this.data.date_format_active.splice(this.data.date_format_active.indexOf(target), 1);
                     break;
                 }
             }
 
-            if (this.state.disable_add_delimiter) {
-                this.state.disable_add_delimiter = false;
+            if (this.state.disable_add_date_delimiter) {
+                this.state.disable_add_date_delimiter = false;
             }
         },
 
-        add_new_delimiter() {
-            if (this.state.active_time_delimiters >= this.data.maximum_inactive_delimiters) return;
+        add_new_date_delimiter( ) {
+            if (this.state.active_date_delimiters >= this.data.maximum_inactive_delimiters) return;
 
-            this.state.active_time_delimiters++;
+            this.state.active_date_delimiters++;
 
-            if (this.state.active_time_delimiters == this.data.maximum_inactive_delimiters) {
-                this.state.disable_add_delimiter = true;
+            if (this.state.active_date_delimiters == this.data.maximum_inactive_delimiters) {
+                this.state.disable_add_date_delimiter = true;
             }
 
             const index = this.state.active_date_delimiters;
 
-            this.data.time_format_inactive.push({ index, delimiter: true });
+            this.data.date_format_inactive.push({ index, delimiter: true, description: 'Display format items separator/ delimiter' });
 
-            if (this.state.disable_remove_delimiter) {
-                this.state.disable_remove_delimiter = false;
+            if (this.state.disable_remove_date_delimiter) {
+                this.state.disable_remove_date_delimiter = false;
             }
         },
 
@@ -297,6 +320,7 @@ export default defineComponent({
 
             if (!target || target == 'DATE') {
                 switch (this.state.active_date_delimiter) {
+                    case FormatDelimiter.COLON : this.state.date_delimiter_display = ':'; break;
                     case FormatDelimiter.SLASH : this.state.date_delimiter_display = '/'; break;
                     case FormatDelimiter.COMMA : this.state.date_delimiter_display = ','; break;
                     case FormatDelimiter.SPACE : this.state.date_delimiter_display = '␣'; break;
@@ -307,6 +331,7 @@ export default defineComponent({
 
             if (!target || target == 'TIME') {
                 switch (this.state.active_time_delimiter) {
+                    case FormatDelimiter.COLON : this.state.time_delimiter_display = ':'; break;
                     case FormatDelimiter.SLASH : this.state.time_delimiter_display = '/'; break;
                     case FormatDelimiter.COMMA : this.state.time_delimiter_display = ','; break;
                     case FormatDelimiter.SPACE : this.state.time_delimiter_display = '␣'; break;
@@ -314,19 +339,17 @@ export default defineComponent({
                     case FormatDelimiter.DOT   : this.state.time_delimiter_display = '.'; break;
                 }
             }
-        },
-
-        discriminate_format_item_type: (item: DelimiterItem | FormatItem): item is DelimiterItem => (item as DelimiterItem)?.delimiter != undefined
+        }
     },
 
     watch: {
         'state.active_date_delimiter': {
-            handler() { this.update_delimiter_display('DATE'); },
+            handler( ) { this.update_delimiter_display('DATE'); },
             deep: true
         },
 
         'state.active_time_delimiter': {
-            handler() { this.update_delimiter_display('TIME'); },
+            handler( ) { this.update_delimiter_display('TIME'); },
             deep: true
         }
     },
