@@ -243,6 +243,8 @@
                                 animation: 120
                             }"
 
+                            v-on:change="update_date_format_limitations"
+
                             v-on:start="state.date_format_dragging = true"
 
                             v-on:end="state.date_format_dragging = false"
@@ -386,7 +388,114 @@
                 <span class="right-title"> Time Display Format </span>
 
                 <!-- Time format options //-->
-                <div class="right-format"></div>
+                <div class="right-format">
+
+                    <!-- Upper un-used format items, delimiter add & remove //-->
+                    <div class="format-upper">
+
+                        <!-- VueDraggable based dragging container //-->
+                        <draggable
+
+                            v-bind:component-data="{
+                                type: 'transition-group',
+                                tag: 'ul'
+                            }"
+
+                            v-bind="{
+                                ghostClass: 'dragging',
+                                group: 'time-format',
+                                animation: 120
+                            }"
+
+                            v-on:change="update_time_format_limitations"
+
+                            v-on:start="state.time_format_dragging = true"
+
+                            v-on:end="state.time_format_dragging = false"
+
+                            v-model="data.time_format_inactive"
+
+                            tag="transition-group"
+
+                            class="upper-group"
+
+                            item-key="index"
+                        >
+
+                            <!-- Item element slot //-->
+                            <template v-slot:item="{ element }">
+
+                                <li class="group-item delimiter" v-if="element.delimiter">
+
+                                    <!-- Delimiter format item //-->
+                                    {{ state.time_delimiter_display }}
+                                </li>
+                                <li class="group-item option" v-else>
+
+                                    <!-- Format option item //-->
+                                    {{ element }}
+                                </li>
+                            </template>
+                        </draggable>
+
+                        <!-- Add & remove buttons //-->
+                        <div class="upper-buttons">
+
+                            <!-- Remove delimiter button //-->
+                            <button class="buttons-remove" v-on:click="remove_newest_time_delimiter" v-bind:disabled="state.disable_remove_time_delimiter"> - </button>
+
+                            <!-- Add delimiter button //-->
+                            <button class="buttons-add" v-on:click="add_new_time_delimiter" v-bind:disabled="state.disable_add_time_delimiter"> + </button>
+                        </div>
+                    </div>
+
+                    <!-- Lower active format items & delimiter separators //-->
+                    <div class="format-lower">
+
+                        <!-- VueDraggable based dragging container //-->
+                        <draggable
+
+                            v-bind:component-data="{
+                                type: 'transition-group',
+                                tag: 'ul'
+                            }"
+
+                            v-bind="{
+                                ghostClass: 'dragging',
+                                group: 'time-format',
+                                animation: 120
+                            }"
+
+                            v-on:start="state.time_format_dragging = true"
+
+                            v-on:end="state.time_format_dragging = false"
+
+                            v-model="data.time_format_active"
+
+                            tag="transition-group"
+
+                            class="lower-group"
+
+                            item-key="index"
+                        >
+
+                            <!-- Item element slot //-->
+                            <template v-slot:item="{ element }">
+
+                                <li class="group-item delimiter" v-if="element?.delimiter">
+
+                                    <!-- Delimiter format item //-->
+                                    {{ state.time_delimiter_display }}
+                                </li>
+                                <li class="group-item option" v-else>
+
+                                    <!-- Format option item //-->
+                                    {{ element }}
+                                </li>
+                            </template>
+                        </draggable>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

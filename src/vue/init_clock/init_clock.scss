@@ -104,6 +104,92 @@ section.component-init-clock {
           flex: 1;
         }
       }
+
+      div.right-format {
+        flex-direction: column;
+        padding-left: 2px;
+        display: flex;
+
+        div.format-upper {
+          background: lightgray;
+          flex-direction: row;
+          border-radius: 4px;
+          margin-bottom: 8px;
+          display: flex;
+
+          ul.upper-group {
+            flex-direction: row;
+            margin: unset;
+            display: flex;
+            height: 26px;
+            padding: 4px;
+            flex: 1;
+
+            li.group-item {
+              border: 1px solid dimgray;
+              background: whitesmoke;
+              border-radius: 2px;
+              text-align: center;
+              line-height: 24px;
+              margin-right: 4px;
+              padding: 0 12px;
+              display: block;
+              color: black;
+              height: 24px;
+              cursor: grab;
+
+              &:last-of-type { margin-right: unset }
+
+              &.dragging { opacity: 75% }
+            }
+          }
+
+          div.upper-buttons {
+            padding: 4px;
+
+            button.buttons-add, button.buttons-remove {
+              text-align: center;
+              line-height: 26px;
+              height: 26px;
+              width: 26px;
+
+              &.buttons-remove { margin-right: 4px }
+            }
+          }
+        }
+
+        div.format-lower {
+          background: lightgray;
+          border-radius: 4px;
+          margin-bottom: 8px;
+
+          ul.lower-group {
+            flex-direction: row;
+            margin: unset;
+            display: flex;
+            height: 26px;
+            padding: 4px;
+
+            li.group-item {
+              border: 1px solid dimgray;
+              background: whitesmoke;
+              border-radius: 2px;
+              text-align: center;
+              line-height: 24px;
+              margin-right: 4px;
+              padding: 0 12px;
+              display: block;
+              color: black;
+              height: 24px;
+              cursor: grab;
+
+              &:last-of-type { margin-right: unset }
+
+              &.dragging { opacity: 75% }
+            }
+          }
+        }
+      }
     }
 
     div.lower-left {
@@ -126,21 +212,88 @@ section.component-init-clock {
         }
       }
 
-      div.left-format, div.right-format {
+      div.left-format {
         flex-direction: column;
+        padding-right: 2px;
         display: flex;
 
         div.format-upper {
+          background: lightgray;
           flex-direction: row;
+          border-radius: 4px;
           margin-bottom: 8px;
           display: flex;
 
-          div.upper-buttons {
-            padding-right: 2px;
-            padding-left: 4px;
-            margin-left: auto;
+          ul.upper-group {
+            flex-direction: row;
+            margin: unset;
+            display: flex;
+            height: 26px;
+            padding: 4px;
+            flex: 1;
 
-            button.buttons-remove { margin-right: 4px }
+            li.group-item {
+              border: 1px solid dimgray;
+              background: whitesmoke;
+              border-radius: 2px;
+              text-align: center;
+              line-height: 24px;
+              margin-right: 4px;
+              padding: 0 12px;
+              display: block;
+              color: black;
+              height: 24px;
+              cursor: grab;
+
+              &:last-of-type { margin-right: unset }
+
+              &.dragging { opacity: 75% }
+            }
+          }
+
+          div.upper-buttons {
+            padding: 4px;
+
+            button.buttons-add, button.buttons-remove {
+              text-align: center;
+              line-height: 26px;
+              height: 26px;
+              width: 26px;
+
+              &.buttons-remove { margin-right: 4px }
+            }
+          }
+        }
+
+        div.format-lower {
+          background: lightgray;
+          border-radius: 4px;
+          margin-bottom: 8px;
+
+          ul.lower-group {
+            flex-direction: row;
+            margin: unset;
+            display: flex;
+            height: 26px;
+            padding: 4px;
+
+            li.group-item {
+              border: 1px solid dimgray;
+              background: whitesmoke;
+              border-radius: 2px;
+              text-align: center;
+              line-height: 24px;
+              margin-right: 4px;
+              padding: 0 12px;
+              display: block;
+              color: black;
+              height: 24px;
+              cursor: grab;
+
+              &:last-of-type { margin-right: unset }
+
+              &.dragging { opacity: 75% }
+            }
           }
         }
       }

@@ -75,16 +75,40 @@ interface ComponentState {
     active_time_delimiters: number;
 
     /**
-     * Disables removing newest delimiters from the list.
+     * Disables removing newest delimiter from the date list.
      * @type {boolean}
      */
     disable_remove_date_delimiter: boolean;
 
     /**
-     * Disables adding new delimiters to the list.
+     * Disables adding new delimiter to the date list.
      * @type {boolean}
      */
     disable_add_date_delimiter: boolean;
+
+    /**
+     * Currently "active" number of inactive date delimiters.
+     * @type {number}
+     */
+    inactive_date_delimiters: number;
+
+    /**
+     * Currently "active" number of inactive time delimiters.
+     * @type {number}
+     */
+    inactive_time_delimiters: number;
+
+    /**
+     * Disables removing newest delimiter from the time list.
+     * @type {boolean}
+     */
+     disable_remove_time_delimiter: boolean;
+
+     /**
+      * Disables adding new delimiter to the time list.
+      * @type {boolean}
+      */
+     disable_add_time_delimiter: boolean;
 
     /**
      * Time delimiter display.
@@ -203,7 +227,11 @@ export default defineComponent({
             active_time_size: settingsState.settingsStore.time_size ?? DateTimeSize.MEDIUM,
             active_date_size: settingsState.settingsStore.date_size ?? DateTimeSize.SMALL,
             disable_remove_date_delimiter: false,
+            disable_remove_time_delimiter: false,
             disable_add_date_delimiter: false,
+            disable_add_time_delimiter: false,
+            inactive_date_delimiters: 0,
+            inactive_time_delimiters: 0,
             date_format_dragging: false,
             time_format_dragging: false,
             active_date_delimiters: 2,
@@ -214,11 +242,17 @@ export default defineComponent({
 
         const time_format_inactive: Array<FormatToken> = [ ];
 
-        const time_format_active: Array<FormatToken> = [ ];
+        const time_format_active: Array<FormatToken> = [
+            { delimiter: true, index: 0, description: delimiter_description },
+            { delimiter: true, index: 1, description: delimiter_description }
+        ];
 
         const date_format_inactive: Array<FormatToken> = [ ];
 
-        const date_format_active: Array<FormatToken> = [ ];
+        const date_format_active: Array<FormatToken> = [
+            { delimiter: true, index: 0, description: delimiter_description },
+            { delimiter: true, index: 1, description: delimiter_description }
+        ];
 
         const data: ComponentData = {
             maximum_inactive_delimiters: 3,
@@ -262,57 +296,135 @@ export default defineComponent({
             }
         },
 
-        remove_newest_date_delimiter( ) {
-            if (this.state.active_date_delimiters <= this.data.minimum_overall_delimiters) return;
-
-            this.state.active_date_delimiters--;
-
-            if (this.state.active_date_delimiters == this.data.minimum_overall_delimiters) {
-                this.state.disable_remove_date_delimiter = true;
-            }
-
-            let removed_latest_delimiter = false;
-
-            for (let i = this.data.date_format_inactive.length; i >= 0; i--) {
-                const item = this.data.date_format_inactive[i];
-
-                if (item?.delimiter) {
-                    this.data.date_format_inactive.splice(i, 1);
-                    removed_latest_delimiter = true;
-
-                    break;
-                }
-            }
-
-            // We remove the first instead of last delimiter from the active pool
-            if (!removed_latest_delimiter) for (const target of this.data.date_format_active) {
-
-                if (target?.delimiter) {
-                    this.data.date_format_active.splice(this.data.date_format_active.indexOf(target), 1);
-                    break;
-                }
-            }
-
-            if (this.state.disable_add_date_delimiter) {
-                this.state.disable_add_date_delimiter = false;
-            }
-        },
-
         add_new_date_delimiter( ) {
-            if (this.state.active_date_delimiters >= this.data.maximum_inactive_delimiters) return;
+            const delimiters_index = this.state.active_date_delimiters + this.state.inactive_date_delimiters;
 
-            this.state.active_date_delimiters++;
+            this.data.date_format_inactive.push({ index: delimiters_index, delimiter: true, description: 'Display format items separator/ delimiter' });
 
-            if (this.state.active_date_delimiters == this.data.maximum_inactive_delimiters) {
+            this.state.inactive_date_delimiters++;
+
+            if (delimiters_index >= this.data.maximum_overall_delimiters || this.state.inactive_date_delimiters >= this.data.maximum_inactive_delimiters) {
                 this.state.disable_add_date_delimiter = true;
             }
 
-            const index = this.state.active_date_delimiters;
+            this.state.disable_remove_date_delimiter = false;
+        },
 
-            this.data.date_format_inactive.push({ index, delimiter: true, description: 'Display format items separator/ delimiter' });
+        remove_newest_date_delimiter( ) {
+            let found_newest_delimiter = false;
 
-            if (this.state.disable_remove_date_delimiter) {
-                this.state.disable_remove_date_delimiter = false;
+            for (let i = this.data.date_format_inactive.length; i >= 0; i--) {
+                const element = this.data.date_format_inactive[i];
+
+                if (element?.delimiter) {
+                    found_newest_delimiter = true;
+
+                    this.data.date_format_inactive.splice(i, 1);
+                    this.state.inactive_date_delimiters--;
+
+                    break;
+                }
+            }
+
+            if (!found_newest_delimiter) for (const element of this.data.date_format_active) {
+                if (element?.delimiter) {
+
+                    this.data.date_format_active.splice(this.data.date_format_active.indexOf(element), 1);
+                    this.state.active_date_delimiters--;
+
+                    break;
+                }
+            }
+
+            if (this.state.active_date_delimiters + this.state.inactive_date_delimiters <= this.data.minimum_overall_delimiters) {
+                this.state.disable_remove_date_delimiter = true;
+            }
+
+            this.state.disable_add_date_delimiter = false;
+        },
+
+        update_date_format_limitations(event: any) {
+            if (event?.removed) {
+                this.state.inactive_date_delimiters--;
+                this.state.active_date_delimiters++;
+
+                if (!(this.state.active_date_delimiters + this.state.inactive_date_delimiters >= this.data.maximum_overall_delimiters)) {
+                    this.state.disable_add_date_delimiter = false;
+                }
+            }
+            if (event?.added) {
+                this.state.inactive_date_delimiters++;
+                this.state.active_date_delimiters--;
+
+                if (this.state.inactive_date_delimiters >= this.data.maximum_inactive_delimiters) {
+                    this.state.disable_add_date_delimiter = true;
+                }
+            }
+        },
+
+        add_new_time_delimiter( ) {
+            const delimiters_index = this.state.active_time_delimiters + this.state.inactive_time_delimiters;
+
+            this.data.time_format_inactive.push({ index: delimiters_index, delimiter: true, description: 'Display format items separator/ delimiter' });
+
+            this.state.inactive_time_delimiters++;
+
+            if (delimiters_index >= this.data.maximum_overall_delimiters || this.state.inactive_time_delimiters >= this.data.maximum_inactive_delimiters) {
+                this.state.disable_add_time_delimiter = true;
+            }
+
+            this.state.disable_remove_time_delimiter = false;
+        },
+
+        remove_newest_time_delimiter( ) {
+            let found_newest_delimiter = false;
+
+            for (let i = this.data.time_format_inactive.length; i >= 0; i--) {
+                const element = this.data.time_format_inactive[i];
+
+                if (element?.delimiter) {
+                    found_newest_delimiter = true;
+
+                    this.data.time_format_inactive.splice(i, 1);
+                    this.state.inactive_time_delimiters--;
+
+                    break;
+                }
+            }
+
+            if (!found_newest_delimiter) for (const element of this.data.time_format_active) {
+                if (element?.delimiter) {
+
+                    this.data.time_format_active.splice(this.data.time_format_active.indexOf(element), 1);
+                    this.state.active_time_delimiters--;
+
+                    break;
+                }
+            }
+
+            if (this.state.active_time_delimiters + this.state.inactive_time_delimiters <= this.data.minimum_overall_delimiters) {
+                this.state.disable_remove_time_delimiter = true;
+            }
+
+            this.state.disable_add_time_delimiter = false;
+        },
+
+        update_time_format_limitations(event: any) {
+            if (event?.removed) {
+                this.state.inactive_time_delimiters--;
+                this.state.active_time_delimiters++;
+
+                if (!(this.state.active_time_delimiters + this.state.inactive_time_delimiters >= this.data.maximum_overall_delimiters)) {
+                    this.state.disable_add_time_delimiter = false;
+                }
+            }
+            if (event?.added) {
+                this.state.inactive_time_delimiters++;
+                this.state.active_time_delimiters--;
+
+                if (this.state.inactive_time_delimiters >= this.data.maximum_inactive_delimiters) {
+                    this.state.disable_add_time_delimiter = true;
+                }
             }
         },
 
