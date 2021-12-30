@@ -39,7 +39,7 @@
                 <!-- Clock format delimiter title //-->
                 <span class="right-title"> Date Format Delimiter </span>
 
-                <!-- Clock format delimiter, or separator //-->
+                <!-- Date format delimiter, or separator //-->
                 <div class="right-delimiter">
 
                     <!-- Space delimiter //-->
@@ -97,6 +97,73 @@
 
                         <!-- Radio input element //-->
                         <input type="radio" name="delimiter-colon" id="delimiter-colon" value="DELIMITER_COLON" v-on:change="update_realtime_options" v-model="state.active_date_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-colon"> Colon </label>
+                    </div>
+                </div>
+                
+                <!-- Clock format delimiter title //-->
+                <span class="right-title"> Time Format Delimiter </span>
+
+                <!-- Clock format delimiter, or separator //-->
+                <div class="right-delimiter">
+
+                    <!-- Space delimiter //-->
+                    <div class="delimiter-space">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-space"> Blank </label>
+                    </div>
+
+                    <!-- Comma delimiter //-->
+                    <div class="delimiter-comma">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-comma"> Comma </label>
+                    </div>
+
+                    <!-- Slash delimiter //-->
+                    <div class="delimiter-slash">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-slash"> Slash </label>
+                    </div>
+
+                    <!-- Dash delimiter //-->
+                    <div class="delimiter-dash">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-dash"> Dash </label>
+                    </div>
+
+                    <!-- Dot delimiter //-->
+                    <div class="delimiter-dot">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
+
+                        <!-- Radio label element //-->
+                        <label for="delimiter-dot"> Period </label>
+                    </div>
+
+                    <!-- Colon delimiter //-->
+                    <div class="delimiter-colon">
+
+                        <!-- Radio input element //-->
+                        <input type="radio" name="delimiter-colon" id="delimiter-colon" value="DELIMITER_COLON" v-on:change="update_realtime_options" v-model="state.active_time_delimiter">
 
                         <!-- Radio label element //-->
                         <label for="delimiter-colon"> Colon </label>
