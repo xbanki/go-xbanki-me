@@ -1,3 +1,4 @@
+import { DateTime }        from 'luxon';
 import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
@@ -121,6 +122,12 @@ interface ComponentState {
      * @type {string}
      */
     date_delimiter_display?: string;
+
+    /**
+     * Delimiter(s) display format states.
+     * @type {{ [key: string]: any }}
+     */
+    display_format_state: { [key: string]: any; };
 }
 
 /**
@@ -169,6 +176,18 @@ interface ComponentData {
      * @type {number}
      */
     maximum_inactive_delimiters: number;
+
+    /**
+     * Timer display updater which clocks every milisecond.
+     * @type {Timer}
+     */
+    timer_updater_milisecond?: NodeJS.Timer;
+
+    /**
+     * Timer display updater which clocks every minute.
+     * @type {Timer}
+     */
+    timer_updater_minute?: NodeJS.Timer;
 }
 
 /**
@@ -235,23 +254,56 @@ export default defineComponent({
             date_format_dragging: false,
             time_format_dragging: false,
             active_date_delimiters: 2,
-            active_time_delimiters: 2
+            active_time_delimiters: 2,
+            display_format_state: {}
         };
 
         const delimiter_description = 'Display format items separator/ delimiter';
 
-        const time_format_inactive: Array<FormatToken> = [ ];
-
-        const time_format_active: Array<FormatToken> = [
-            { delimiter: true, index: 0, description: delimiter_description },
-            { delimiter: true, index: 1, description: delimiter_description }
+        const time_format_inactive: Array<FormatToken> = [
+            { delimiter: false, index: 0, dynamic: false, token: 'SSS', description: 'Millisecond padded to three digits' },
+            { delimiter: false, index: 1, dynamic: false, token: 's', description: 'Second with no padding' },
+            { delimiter: false, index: 2, dynamic: false, token: 'm', description: 'Minute with no padding' },
+            { delimiter: false, index: 3, dynamic: true, token: 'HOUR_UNPADDED', description: 'Hour with no padding' },
+            { delimiter: false, index: 4, dynamic: false, token: 'Z', description: 'Narrow offset' },
+            { delimiter: false, index: 5, dynamic: false, token: 'ZZ', description: 'Short offset' },
+            { delimiter: false, index: 6, dynamic: false, token: 'ZZZZ', description: 'Abbreviated offset' },
+            { delimiter: false, index: 7, dynamic: false, token: 'ZZZZZ', description: 'Full named offset' }
         ];
 
-        const date_format_inactive: Array<FormatToken> = [ ];
+        const time_format_active: Array<FormatToken> = [
+            { delimiter: false, index: 8, dynamic: true, token: 'HOUR_PADDED', description: 'Hour padded to two digits' },
+            { delimiter: true, index: 9, description: delimiter_description },
+            { delimiter: false, index: 10, dynamic: false, token: 'mm', description: 'Minute padded to two digits' },
+            { delimiter: true, index: 11, description: delimiter_description },
+            { delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' }
+        ];
+
+        const date_format_inactive: Array<FormatToken> = [
+            { delimiter: false, index: 0, dynamic: false, token: 'dd', description: 'Day of the month padded to two digits' },
+            { delimiter: false, index: 1, dynamic: false, token: 'E', description: 'Day of the week in number form' },
+            { delimiter: false, index: 2, dynamic: false, token: 'EEE', description: 'Day of the week abbreviated' },
+            { delimiter: false, index: 3, dynamic: false, token: 'M', description: 'Month in number form with no padding' },
+            { delimiter: false, index: 4, dynamic: false, token: 'MM', description: 'Month in number form padded to two digits' },
+            { delimiter: false, index: 5, dynamic: false, token: 'MMM', description: 'Month abbreviated' },
+            { delimiter: false, index: 6, dynamic: false, token: 'yy', description: 'Year padded to two digits' },
+            { delimiter: false, index: 7, dynamic: false, token: 'yyyy', description: 'Year padded to four digits' },
+            { delimiter: false, index: 8, dynamic: false, token: 'G', description: 'Abbreviated era' },
+            { delimiter: false, index: 9, dynamic: false, token: 'GG', description: 'Full era' },
+            { delimiter: false, index: 10, dynamic: false, token: 'W', description: 'Week number with no padding' },
+            { delimiter: false, index: 11, dynamic: false, token: 'WW', description: 'Week number padded to two digits' },
+            { delimiter: false, index: 12, dynamic: false, token: 'o', description: 'Day of year with no padding' },
+            { delimiter: false, index: 13, dynamic: false, token: 'ooo', description: 'Day of year padded to three digits' },
+            { delimiter: false, index: 14, dynamic: false, token: 'q', description: 'Quarter of date' }
+        ];
 
         const date_format_active: Array<FormatToken> = [
-            { delimiter: true, index: 0, description: delimiter_description },
-            { delimiter: true, index: 1, description: delimiter_description }
+            { delimiter: false, index: 0, dynamic: false, token: 'EEEE', description: 'Day of the week in full form' },
+            { delimiter: true, index: 1, description: delimiter_description },
+            { delimiter: false, index: 2, dynamic: false, token: 'MMMM', description: 'Month in full form' },
+            { delimiter: false, index: 3, dynamic: false, token: 'd', description: 'Day of the month with no padding' },
+            { delimiter: true, index: 4, description: delimiter_description },
+            { delimiter: false, index: 5, dynamic: false, token: 'y', description: 'Year with no padding' }
         ];
 
         const data: ComponentData = {
@@ -267,34 +319,17 @@ export default defineComponent({
         return { state, data };
     },
 
-    mounted( ) { this.$nextTick(( ) => this.update_delimiter_display( )); },
+    mounted( ) {
+        this.$nextTick(
+            ( ) => {
+                this.update_delimiter_display( );
+                this.set_up_updater( );
+            }
+        );
+    },
 
     methods: {
-        update_realtime_options( ) {
-            if (this.state.active_date_display_location != this.settingsStore.date_display_position) {
-               store.commit('settingsStore/SET_DATE_DISPLAY_POSITION', this.state.active_date_display_location);
-            }
-
-            if (this.state.active_clock_convention != this.settingsStore.time_convention) {
-                store.commit('settingsStore/SET_CLOCK_CONVENTION', this.state.active_clock_convention);
-            }
-
-            if (this.state.active_date_delimiter != this.settingsStore.date_delimiter) {
-                store.commit('settingsStore/UPDATE_DATE_FORMAT_DELIMITER', this.state.active_date_delimiter);
-            }
-
-            if (this.state.active_time_delimiter != this.settingsStore.time_delimiter) {
-                store.commit('settingsStore/UPDATE_TIME_FORMAT_DELIMITER', this.state.active_time_delimiter);
-            }
-
-            if (this.state.active_date_size != this.settingsStore.date_size) {
-                store.commit('settingsStore/UPDATE_DATE_SIZE', this.state.active_date_size);
-            }
-
-            if (this.state.active_time_size != this.settingsStore.time_size) {
-                store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
-            }
-        },
+        set_up_updater( ) { },
 
         add_new_date_delimiter( ) {
             const delimiters_index = this.state.active_date_delimiters + this.state.inactive_date_delimiters;
@@ -425,6 +460,32 @@ export default defineComponent({
                 if (this.state.inactive_time_delimiters >= this.data.maximum_inactive_delimiters) {
                     this.state.disable_add_time_delimiter = true;
                 }
+            }
+        },
+
+        update_realtime_options( ) {
+            if (this.state.active_date_display_location != this.settingsStore.date_display_position) {
+               store.commit('settingsStore/SET_DATE_DISPLAY_POSITION', this.state.active_date_display_location);
+            }
+
+            if (this.state.active_clock_convention != this.settingsStore.time_convention) {
+                store.commit('settingsStore/SET_CLOCK_CONVENTION', this.state.active_clock_convention);
+            }
+
+            if (this.state.active_date_delimiter != this.settingsStore.date_delimiter) {
+                store.commit('settingsStore/UPDATE_DATE_FORMAT_DELIMITER', this.state.active_date_delimiter);
+            }
+
+            if (this.state.active_time_delimiter != this.settingsStore.time_delimiter) {
+                store.commit('settingsStore/UPDATE_TIME_FORMAT_DELIMITER', this.state.active_time_delimiter);
+            }
+
+            if (this.state.active_date_size != this.settingsStore.date_size) {
+                store.commit('settingsStore/UPDATE_DATE_SIZE', this.state.active_date_size);
+            }
+
+            if (this.state.active_time_size != this.settingsStore.time_size) {
+                store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
             }
         },
 
