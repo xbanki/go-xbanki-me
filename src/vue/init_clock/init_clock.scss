@@ -104,92 +104,6 @@ section.component-init-clock {
           flex: 1;
         }
       }
-
-      div.right-format {
-        flex-direction: column;
-        padding-left: 2px;
-        display: flex;
-
-        div.format-upper {
-          background: lightgray;
-          flex-direction: row;
-          border-radius: 4px;
-          margin-bottom: 8px;
-          display: flex;
-
-          ul.upper-group {
-            flex-direction: row;
-            margin: unset;
-            display: flex;
-            height: 26px;
-            padding: 4px;
-            flex: 1;
-
-            li.group-item {
-              border: 1px solid dimgray;
-              background: whitesmoke;
-              border-radius: 2px;
-              text-align: center;
-              line-height: 24px;
-              margin-right: 4px;
-              padding: 0 12px;
-              display: block;
-              color: black;
-              height: 24px;
-              cursor: grab;
-
-              &:last-of-type { margin-right: unset }
-
-              &.dragging { opacity: 75% }
-            }
-          }
-
-          div.upper-buttons {
-            padding: 4px;
-
-            button.buttons-add, button.buttons-remove {
-              text-align: center;
-              line-height: 26px;
-              height: 26px;
-              width: 26px;
-
-              &.buttons-remove { margin-right: 4px }
-            }
-          }
-        }
-
-        div.format-lower {
-          background: lightgray;
-          border-radius: 4px;
-          margin-bottom: 8px;
-
-          ul.lower-group {
-            flex-direction: row;
-            margin: unset;
-            display: flex;
-            height: 26px;
-            padding: 4px;
-
-            li.group-item {
-              border: 1px solid dimgray;
-              background: whitesmoke;
-              border-radius: 2px;
-              text-align: center;
-              line-height: 24px;
-              margin-right: 4px;
-              padding: 0 12px;
-              display: block;
-              color: black;
-              height: 24px;
-              cursor: grab;
-
-              &:last-of-type { margin-right: unset }
-
-              &.dragging { opacity: 75% }
-            }
-          }
-        }
-      }
     }
 
     div.lower-left {
@@ -211,90 +125,96 @@ section.component-init-clock {
           flex: 1;
         }
       }
+    }
+  }
 
-      div.left-format {
-        flex-direction: column;
-        padding-right: 2px;
+  span.component-init-title {
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 18px;
+    display: block;
+  }
+
+  div.component-init-format {
+    flex-direction: column;
+    display: flex;
+
+    div.format-upper {
+      background: lightgray;
+      flex-direction: row;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      display: flex;
+
+      ul.upper-group {
+        flex-direction: row;
+        margin: unset;
         display: flex;
+        height: 26px;
+        padding: 4px;
+        flex: 1;
 
-        div.format-upper {
-          background: lightgray;
-          flex-direction: row;
-          border-radius: 4px;
-          margin-bottom: 8px;
-          display: flex;
+        li.group-item {
+          border: 1px solid dimgray;
+          background: whitesmoke;
+          border-radius: 2px;
+          text-align: center;
+          line-height: 24px;
+          margin-right: 4px;
+          padding: 0 12px;
+          display: block;
+          color: black;
+          height: 24px;
+          cursor: grab;
 
-          ul.upper-group {
-            flex-direction: row;
-            margin: unset;
-            display: flex;
-            height: 26px;
-            padding: 4px;
-            flex: 1;
+          &:last-of-type { margin-right: unset }
 
-            li.group-item {
-              border: 1px solid dimgray;
-              background: whitesmoke;
-              border-radius: 2px;
-              text-align: center;
-              line-height: 24px;
-              margin-right: 4px;
-              padding: 0 12px;
-              display: block;
-              color: black;
-              height: 24px;
-              cursor: grab;
-
-              &:last-of-type { margin-right: unset }
-
-              &.dragging { opacity: 75% }
-            }
-          }
-
-          div.upper-buttons {
-            padding: 4px;
-
-            button.buttons-add, button.buttons-remove {
-              text-align: center;
-              line-height: 26px;
-              height: 26px;
-              width: 26px;
-
-              &.buttons-remove { margin-right: 4px }
-            }
-          }
+          &.dragging { opacity: 75% }
         }
+      }
 
-        div.format-lower {
-          background: lightgray;
-          border-radius: 4px;
-          margin-bottom: 8px;
+      div.upper-buttons {
+        padding: 4px;
 
-          ul.lower-group {
-            flex-direction: row;
-            margin: unset;
-            display: flex;
-            height: 26px;
-            padding: 4px;
+        button.buttons-add, button.buttons-remove {
+          text-align: center;
+          line-height: 26px;
+          height: 26px;
+          width: 26px;
 
-            li.group-item {
-              border: 1px solid dimgray;
-              background: whitesmoke;
-              border-radius: 2px;
-              text-align: center;
-              line-height: 24px;
-              margin-right: 4px;
-              padding: 0 12px;
-              display: block;
-              color: black;
-              height: 24px;
-              cursor: grab;
+          &.buttons-remove { margin-right: 4px }
+        }
+      }
+    }
 
-              &:last-of-type { margin-right: unset }
+    div.format-lower {
+      background: lightgray;
+      border-radius: 4px;
+      margin-bottom: 8px;
 
-              &.dragging { opacity: 75% }
-            }
-          }
+      ul.lower-group {
+        flex-direction: row;
+        margin: unset;
+        display: flex;
+        height: 26px;
+        padding: 4px;
+
+        li.group-item {
+          border: 1px solid dimgray;
+          background: whitesmoke;
+          border-radius: 2px;
+          text-align: center;
+          line-height: 24px;
+          margin-right: 4px;
+          padding: 0 12px;
+          display: block;
+          color: black;
+          height: 24px;
+          cursor: grab;
+
+          &:last-of-type { margin-right: unset }
+
+          &.dragging { opacity: 75% }
         }
       }
     }
