@@ -188,6 +188,12 @@ interface ComponentData {
      * @type {Timer}
      */
     timer_updater_minute?: NodeJS.Timer;
+
+    /**
+     * Token items that should be updated every milisecond.
+     * @type {Array<string>}
+     */
+    millisecond_updated_dictionary: Array<string>;
 }
 
 /**
@@ -306,7 +312,10 @@ export default defineComponent({
             { delimiter: false, index: 5, dynamic: false, token: 'y', description: 'Year with no padding' }
         ];
 
+        const millisecond_updated_dictionary = ['SSS', 'ss', 's'];
+
         const data: ComponentData = {
+            millisecond_updated_dictionary,
             maximum_inactive_delimiters: 3,
             maximum_overall_delimiters: 10,
             minimum_overall_delimiters: 0,
@@ -329,7 +338,69 @@ export default defineComponent({
     },
 
     methods: {
-        set_up_updater( ) { },
+        set_up_updater( ) {
+            const update_millisecond: FormatToken[] = [];
+            const update_minute:      FormatToken[] = [];
+
+            const format_tokens = [...this.data.date_format_inactive, ...this.data.time_format_inactive, ...this.data.date_format_active, ...this.data.time_format_active];
+
+            const minute_updater = () => {
+                for (const item of update_minute) {
+                    if (!item.token) continue;
+
+                    if (item.dynamic) {
+                        if (item.token == 'HOUR_UNPADDED') {
+                            if (this.state.active_clock_convention == ClockConvention.AMERICAN) this.state.display_format_state[item.token] = DateTime.now().toFormat('h');
+                            if (this.state.active_clock_convention == ClockConvention.EUROPEAN) this.state.display_format_state[item.token] = DateTime.now().toFormat('H');
+                        }
+
+                        if (item.token == 'HOUR_PADDED') {
+                            if (this.state.active_clock_convention == ClockConvention.AMERICAN) this.state.display_format_state[item.token] = DateTime.now().toFormat('hh');
+                            if (this.state.active_clock_convention == ClockConvention.EUROPEAN) this.state.display_format_state[item.token] = DateTime.now().toFormat('HH');
+                        }
+
+                        continue;
+                    }
+
+                    this.state.display_format_state[item.token] = DateTime.now().toFormat(item.token);
+                }
+            };
+
+            let time_aligner: NodeJS.Timer | undefined;
+
+            for (const item of format_tokens) {
+                if (!item.token || item.delimiter) continue;
+
+                if (this.data.millisecond_updated_dictionary.find(el => el == item.token)) {
+                    update_millisecond.push(item);
+
+                    continue;
+                }
+
+                update_minute.push(item);
+            }
+
+            minute_updater();
+
+            time_aligner = setTimeout(
+                () => {
+                    this.data.timer_updater_minute = setInterval(minute_updater, 60000);
+
+                    time_aligner = undefined;
+                }, DateTime.fromObject({ minute: DateTime.now().minute + 1 }).toMillis() - DateTime.now().toMillis()
+            );
+
+            // We don't do any dynamic token checks because there can't be any in the millisecond array
+            this.data.timer_updater_milisecond = setInterval(
+                () => {
+                    for (const item of update_millisecond) {
+                        if (!item.token) continue;
+
+                        this.state.display_format_state[item.token] = DateTime.now().toFormat(item.token);
+                    }
+                }, 1
+            );
+        },
 
         add_new_date_delimiter( ) {
             const delimiters_index = this.state.active_date_delimiters + this.state.inactive_date_delimiters;
