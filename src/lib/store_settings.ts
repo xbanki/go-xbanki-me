@@ -136,6 +136,18 @@ export interface ModuleState {
     time_size: DateTimeSize;
 
     /**
+     * Date display construction format.
+     * @type {Array<string>}
+     */
+    date_format: Array<string>;
+
+    /**
+     * Time display construction format.
+     * @type {Array<string>}
+     */
+     time_format: Array<string>;
+
+    /**
      * Indicates wether the user has completed first-time initialization.
      * @type {boolean}
      */
@@ -151,13 +163,15 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_display_position: DateDisplayLocation.BOTTOM,
         time_convention: ClockConvention.EUROPEAN,
         selected_theme: AvaillableThemes.LIGHT,
-        date_delimiter: FormatDelimiter.SPACE,
-        time_delimiter: FormatDelimiter.COMMA,
+        date_delimiter: FormatDelimiter.COMMA,
+        time_delimiter: FormatDelimiter.COLON,
         date_display_format: 'cccc, MMMM d, kkkk',
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
         time_display_format: 'mm:HH:ss',
-        initialized: false
+        initialized: false,
+        date_format: ['cccc', ',', 'MMMM ', 'd', ',', 'kkkk'],
+        time_format: ['mm', ':', 'HH', ':', 'ss']
     },
 
     mutations: {
@@ -173,11 +187,19 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
 
+        UPDATE_DATE_DISPLAY_FORMAT: (state: any, payload: string) => state.date_display_format = payload,
+
+        UPDATE_TIME_DISPLAY_FORMAT: (state: any, payload: string) => state.time_display_format = payload,
+
         UPDATE_DATE_SIZE: (state: any, payload: DateTimeSize) => state.date_size = payload,
 
         UPDATE_TIME_SIZE: (state: any, payload: DateTimeSize) => state.time_size = payload,
 
-        UPDATE_USED_THEME: (state: any, payload: AvaillableThemes) => state.selected_theme = payload
+        UPDATE_USED_THEME: (state: any, payload: AvaillableThemes) => state.selected_theme = payload,
+
+        UPDATE_DATE_FORMAT: (state: any, payload: Array<string>) => state.date_format = payload,
+
+        UPDATE_TIME_FORMAT: (state: any, payload: Array<string>) => state.time_format = payload
     },
 
     actions: {
@@ -204,11 +226,27 @@ const store: { state: ModuleState, [name: string]: any } = {
         },
 
         SetDateFormat: (context: any, payload: Array<string>) => {
-            console.log(payload);
+            context.commit('UPDATE_DATE_FORMAT', payload);
+
+            let format = '';
+
+            for (const token of payload) {
+                format+= token;
+            }
+
+            if (format.length >= 1) context.commit('UPDATE_DATE_DISPLAY_FORMAT', format);
         },
 
         SetTimeFormat: (context: any, payload: Array<string>) => {
-            console.log(payload);
+            context.commit('UPDATE_TIME_FORMAT', payload);
+
+            let format = '';
+
+            for (const token of payload) {
+                format+= token;
+            }
+
+            if (format.length >= 1) context.commit('UPDATE_TIME_DISPLAY_FORMAT', format);
         }
     }
 };
