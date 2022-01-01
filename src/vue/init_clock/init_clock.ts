@@ -332,6 +332,7 @@ export default defineComponent({
         this.$nextTick(
             ( ) => {
                 this.update_delimiter_display( );
+                this.update_realtime_options( );
                 this.set_up_updater( );
             }
         );
@@ -572,6 +573,12 @@ export default defineComponent({
                         continue;
                     }
 
+                    if (this.state.active_date_delimiter == FormatDelimiter.COMMA) {
+                        date_items.push(', ');
+
+                        continue;
+                    }
+
                     date_items.push(this.get_delimiter(this.state.active_date_delimiter));
 
                     continue;
@@ -613,6 +620,12 @@ export default defineComponent({
                 if (!item.token && item.delimiter) {
                     if (this.state.active_time_delimiter == FormatDelimiter.SPACE) {
                         time_items.push(' ');
+
+                        continue;
+                    }
+
+                    if (this.state.active_time_delimiter == FormatDelimiter.COMMA) {
+                        date_items.push(', ');
 
                         continue;
                     }
