@@ -201,6 +201,14 @@ const store: { state: ModuleState, [name: string]: any } = {
             if (context.selected_theme == payload) return;
 
             context.commit('UPDATE_USED_THEME', payload);
+        },
+
+        SetDateFormat: (context: any, payload: Array<string>) => {
+            console.log(payload);
+        },
+
+        SetTimeFormat: (context: any, payload: Array<string>) => {
+            console.log(payload);
         }
     }
 };

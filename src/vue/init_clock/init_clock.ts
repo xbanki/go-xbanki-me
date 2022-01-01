@@ -558,30 +558,118 @@ export default defineComponent({
             if (this.state.active_time_size != this.settingsStore.time_size) {
                 store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
             }
+
+            const date_items: string[] = [];
+            const time_items: string[] = [];
+
+            for (const item of this.data.date_format_active) {
+                const next_item = this.data.date_format_active.at(this.data.date_format_active.indexOf(item) + 1);
+
+                if (!item.token && item.delimiter) {
+                    if (this.state.active_date_delimiter == FormatDelimiter.SPACE) {
+                        date_items.push(' ');
+
+                        continue;
+                    }
+
+                    date_items.push(this.get_delimiter(this.state.active_date_delimiter));
+
+                    continue;
+                }
+
+                if (item.dynamic) {
+                    let token = '';
+
+
+                    if (item.token == 'HOUR_UNPADDED') {
+                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'h';
+                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'H';
+                    }
+
+                    if (item.token == 'HOUR_PADDED') {
+                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'hh';
+                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'HH';
+                    }
+
+                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
+
+                    date_items.push(token);
+
+                    continue;
+                }
+
+                if (next_item != undefined && !next_item.delimiter) {
+                    date_items.push(`${item.token} `);
+
+                    continue;
+                }
+
+                if(item?.token) date_items.push(item.token);
+            }
+
+            for (const item of this.data.time_format_active) {
+                const next_item = this.data.time_format_active.at(this.data.time_format_active.indexOf(item) + 1);
+
+                if (!item.token && item.delimiter) {
+                    if (this.state.active_time_delimiter == FormatDelimiter.SPACE) {
+                        time_items.push(' ');
+
+                        continue;
+                    }
+
+                    time_items.push(this.get_delimiter(this.state.active_time_delimiter));
+
+                    continue;
+                }
+
+                if (item.dynamic) {
+                    let token = '';
+
+
+                    if (item.token == 'HOUR_UNPADDED') {
+                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'h';
+                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'H';
+                    }
+
+                    if (item.token == 'HOUR_PADDED') {
+                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'hh';
+                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'HH';
+                    }
+
+                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
+
+                    time_items.push(token);
+
+                    continue;
+                }
+
+                if (next_item != undefined && !next_item.delimiter) {
+                    time_items.push(`${item.token} `);
+
+                    continue;
+                }
+
+                if(item?.token) time_items.push(item.token);
+            }
+
+            if (date_items.length >= 1) store.dispatch('settingsStore/SetDateFormat', date_items);
+            if (time_items.length >= 1) store.dispatch('settingsStore/SetTimeFormat', time_items);
         },
 
         update_delimiter_display(target?: 'DATE' | 'TIME') {
+            if (!target || target == 'DATE') this.state.date_delimiter_display = this.get_delimiter(this.state.active_date_delimiter);
 
-            if (!target || target == 'DATE') {
-                switch (this.state.active_date_delimiter) {
-                    case FormatDelimiter.COLON : this.state.date_delimiter_display = ':'; break;
-                    case FormatDelimiter.SLASH : this.state.date_delimiter_display = '/'; break;
-                    case FormatDelimiter.COMMA : this.state.date_delimiter_display = ','; break;
-                    case FormatDelimiter.SPACE : this.state.date_delimiter_display = '␣'; break;
-                    case FormatDelimiter.DASH  : this.state.date_delimiter_display = '-'; break;
-                    case FormatDelimiter.DOT   : this.state.date_delimiter_display = '.'; break;
-                }
-            }
+            if (!target || target == 'TIME') this.state.time_delimiter_display = this.get_delimiter(this.state.active_time_delimiter);
+        },
 
-            if (!target || target == 'TIME') {
-                switch (this.state.active_time_delimiter) {
-                    case FormatDelimiter.COLON : this.state.time_delimiter_display = ':'; break;
-                    case FormatDelimiter.SLASH : this.state.time_delimiter_display = '/'; break;
-                    case FormatDelimiter.COMMA : this.state.time_delimiter_display = ','; break;
-                    case FormatDelimiter.SPACE : this.state.time_delimiter_display = '␣'; break;
-                    case FormatDelimiter.DASH  : this.state.time_delimiter_display = '-'; break;
-                    case FormatDelimiter.DOT   : this.state.time_delimiter_display = '.'; break;
-                }
+        get_delimiter(delimiter: FormatDelimiter) {
+            switch (delimiter) {
+                case FormatDelimiter.COLON : return ':';
+                case FormatDelimiter.SLASH : return '/';
+                case FormatDelimiter.COMMA : return ',';
+                case FormatDelimiter.SPACE : return '␣';
+                case FormatDelimiter.DASH  : return '-';
+                case FormatDelimiter.DOT   : return '.';
             }
         }
     },
@@ -594,6 +682,14 @@ export default defineComponent({
 
         'state.active_time_delimiter': {
             handler( ) { this.update_delimiter_display('TIME'); },
+            deep: true
+        },
+        'data.time_format_active': {
+            handler( ) { this.update_realtime_options(); },
+            deep: true
+        },
+        'data.date_format_active': {
+            handler( ) { this.update_realtime_options(); },
             deep: true
         }
     },
