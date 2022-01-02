@@ -175,7 +175,7 @@
             <div class="upper-left">
 
                 <!-- Positioning section title //-->
-                <span class="left-title"> Date Display Position </span>
+                <span class="left-title">  </span>
 
                 <!-- Positioning parent //-->
                 <div class="left-parent">

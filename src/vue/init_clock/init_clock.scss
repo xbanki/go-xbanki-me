@@ -63,6 +63,8 @@ section.component-init-clock {
         display: flex;
 
         div.parent-left, div.parent-right, div.parent-middle {
+          opacity: 0;
+
           flex-direction: column;
           display: flex;
           height: 100%;
