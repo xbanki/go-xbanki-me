@@ -103,13 +103,13 @@ interface ComponentState {
      * Disables removing newest delimiter from the time list.
      * @type {boolean}
      */
-     disable_remove_time_delimiter: boolean;
+    disable_remove_time_delimiter: boolean;
 
      /**
       * Disables adding new delimiter to the time list.
       * @type {boolean}
       */
-     disable_add_time_delimiter: boolean;
+    disable_add_time_delimiter: boolean;
 
     /**
      * Time delimiter display.
@@ -199,7 +199,7 @@ interface ComponentData {
 /**
  * Time/ Date format item.
  */
-interface FormatToken {
+export interface FormatToken {
 
     /**
      * Order index which determines the *starting* position in the format array(s).
@@ -315,14 +315,14 @@ export default defineComponent({
         const millisecond_updated_dictionary = ['SSS', 'ss', 's'];
 
         const data: ComponentData = {
+            date_format_inactive: settingsState.settingsStore.date_format_inactive ?? date_format_inactive,
+            time_format_inactive: settingsState.settingsStore.time_format_inactive ?? time_format_inactive,
+            date_format_active: settingsState.settingsStore.date_format_active ?? date_format_active,
+            time_format_active: settingsState.settingsStore.time_format_active ?? time_format_active,
             millisecond_updated_dictionary,
             maximum_inactive_delimiters: 3,
             maximum_overall_delimiters: 10,
-            minimum_overall_delimiters: 0,
-            date_format_inactive,
-            time_format_inactive,
-            date_format_active,
-            time_format_active
+            minimum_overall_delimiters: 0
         };
 
         return { state, data };
@@ -332,7 +332,6 @@ export default defineComponent({
         this.$nextTick(
             ( ) => {
                 this.update_delimiter_display( );
-                this.update_realtime_options( );
                 this.set_up_updater( );
             }
         );
@@ -560,113 +559,13 @@ export default defineComponent({
                 store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
             }
 
-            const date_items: string[] = [];
-            const time_items: string[] = [];
-
-            for (const item of this.data.date_format_active) {
-                const next_item = this.data.date_format_active.at(this.data.date_format_active.indexOf(item) + 1);
-
-                if (!item.token && item.delimiter) {
-                    if (this.state.active_date_delimiter == FormatDelimiter.SPACE) {
-                        date_items.push(' ');
-
-                        continue;
-                    }
-
-                    if (this.state.active_date_delimiter == FormatDelimiter.COMMA) {
-                        date_items.push(', ');
-
-                        continue;
-                    }
-
-                    date_items.push(this.get_delimiter(this.state.active_date_delimiter));
-
-                    continue;
-                }
-
-                if (item.dynamic) {
-                    let token = '';
-
-
-                    if (item.token == 'HOUR_UNPADDED') {
-                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'h';
-                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'H';
-                    }
-
-                    if (item.token == 'HOUR_PADDED') {
-                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'hh';
-                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'HH';
-                    }
-
-                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                    date_items.push(token);
-
-                    continue;
-                }
-
-                if (next_item != undefined && !next_item.delimiter) {
-                    date_items.push(`${item.token} `);
-
-                    continue;
-                }
-
-                if(item?.token) date_items.push(item.token);
+            if (this.data.date_format_active != this.settingsStore.date_format_active && this.data.date_format_inactive != this.settingsStore.date_format_inactive) {
+                store.dispatch('settingsStore/SetDateFormat', [this.data.date_format_active, this.data.date_format_inactive]);
             }
 
-            for (const item of this.data.time_format_active) {
-                const next_item = this.data.time_format_active.at(this.data.time_format_active.indexOf(item) + 1);
-
-                if (!item.token && item.delimiter) {
-                    if (this.state.active_time_delimiter == FormatDelimiter.SPACE) {
-                        time_items.push(' ');
-
-                        continue;
-                    }
-
-                    if (this.state.active_time_delimiter == FormatDelimiter.COMMA) {
-                        date_items.push(', ');
-
-                        continue;
-                    }
-
-                    time_items.push(this.get_delimiter(this.state.active_time_delimiter));
-
-                    continue;
-                }
-
-                if (item.dynamic) {
-                    let token = '';
-
-
-                    if (item.token == 'HOUR_UNPADDED') {
-                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'h';
-                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'H';
-                    }
-
-                    if (item.token == 'HOUR_PADDED') {
-                        if (this.state.active_clock_convention == ClockConvention.AMERICAN) token = 'hh';
-                        if (this.state.active_clock_convention == ClockConvention.EUROPEAN) token = 'HH';
-                    }
-
-                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                    time_items.push(token);
-
-                    continue;
-                }
-
-                if (next_item != undefined && !next_item.delimiter) {
-                    time_items.push(`${item.token} `);
-
-                    continue;
-                }
-
-                if(item?.token) time_items.push(item.token);
+            if (this.data.time_format_active != this.settingsStore.time_format_active && this.data.time_format_inactive != this.settingsStore.time_format_inactive) {
+                store.dispatch('settingsStore/SetTimeFormat', [this.data.time_format_active, this.data.time_format_inactive]);
             }
-
-            if (date_items.length >= 1) store.dispatch('settingsStore/SetDateFormat', date_items);
-            if (time_items.length >= 1) store.dispatch('settingsStore/SetTimeFormat', time_items);
         },
 
         update_delimiter_display(target?: 'DATE' | 'TIME') {

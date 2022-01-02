@@ -1,3 +1,5 @@
+import { FormatToken } from '@/vue/init_clock/init_clock';
+
 /**
  * Windows-like background image display format, to fit
  * the viewport how the user wants.
@@ -137,15 +139,27 @@ export interface ModuleState {
 
     /**
      * Date display construction format.
-     * @type {Array<string>}
+     * @type {Array<Array<FormatToken> | undefined>}
      */
-    date_format: Array<string>;
+    date_format_active: Array<FormatToken> | undefined;
 
     /**
      * Time display construction format.
-     * @type {Array<string>}
+     * @type {Array<FormatToken> | undefined>}
      */
-     time_format: Array<string>;
+     time_format_active: Array<FormatToken> | undefined;
+
+     /**
+     * Unused date format tokens.
+     * @type {Array<Array<FormatToken> | undefined>}
+     */
+    date_format_inactive: Array<FormatToken> | undefined;
+
+    /**
+     * Unused time format tokens.
+     * @type {Array<FormatToken> | undefined>}
+     */
+     time_format_inactive: Array<FormatToken> | undefined;
 
     /**
      * Indicates wether the user has completed first-time initialization.
@@ -169,9 +183,11 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
         time_display_format: 'mm:HH:ss',
-        initialized: false,
-        date_format: ['cccc', ',', 'MMMM ', 'd', ',', 'kkkk'],
-        time_format: ['mm', ':', 'HH', ':', 'ss']
+        date_format_inactive: undefined,
+        time_format_inactive: undefined,
+        date_format_active: undefined,
+        time_format_active: undefined,
+        initialized: false
     },
 
     mutations: {
@@ -197,9 +213,13 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_USED_THEME: (state: any, payload: AvaillableThemes) => state.selected_theme = payload,
 
-        UPDATE_DATE_FORMAT: (state: any, payload: Array<string>) => state.date_format = payload,
+        UPDATE_DATE_FORMAT_INACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_inactive = payload,
 
-        UPDATE_TIME_FORMAT: (state: any, payload: Array<string>) => state.time_format = payload
+        UPDATE_TIME_FORMAT_INACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_inactive = payload,
+
+        UPDATE_DATE_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_inactive = payload,
+
+        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_inactive = payload
     },
 
     actions: {
@@ -225,28 +245,12 @@ const store: { state: ModuleState, [name: string]: any } = {
             context.commit('UPDATE_USED_THEME', payload);
         },
 
-        SetDateFormat: (context: any, payload: Array<string>) => {
-            context.commit('UPDATE_DATE_FORMAT', payload);
-
-            let format = '';
-
-            for (const token of payload) {
-                format+= token;
-            }
-
-            if (format.length >= 1) context.commit('UPDATE_DATE_DISPLAY_FORMAT', format);
+        SetDateFormat: (context: any, payload: [Array<FormatToken>, Array<FormatToken>]) => {
+            const [active_format, inactive_format] = payload;
         },
 
-        SetTimeFormat: (context: any, payload: Array<string>) => {
-            context.commit('UPDATE_TIME_FORMAT', payload);
-
-            let format = '';
-
-            for (const token of payload) {
-                format+= token;
-            }
-
-            if (format.length >= 1) context.commit('UPDATE_TIME_DISPLAY_FORMAT', format);
+        SetTimeFormat: (context: any, payload: [Array<FormatToken>, Array<FormatToken>]) => {
+            const [active_format, inactive_format] = payload;
         }
     }
 };
