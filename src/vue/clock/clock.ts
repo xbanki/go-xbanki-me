@@ -25,10 +25,16 @@ interface ComponentState {
 interface ComponentData {
 
     /**
-     * Timer function that automatically updates date & time data.
+     * Timer function that automatically updates time data every milisecond.
      * @type {NodeJS.Timer}
      */
-    timer_updater?: NodeJS.Timer;
+    timer_updater_milisecond?: NodeJS.Timer;
+
+    /**
+     * Timer function that automatically updates date data every minute.
+     * @type {NodeJS.Timer}
+     */
+     timer_updater_minute?: NodeJS.Timer;
 }
 
 export default defineComponent({
@@ -38,7 +44,7 @@ export default defineComponent({
     data() {
         const state: ComponentState = { active_time_data: undefined, active_date_data: undefined };
 
-        const data: ComponentData = { timer_updater: undefined };
+        const data: ComponentData = { timer_updater_milisecond: undefined, timer_updater_minute: undefined };
 
         return { state, data };
     },
@@ -46,10 +52,17 @@ export default defineComponent({
     methods: {
         set_up_date_time_data() {
 
-            this.data.timer_updater = setInterval(() => {
-                this.state.active_time_data = DateTime.now().toFormat(this.settingsStore.time_display_format);
-                this.state.active_date_data = DateTime.now().toFormat(this.settingsStore.date_display_format);
-            }, 1000);
+            let minute_timer_align: undefined | NodeJS.Timer;
+
+            this.data.timer_updater_milisecond = setInterval(() => this.state.active_time_data = DateTime.now().toFormat(this.settingsStore.time_display_format), 1);
+            this.state.active_date_data = DateTime.now().toFormat(this.settingsStore.date_display_format);
+
+            minute_timer_align = setTimeout(() => {
+                this.data.timer_updater_minute = setInterval(() => this.state.active_date_data = DateTime.now().toFormat(this.settingsStore.date_display_format), 60000);
+
+                minute_timer_align = undefined;
+
+            }, DateTime.fromObject({ minute: DateTime.now().minute + 1 }).toMillis() - DateTime.now().toMillis());
         }
     },
 
