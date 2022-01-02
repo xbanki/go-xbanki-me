@@ -559,11 +559,11 @@ export default defineComponent({
                 store.commit('settingsStore/UPDATE_TIME_SIZE', this.state.active_time_size);
             }
 
-            if (this.data.date_format_active != this.settingsStore.date_format_active && this.data.date_format_inactive != this.settingsStore.date_format_inactive) {
+            if (this.data.date_format_active != this.settingsStore.date_format_active || this.data.date_format_inactive != this.settingsStore.date_format_inactive) {
                 store.dispatch('settingsStore/SetDateFormat', [this.data.date_format_active, this.data.date_format_inactive]);
             }
 
-            if (this.data.time_format_active != this.settingsStore.time_format_active && this.data.time_format_inactive != this.settingsStore.time_format_inactive) {
+            if (this.data.time_format_active != this.settingsStore.time_format_active || this.data.time_format_inactive != this.settingsStore.time_format_inactive) {
                 store.dispatch('settingsStore/SetTimeFormat', [this.data.time_format_active, this.data.time_format_inactive]);
             }
         },
