@@ -182,7 +182,7 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_display_format: 'cccc, MMMM d, kkkk',
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
-        time_display_format: 'mm:HH:ss',
+        time_display_format: 'HH:mm:ss',
         date_format_inactive: undefined,
         time_format_inactive: undefined,
         date_format_active: undefined,
@@ -287,8 +287,6 @@ const store: { state: ModuleState, [name: string]: any } = {
 
                         if (next_item != undefined && !next_item.delimiter) token = `${token} `;
 
-                        console.log(token);
-
                         assembled_active_format.push(token);
 
                         continue;
@@ -348,8 +346,6 @@ const store: { state: ModuleState, [name: string]: any } = {
                         }
 
                         if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                        console.log(token);
 
                         assembled_active_format.push(token);
 
