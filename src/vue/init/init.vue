@@ -1,5 +1,5 @@
 <template>
-    <modal-component v-on:ready="data.ev = $event" v-on:confirm="confirm_init_settings" v-on:cancel="revert_realtime_options">
+    <modal-component v-on:ready="data.ev = $event" v-on:confirm="confirm_init_settings" v-on:cancel="revert_realtime_options" v-bind:disable_confirm="state.disable_confirm">
 
         <!-- Initialization component wrapper //-->
         <main class="component-init">
@@ -64,6 +64,8 @@
             <div class="init-clock">
                 <init-clock-component/>
             </div>
+
+            <button v-on:click="handle_cookie_usage" class="cookie-button"> Accept Cookie Usage </button>
         </main>
     </modal-component>
 </template>

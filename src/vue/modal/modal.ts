@@ -45,5 +45,13 @@ export default defineComponent({
         }
     },
 
+    props: {
+        disable_confirm: {
+            type: Boolean,
+            default: false,
+            requried: false
+        }
+    },
+
     emits: ['ready', 'confirm', 'cancel']
 });

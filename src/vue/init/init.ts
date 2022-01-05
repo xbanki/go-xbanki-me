@@ -44,6 +44,12 @@ import store              from '@/lib/store';
      * @enum {AvaillableThemes}
      */
     selected_application_theme: AvaillableThemes;
+
+    /**
+     * Disables modal confirmation button.
+     * @type {boolean}
+     */
+    disable_confirm: boolean;
 }
 
 export default defineComponent({
@@ -58,7 +64,8 @@ export default defineComponent({
 
         const state: ComponentState = {
             selected_background_display_method: settingsState.settingsStore.background_display_method ?? BackgroundDisplayMethod.FIT,
-            selected_application_theme: settingsState.settingsStore.selected_theme ?? AvaillableThemes.LIGHT
+            selected_application_theme: settingsState.settingsStore.selected_theme ?? AvaillableThemes.LIGHT,
+            disable_confirm: true
         };
 
         const data: ComponentData = { ev: undefined, original_state: Object.assign({}, state) };
@@ -108,12 +115,24 @@ export default defineComponent({
             }
 
             store.dispatch('settingsStore/InitializeUser', true);
+        },
+
+        handle_cookie_usage() {
+            store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
         }
     },
 
     watch: {
         'eventBusStore.has_image_loaded': { handler() { this.handle_ready_events(); }, deep: true },
-        'eventBusStore.has_image_load_failed': { handler() { this.handle_ready_events(); }, deep: true }
+        'eventBusStore.has_image_load_failed': { handler() { this.handle_ready_events(); }, deep: true },
+
+        'eventBusStore.supports_data_persistence': {
+            handler(state) {
+                if (state) this.state.disable_confirm = false;
+                if (!state) this.state.disable_confirm = true;
+            },
+            deep: true
+        }
     },
 
     computed: mapState(['settingsStore', 'eventBusStore'])

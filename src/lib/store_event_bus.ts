@@ -21,6 +21,11 @@ export interface ModuleState {
      * @type {boolean}
      */
     supports_system_theme_switch: boolean;
+
+    /**
+     * 
+     */
+    supports_data_persistence: boolean;
 }
 
 const store: { state: ModuleState, [name: string]: any } = {
@@ -30,6 +35,7 @@ const store: { state: ModuleState, [name: string]: any } = {
     state: {
         has_image_loaded: false,
         has_image_load_failed: false,
+        supports_data_persistence: false,
         supports_system_theme_switch: true
     },
 
@@ -38,7 +44,9 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_IMAGE_LOAD_FAIL_STATE: (state: any, payload: boolean): boolean => state.has_image_load_failed = payload,
 
-        DISABLE_SYSTEM_THEME_SWITCH_SUPPORT: (state: any): boolean => state.supports_system_theme_switch = false
+        DISABLE_SYSTEM_THEME_SWITCH_SUPPORT: (state: any): boolean => state.supports_system_theme_switch = false,
+
+        ENABLE_DATA_PERSISTENCE: (state: any): boolean => state.supports_data_persistence = true
     }
 };
 

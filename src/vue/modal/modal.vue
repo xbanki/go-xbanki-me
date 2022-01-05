@@ -26,7 +26,7 @@
                     <div class="modal-footer">
 
                         <!-- Confirmation button //-->
-                        <button class="footer-confirm" v-on:click="emit_confirm"> Confirm </button>
+                        <button class="footer-confirm" v-on:click="emit_confirm" v-bind:disabled="disable_confirm"> Confirm </button>
                     </div>
                 </div>
             </main>
