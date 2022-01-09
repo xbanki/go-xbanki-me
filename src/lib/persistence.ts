@@ -1,26 +1,58 @@
 import { MutationPayload, Store } from 'vuex';
 
-import semver from 'semver';
+import deepmerge from 'deepmerge';
+import semver    from 'semver';
 
 import application_data from '~/package.json';
 
-import { ModuleState } from '@/lib/store_event_bus';
-import Queue           from '@/lib/queue';
+import config from '@/lib/config';
+import Queue  from '@/lib/queue';
 
+/**
+ * Persistence plugin setup options.
+ * @public
+ */
 export interface PersistenceOptions {
+
+    /**
+     * Application name which is used to prefix all saved storage states.
+     * @type {string}
+     */
     application_name: string;
+
+    /**
+     * `namespaces` are keys present in the root module level that should be persisted.
+     * @type {Array<string>}
+     */
     namespaces?: string[];
 }
 
+/**
+ * Internal metadata for the persistence plugin.
+ * @private
+ */
 interface PersistenceMetadata {
+
+    /**
+     * Last valid semantic version used with this persistence module.
+     * @type {string}
+     */
     last_used_version: string;
 }
 
+/**
+ * Plugin persistence options defaults.
+ * @see {PersistenceOptions}
+ */
 const persistence_defaults: PersistenceOptions = {
     application_name: 'vuex',
     namespaces: undefined
 };
 
+/**
+ * Sets & unsets temporary value in to the browser local storage to test availlability.
+ * @return {boolean}
+ */
 function verify_localstorage_availlability() {
     try {
         const storage: Storage = window['localStorage'];
@@ -45,54 +77,39 @@ function verify_localstorage_availlability() {
 
 export default function<State>(options?: PersistenceOptions): (store: Store<State>) => void {
 
+    /**
+     * Merged user & default persistence options.
+     * @see {PersistenceOptions}
+     */
     const storage_options = Object.assign(persistence_defaults, options);
-    const storage_test = verify_localstorage_availlability();
+
+    /**
+     * Queue of callback functions which are **only** executed if we detect the end user having accepted cookie usage.
+     * @type {Queue<void>}
+     */
     const task_queue = new Queue<() => void>();
 
+    /**
+     * Gets and automatically parses **existing** state objects from the browser's local storage.
+     * @param  {string}            key - Identifier key which is automatically converted to format `[application-name]-[key]`
+     * @return {State | undefined}     - Parsed `State` type object or `undefined` if object does not exist in storage
+     */
+    const get_state = (key: string) => localStorage.getItem(`${storage_options.application_name}-${key}`) != null ? JSON.parse(localStorage.getItem(`${storage_options.application_name}-${key}`) as string) as State : undefined;
 
-    let should_open_updates_panel = false;
+    /**
+     * Sets or overrides a persisted state object, with the name format `[application_name]-[key]`.
+     * @param  {string} key   - Name of the state object which will be identified on disk by
+     * @param  {T}      value - Object body that is automatically converted to type `string`
+     */
+    const set_state = <T>(key: string, value: T) => localStorage.setItem(`${storage_options.application_name}-${key}`, JSON.stringify(value));
 
-    if (storage_test != true) {
-        throw new Error('LocalStorage API not supported');
+    // Validate storage availlability
+    if (verify_localstorage_availlability() != true) throw new Error('LocalStorage API not supported');
+
+    // Validate namespace names in dev mode
+    if (storage_options.namespaces && config.dev_mode) for (const namespace of storage_options.namespaces) {
+        /^[^0-9][a-zA-Z0-9$_]+$/.test(namespace) ? console.warn(`Invalid namespace key: ${namespace}`) : undefined;
     }
 
-    const application_metadata = localStorage.getItem(`${storage_options.application_name}-metadata`);
-
-    if (application_metadata == null) {
-        const new_metadata: PersistenceMetadata = { last_used_version: application_data.version };
-
-        task_queue.Enqueue(() => localStorage.setItem(`${storage_options.application_name}-metadata`, JSON.stringify(new_metadata)));
-    }
-
-    else {
-        const metadata = JSON.parse(application_metadata) as PersistenceMetadata;
-
-        const semver_diff = semver.diff(application_data.version, metadata.last_used_version);
-        const semver_gt   = semver.gt(application_data.version, metadata.last_used_version);
-
-        if (semver_gt && semver_diff != 'patch' && semver_diff != 'prepatch' && semver_diff != 'prerelease') {
-            should_open_updates_panel = true;
-        }
-    }
-
-    return function(store: Store<State>) {
-        const store_state = store.state as unknown as { eventBusStore: ModuleState };
-
-        const mutation_subscriber = (mutation: MutationPayload, state: State) => {
-            if (storage_options.namespaces != undefined) { /* */ }
-
-            else {
-                task_queue.Enqueue(() => localStorage.setItem(`${storage_options.application_name}`, JSON.stringify(store.state)));
-            }
-
-            if (store_state.eventBusStore.supports_data_persistence) while (task_queue.length > 0) {
-                const task = task_queue.Dequeue();
-
-                if (task != undefined) task();
-                else break;
-            }
-        };
-
-        store.subscribe(mutation_subscriber);
-    };
+    return function(store: Store<State>) { };
 }
