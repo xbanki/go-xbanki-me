@@ -64,6 +64,8 @@ function verify_localstorage_availlability() {
     }
 
     catch (err) {
+        if (config.dev_mode) console.error(err);
+
         return err instanceof DOMException && (
             err.code == 22   ||
             err.code == 1014 ||
