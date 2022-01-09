@@ -1,6 +1,6 @@
 import { MutationPayload, Store } from 'vuex';
 
-import deepmerge, { all } from 'deepmerge';
+import deepmerge from 'deepmerge';
 import semver    from 'semver';
 
 import application_data from '~/package.json';
@@ -176,7 +176,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
          * Detects wether or not we are allowed to save state to disk.
          * @return {boolean}
          */
-        const allowed_to_persist = (target_store: Store<any>) => target_store?.state?.eventBusStore?.supports_data_persistence ?? false;
+        const allowed_to_persist = (target_store: Store<any>) => (target_store?.state?.eventBusStore?.supports_data_persistence || fetch_metadata()) ?? false;
 
         /**
          * Subscriber callback which is responsible for reacting to state changes.

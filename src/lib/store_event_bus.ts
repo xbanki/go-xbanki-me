@@ -23,7 +23,8 @@ export interface ModuleState {
     supports_system_theme_switch: boolean;
 
     /**
-     * 
+     * Allows saving state to the browser's local storage.
+     * @type {boolean}
      */
     supports_data_persistence: boolean;
 }
