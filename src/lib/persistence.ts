@@ -140,6 +140,12 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
     const fetch_metadata = () => localStorage.getItem(`metadata-${storage_options.application_name}`) != null ? JSON.parse(localStorage.getItem(`metadata-${storage_options.application_name}`) as string) : undefined;
 
     /**
+     * Determines wether or not persistence is enabled by the existence of metadata cache.
+     * @return {boolean}
+     */
+    const discriminate_persistence = () => fetch_metadata() != undefined ? true : false;
+
+    /**
      * Fetches and merges all known state objects in to one object.
      * @param {PersistenceMetadata} - Metadata which to read all target objects from.
      */
@@ -173,16 +179,29 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
     return function(store: Store<State>) {
 
         /**
+         * Flag to stop exceeding maximum callstack errors.
+         * @type {boolean}
+         */
+        let discriminated_successfully = false;
+
+        /**
          * Detects wether or not we are allowed to save state to disk.
          * @return {boolean}
          */
-        const allowed_to_persist = (target_store: Store<any>) => (target_store?.state?.eventBusStore?.supports_data_persistence || fetch_metadata()) ?? false;
+        const allowed_to_persist = (target_store: Store<any>) => target_store?.state?.eventBusStore?.supports_data_persistence ?? false;
 
         /**
          * Subscriber callback which is responsible for reacting to state changes.
          * @see {Store.subscribe}
          */
         const subscriber = (mutation: MutationPayload, state: State) => {
+
+            // Keep on top of data persistence permission
+            if (!discriminated_successfully && discriminate_persistence()) {
+                discriminated_successfully = true;
+
+                store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
+            }
 
             if (allowed_to_persist(store)) while (task_queue.length > 0) {
                 const task = task_queue.Dequeue();
