@@ -38,6 +38,12 @@ interface PersistenceMetadata {
      * @type {string}
      */
     last_used_version: string;
+
+    /**
+     * List of keys that this persistence module uses.
+     * @type {Array<string>}
+     */
+    known_namespaces: string[];
 }
 
 /**
@@ -116,9 +122,9 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
     /**
      * Gets and automatically parses **existing** state objects from the browser's local storage.
      * @param  {string}            key - Identifier key which is automatically converted to format `[application-name]-[key]`
-     * @return {State | undefined}     - Parsed `State` type object or `undefined` if object does not exist in storage
+     * @return {T | undefined}           Parsed object or `undefined` if object does not exist in storage
      */
-    const get_state = (key: string) => localStorage.getItem(`${storage_options.application_name}-${key}`) != null ? JSON.parse(localStorage.getItem(`${storage_options.application_name}-${key}`) as string) as State : undefined;
+    const get_state = (key: string) => localStorage.getItem(`${storage_options.application_name}-${key}`) != null ? JSON.parse(localStorage.getItem(`${storage_options.application_name}-${key}`) as string) : undefined;
 
     /**
      * Sets or overrides a persisted state object, with the name format `[application_name]-[key]`.
@@ -126,6 +132,18 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
      * @param  {T}      value - Object body that is automatically converted to type `string`
      */
     const set_state = <T>(key: string, value: T) => localStorage.setItem(`${storage_options.application_name}-${key}`, JSON.stringify(value));
+
+    /**
+     * Fetches the application metadata from the local storage if it exists.
+     * @return {PersistenceMetadata | undefined} Parsed application metadata or `undefined` if object does not exist in storage
+     */
+    const fetch_metadata = () => localStorage.getItem(`metadata-${storage_options.application_name}`) != null ? JSON.parse(localStorage.getItem(`metadata-${storage_options.application_name}`) as string) : undefined;
+
+    /**
+     * Fetches and merges all known state objects in to one object.
+     * @param {PersistenceMetadata} - Metadata which to read all target objects from.
+     */
+    const fetch_state = (metadata: PersistenceMetadata) => metadata.known_namespaces.reduce((state, substate) => Object.assign(state, JSON.parse(get_state(substate))), {});
 
     // Validate storage availlability
     if (verify_localstorage_availlability() != true) throw new Error('LocalStorage API not supported');
@@ -135,5 +153,32 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
         /^[^0-9][a-zA-Z0-9$_]+$/.test(namespace) ? undefined : console.warn(`Invalid namespace key: ${namespace}`);
     }
 
-    return function(store: Store<State>) { };
+    /**
+     * Active application metadata.
+     * @see {PersistenceMetadata}
+     */
+    let metadata: PersistenceMetadata = fetch_metadata();
+
+    if (!metadata) {
+        const last_used_version = application_data.version;
+        const known_namespaces: string[] = [];
+
+        if (options?.namespaces) for (const namespace of options.namespaces) known_namespaces.push(`${options.application_name}-${namespace}`);
+
+        metadata = { last_used_version, known_namespaces };
+
+        task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
+    }
+
+    return function(store: Store<State>) {
+
+        /**
+         * Subscriber callback which is responsible for reacting to state changes.
+         * @see {Store.subscribe}
+         */
+        const subscriber = (mutation: MutationPayload, state: State) => { };
+
+        // Handle state activity
+        store.subscribe(subscriber);
+    };
 }
