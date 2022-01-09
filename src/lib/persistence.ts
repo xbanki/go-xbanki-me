@@ -108,7 +108,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
 
     // Validate namespace names in dev mode
     if (storage_options.namespaces && config.dev_mode) for (const namespace of storage_options.namespaces) {
-        /^[^0-9][a-zA-Z0-9$_]+$/.test(namespace) ? console.warn(`Invalid namespace key: ${namespace}`) : undefined;
+        /^[^0-9][a-zA-Z0-9$_]+$/.test(namespace) ? undefined : console.warn(`Invalid namespace key: ${namespace}`);
     }
 
     return function(store: Store<State>) { };
