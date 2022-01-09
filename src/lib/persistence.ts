@@ -77,6 +77,28 @@ function verify_localstorage_availlability() {
     }
 }
 
+/**
+ * Determines version difference, only returning true if the version difference is significant.
+ * @param  {string}  version - Version which to compare against
+ * @return {boolean}
+ */
+function discriminate_significant_version(version: string) {
+    try {
+        const greater_than = semver.gt(application_data.version, version);
+        const difference = semver.diff(application_data.version, version);
+
+        if (greater_than && difference != 'patch' && difference != 'prepatch' && difference != 'prerelease') return true;
+
+        return false;
+    }
+
+    catch(err) {
+        if (config.dev_mode) console.error(err);
+
+        return false;
+    }
+}
+
 export default function<State>(options?: PersistenceOptions): (store: Store<State>) => void {
 
     /**
