@@ -246,6 +246,8 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
         // Set the state by merging existing and saved states
         store.replaceState(deepmerge(store.state, state, { clone: false, arrayMerge: (current, saved) => saved }));
 
+        if (significant_update) store.commit('eventBusStore/SIGNAL_SIGNIFICANT_UPDATE');
+
         /**
          * Subscriber callback which is responsible for reacting to state changes.
          * @see {Store.subscribe}
