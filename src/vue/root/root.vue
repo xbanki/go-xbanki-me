@@ -3,7 +3,9 @@
     <background-component/>
 
     <!-- Content display master element //-->
-    <main class="component-root"/>
+    <main class="component-root">
+        <clock-component/>
+    </main>
 </template>
 
 <script lang="ts" src="./root.ts"></script>

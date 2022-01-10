@@ -4,8 +4,9 @@ import { mapState }        from 'vuex';
 import { BackgroundDisplayMethod, AvaillableThemes } from '@/lib/store_settings';
 import { ModuleState }                               from '@/lib/store_settings';
 
-import modalComponent from '@/vue/modal/modal.vue';
-import store          from '@/lib/store';
+import initClockComponent from '@/vue/init_clock/init_clock.vue';
+import modalComponent     from '@/vue/modal/modal.vue';
+import store              from '@/lib/store';
 
 // TO-DO (xbanki): Write a mutex for the image loaded & ready event handler
 
@@ -43,18 +44,28 @@ import store          from '@/lib/store';
      * @enum {AvaillableThemes}
      */
     selected_application_theme: AvaillableThemes;
+
+    /**
+     * Disables modal confirmation button.
+     * @type {boolean}
+     */
+    disable_confirm: boolean;
 }
 
 export default defineComponent({
 
-    components: { modalComponent },
+    components: {
+        initClockComponent,
+        modalComponent
+    },
 
     data() {
         const settingsState = store.state as { settingsStore: ModuleState };
 
         const state: ComponentState = {
             selected_background_display_method: settingsState.settingsStore.background_display_method ?? BackgroundDisplayMethod.FIT,
-            selected_application_theme: settingsState.settingsStore.selected_theme ?? AvaillableThemes.LIGHT
+            selected_application_theme: settingsState.settingsStore.selected_theme ?? AvaillableThemes.LIGHT,
+            disable_confirm: true
         };
 
         const data: ComponentData = { ev: undefined, original_state: Object.assign({}, state) };
@@ -64,8 +75,7 @@ export default defineComponent({
 
     methods: {
         handle_ready_events() {
-            if (!this.data.ev || this.settingsStore.initialized) return;
-            this.data.ev();
+            if (this.data.ev && this.eventBusStore.version_change_significant_update || this.data.ev && !this.settingsStore.initialized) this.data.ev();
         },
 
         update_realtime_options() {
@@ -104,12 +114,24 @@ export default defineComponent({
             }
 
             store.dispatch('settingsStore/InitializeUser', true);
+        },
+
+        handle_cookie_usage() {
+            store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
         }
     },
 
     watch: {
         'eventBusStore.has_image_loaded': { handler() { this.handle_ready_events(); }, deep: true },
-        'eventBusStore.has_image_load_failed': { handler() { this.handle_ready_events(); }, deep: true }
+        'eventBusStore.has_image_load_failed': { handler() { this.handle_ready_events(); }, deep: true },
+
+        'eventBusStore.supports_data_persistence': {
+            handler(state) {
+                if (state) this.state.disable_confirm = false;
+                if (!state) this.state.disable_confirm = true;
+            },
+            deep: true
+        }
     },
 
     computed: mapState(['settingsStore', 'eventBusStore'])

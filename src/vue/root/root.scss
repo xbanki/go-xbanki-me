@@ -36,3 +36,15 @@ html, body {
 
 #go-xbanki-application { z-index: 200 }
 #go-xbanki-ui { z-index: 300 }
+
+main.component-root {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+  z-index: 200;
+  height: 100%;
+  width: 100%;
+}

@@ -1,0 +1,17 @@
+main.component-clock {
+  align-items: center;
+  flex-direction: column;
+  height: fit-content;
+  width: fit-content;
+  display: flex;
+
+  span.clock-time, span.clock-date {
+    text-shadow: var(--color) 0px 0px 4px;
+    color: var(--bg);
+    font-size: 62px;
+    display: block;
+
+    &.clock-date { margin-bottom: 8px }
+    &.clock-time { font-size: 18px }
+  }
+}

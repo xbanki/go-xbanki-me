@@ -11,6 +11,8 @@ import { GetDailyBackgroundData }  from '@/lib/http';
 import config from '@/lib/config';
 import store  from '@/lib/store';
 
+// BUG(xbanki): In debug mode the background component keeps flashing and re-animating.
+
 /**
  * Component data internal description interface.
  */

@@ -1,18 +1,28 @@
 main.component-init {
-  max-width: 768px;
+  overflow: hidden;
+  width: 896px;
 
   span.init-title {
+    margin-bottom: 8px;
     font-weight: 700;
-    margin-top: 16px;
-    font-size: 18px;
+    font-size: 20px;
     display: block;
   }
 
-  div.init-display, div.init-theme {
+  span.init-warning {
+    margin-bottom: 32px;
+    text-align: center;
+    display: block;
+    opacity: 80%;
+  }
+
+  div.init-display, div.init-theme, div.init-clock {
+    margin-bottom: 24px;
     flex-direction: row;
-    margin-top: 8px;
     display: flex;
     width: 100%;
+
+    &:last-of-type { margin-bottom: 8px }
 
     div.display-fit, div.display-fill, div.display-stretch,
     div.theme-light, div.theme-dark, div.theme-system {
@@ -21,4 +31,9 @@ main.component-init {
   }
 }
 
-label.disabled { color: gray }
+span.disabled { color: gray }
+
+button.cookie-button {
+  margin-left: auto;
+  display: block;
+}
