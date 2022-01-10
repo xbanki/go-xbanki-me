@@ -9,16 +9,6 @@ import config from '@/lib/config';
 import Queue  from '@/lib/queue';
 
 /**
- * TO-DO(xbanki): The cache object in storage should be updated. Currently, if we detect an existing object in storage,
- *                we (for example) do not do any version discrimination to determine wether or not we should update the
- *                last used version or not.
- * 
- *                We should also update the cache when known namespaces change.
- * 
- * TO-DO(xbanki): Handle global persistence in cases where there is no namespaces set.
- */
-
-/**
  * Persistence plugin setup options.
  * @public
  */
@@ -175,6 +165,13 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
      */
     let metadata: PersistenceMetadata = fetch_metadata();
 
+    /**
+     * Signals wether or not we have had a significant update.
+     * @type {boolean}
+     */
+    let significant_update = false;
+
+    // Create new metadata object when we're running for the first time
     if (!metadata) {
         const last_used_version = application_data.version;
         const known_namespaces: string[] = [...storage_options.namespaces ?? []];
@@ -182,6 +179,48 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
         metadata = { last_used_version, known_namespaces };
 
         task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
+    }
+
+    // Update metadata object, while also signalling end user when needed
+    else {
+
+        /**
+         * Application current version which to update to.
+         * @type {string}
+         */
+        const last_used_version = application_data.version;
+
+        /**
+         * Updated known namespaces.
+         * @type {Array<string>}
+         */
+        let known_namespaces: string[] = metadata.known_namespaces;
+
+        /**
+         * Enables or disables updating saved cache.
+         * @type {boolean}
+         */
+        let should_update_cache = false;
+
+        // Namespace updater
+        if (metadata.known_namespaces != storage_options.namespaces) {
+            known_namespaces = storage_options.namespaces ?? [];
+            should_update_cache = true;
+        }
+
+        // Version checker & significant update discriminator
+        if (metadata.last_used_version != application_data.version) {
+            significant_update = discriminate_significant_version(metadata.last_used_version);
+
+            should_update_cache = true;
+        }
+
+        // Persisted metadata updater
+        if (should_update_cache) {
+            metadata = { last_used_version, known_namespaces };
+
+            task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
+        }
     }
 
     /**
