@@ -176,6 +176,12 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
         task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
     }
 
+    /**
+     * Active application state.
+     * @see {State}
+     */
+     const state = fetch_state(metadata) as State;
+
     return function(store: Store<State>) {
 
         /**
@@ -189,6 +195,9 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
          * @return {boolean}
          */
         const allowed_to_persist = (target_store: Store<any>) => target_store?.state?.eventBusStore?.supports_data_persistence ?? false;
+
+        // Set the state by merging existing and saved states
+        store.replaceState(deepmerge(store.state, state, { clone: false, arrayMerge: (current, saved) => saved }));
 
         /**
          * Subscriber callback which is responsible for reacting to state changes.
