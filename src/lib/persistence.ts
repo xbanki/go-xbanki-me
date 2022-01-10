@@ -14,6 +14,8 @@ import Queue  from '@/lib/queue';
  *                last used version or not.
  * 
  *                We should also update the cache when known namespaces change.
+ * 
+ * TO-DO(xbanki): Handle global persistence in cases where there is no namespaces set.
  */
 
 /**
@@ -157,7 +159,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
      * Fetches and merges all known state objects in to one object.
      * @param {PersistenceMetadata} - Metadata which to read all target objects from.
      */
-    const fetch_state = (metadata: PersistenceMetadata) => metadata.known_namespaces.reduce((state, substate) => typeof substate == 'object' ? Object.assign(state, JSON.parse(get_state(substate))) : state, {});
+    const fetch_state = (metadata: PersistenceMetadata) => metadata.known_namespaces.reduce((state, substate) => typeof substate == 'string' ? Object.assign(state, { [substate]: get_state(substate) }) : state, {});
 
     // Validate storage availlability
     if (verify_localstorage_availlability() != true) throw new Error('LocalStorage API not supported');
@@ -175,9 +177,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
 
     if (!metadata) {
         const last_used_version = application_data.version;
-        const known_namespaces: string[] = [];
-
-        if (options?.namespaces) for (const namespace of options.namespaces) known_namespaces.push(`${options.application_name}-${namespace}`);
+        const known_namespaces: string[] = [...storage_options.namespaces ?? []];
 
         metadata = { last_used_version, known_namespaces };
 
@@ -188,7 +188,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
      * Active application state.
      * @see {State}
      */
-     const state = fetch_state(metadata) as State;
+    const state = fetch_state(metadata) as State;
 
     return function(store: Store<State>) {
 
@@ -212,6 +212,23 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
          * @see {Store.subscribe}
          */
         const subscriber = (mutation: MutationPayload, state: State) => {
+
+            /**
+             * Recursively persists known namespaces if they exist in the store state
+             * @param {string} namespace - Name of the known namespace which to handle
+             */
+            const namespace_mapper = (namespace: string) => {
+                const stripped_namespace = namespace.replace(`${storage_options.application_name}-`, '');
+
+                if (stripped_namespace in store.state) {
+                    const persistable_state = store.state as any;
+
+                    task_queue.Enqueue(() => set_state(stripped_namespace, persistable_state[stripped_namespace]));
+                }
+            };
+
+            // Do persistence magic
+            metadata.known_namespaces.map(namespace_mapper);
 
             // Keep on top of data persistence permission
             if (!discriminated_successfully && discriminate_persistence()) {
