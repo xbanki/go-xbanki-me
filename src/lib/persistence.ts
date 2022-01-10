@@ -227,8 +227,11 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
                 }
             };
 
-            // Do persistence magic
-            metadata.known_namespaces.map(namespace_mapper);
+            // Do namespaces persistence
+            if (metadata.known_namespaces.length >= 1) metadata.known_namespaces.map(namespace_mapper);
+
+            // Do global persistence if no namespaces
+            if (metadata.known_namespaces.length <= 0 && config.dev_mode) console.warn('Global object persistence is not currently supported.');
 
             // Keep on top of data persistence permission
             if (!discriminated_successfully && discriminate_persistence()) {
