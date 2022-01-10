@@ -9,6 +9,14 @@ import config from '@/lib/config';
 import Queue  from '@/lib/queue';
 
 /**
+ * TO-DO(xbanki): The cache object in storage should be updated. Currently, if we detect an existing object in storage,
+ *                we (for example) do not do any version discrimination to determine wether or not we should update the
+ *                last used version or not.
+ * 
+ *                We should also update the cache when known namespaces change.
+ */
+
+/**
  * Persistence plugin setup options.
  * @public
  */
