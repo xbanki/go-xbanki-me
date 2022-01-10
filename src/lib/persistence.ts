@@ -149,7 +149,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
      * Fetches and merges all known state objects in to one object.
      * @param {PersistenceMetadata} - Metadata which to read all target objects from.
      */
-    const fetch_state = (metadata: PersistenceMetadata) => metadata.known_namespaces.reduce((state, substate) => Object.assign(state, JSON.parse(get_state(substate))), {});
+    const fetch_state = (metadata: PersistenceMetadata) => metadata.known_namespaces.reduce((state, substate) => typeof substate == 'object' ? Object.assign(state, JSON.parse(get_state(substate))) : state, {});
 
     // Validate storage availlability
     if (verify_localstorage_availlability() != true) throw new Error('LocalStorage API not supported');
