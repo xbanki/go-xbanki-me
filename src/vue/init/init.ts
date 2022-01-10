@@ -75,8 +75,7 @@ export default defineComponent({
 
     methods: {
         handle_ready_events() {
-            if (!this.data.ev || this.settingsStore.initialized) return;
-            this.data.ev();
+            if (this.data.ev && this.eventBusStore.version_change_significant_update || this.data.ev && !this.settingsStore.initialized) this.data.ev();
         },
 
         update_realtime_options() {
