@@ -5,7 +5,6 @@ import { AvaillableThemes } from '@/lib/store_settings';
 
 import backgroundComponent from '@/vue/background/background.vue';
 import clockComponent      from '@/vue/clock/clock.vue';
-import initComponent       from '@/vue/init/init.vue';
 import store               from '@/lib/store';
 
 /**
@@ -24,8 +23,8 @@ export default defineComponent({
 
     components: {
         backgroundComponent,
-        clockComponent,
-        initComponent
+        clockComponent
+        // initComponent
     },
 
     // Set the application title to "New tab"

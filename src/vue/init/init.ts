@@ -5,7 +5,7 @@ import { BackgroundDisplayMethod, AvaillableThemes } from '@/lib/store_settings'
 import { ModuleState }                               from '@/lib/store_settings';
 
 import initClockComponent from '@/vue/init_clock/init_clock.vue';
-import modalComponent     from '@/vue/modal/modal.vue';
+import modalComponent     from '@/vue/modal_old/modal.vue';
 import store              from '@/lib/store';
 
 // TO-DO (xbanki): Write a mutex for the image loaded & ready event handler
