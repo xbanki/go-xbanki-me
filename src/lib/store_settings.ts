@@ -160,12 +160,6 @@ export interface ModuleState {
      * @type {Array<FormatToken> | undefined>}
      */
      time_format_inactive: Array<FormatToken> | undefined;
-
-    /**
-     * Indicates wether the user has completed first-time initialization.
-     * @type {boolean}
-     */
-    initialized: boolean;
 }
 
 const store: { state: ModuleState, [name: string]: any } = {
@@ -186,8 +180,7 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_format_inactive: undefined,
         time_format_inactive: undefined,
         date_format_active: undefined,
-        time_format_active: undefined,
-        initialized: false
+        time_format_active: undefined
     },
 
     mutations: {
@@ -200,8 +193,6 @@ const store: { state: ModuleState, [name: string]: any } = {
         UPDATE_DATE_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.date_delimiter = payload,
 
         UPDATE_TIME_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.time_delimiter = payload,
-
-        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
 
         UPDATE_DATE_DISPLAY_FORMAT: (state: any, payload: string) => state.date_display_format = payload,
 
@@ -229,13 +220,6 @@ const store: { state: ModuleState, [name: string]: any } = {
             if (context.state.background_display_method == payload) return;
 
             context.commit('SET_BACKGROUND_DISPLAY_METHOD', payload);
-        },
-
-        InitializeUser: (context: any) => {
-
-            if (context.state.initialized == true) return;
-
-            context.commit('UPDATE_USER_INITIALIZATION', true);
         },
 
         SwitchTheme: (context: any, payload: BackgroundDisplayMethod) => {
