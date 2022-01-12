@@ -1,5 +1,4 @@
 <template>
-    <init-component/>
     <background-component/>
 
     <!-- Content display master element //-->

@@ -24,7 +24,6 @@ export default defineComponent({
     components: {
         backgroundComponent,
         clockComponent
-        // initComponent
     },
 
     // Set the application title to "New tab"
