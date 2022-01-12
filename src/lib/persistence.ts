@@ -44,6 +44,12 @@ interface PersistenceMetadata {
      * @type {Array<string>}
      */
     known_namespaces: string[];
+
+    /**
+     * Application name which is used to prefix all saved storage states.
+     * @type {string}
+     */
+     application_name: string;
 }
 
 /**
@@ -174,9 +180,10 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
     // Create new metadata object when we're running for the first time
     if (!metadata) {
         const last_used_version = application_data.version;
+        const application_name = storage_options.application_name;
         const known_namespaces: string[] = [...storage_options.namespaces ?? []];
 
-        metadata = { last_used_version, known_namespaces };
+        metadata = { last_used_version, known_namespaces, application_name  };
 
         task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
     }
@@ -195,6 +202,12 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
          * @type {Array<string>}
          */
         let known_namespaces: string[] = metadata.known_namespaces;
+
+        /**
+         * Application display name.
+         * @type {string}
+         */
+        const application_name = storage_options.application_name;
 
         /**
          * Enables or disables updating saved cache.
@@ -217,7 +230,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
 
         // Persisted metadata updater
         if (should_update_cache) {
-            metadata = { last_used_version, known_namespaces };
+            metadata = { last_used_version, known_namespaces, application_name };
 
             task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
         }
@@ -244,7 +257,7 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
         const allowed_to_persist = (target_store: Store<any>) => target_store?.state?.eventBusStore?.supports_data_persistence ?? false;
 
         // Set the state by merging existing and saved states
-        store.replaceState(deepmerge(store.state, state, { clone: false, arrayMerge: (current, saved) => saved }));
+        store.replaceState(deepmerge(store.state, { ...state, __metaData: metadata } as State, { clone: false, arrayMerge: (current, saved) => saved }));
 
         if (significant_update) store.commit('eventBusStore/SIGNAL_SIGNIFICANT_UPDATE');
 
