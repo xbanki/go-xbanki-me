@@ -1,0 +1,18 @@
+/**
+ * Whole component width.
+ */
+$component-width: 896px;
+
+/**
+ * Main wrapper, which sandwiches the frosted category section with the main
+ * content display section together. We also use this to give the settings
+ * component a minimum and maximum view size, horizontally.
+ */
+main.component-settings {
+  max-width: $component-width;
+  min-width: $component-width;
+  flex-direction: row;
+  height: fit-content;
+  overflow: hidden;
+  display: flex;
+}

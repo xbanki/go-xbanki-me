@@ -4,6 +4,7 @@ import { defineComponent } from 'vue';
 import { AvaillableThemes } from '@/lib/store_settings';
 
 import backgroundComponent from '@/vue/background/background.vue';
+import settingsComponent   from '@/vue/settings/settings.vue';
 import clockComponent      from '@/vue/clock/clock.vue';
 import store               from '@/lib/store';
 
@@ -23,6 +24,7 @@ export default defineComponent({
 
     components: {
         backgroundComponent,
+        settingsComponent,
         clockComponent
     },
 
