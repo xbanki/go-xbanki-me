@@ -1,0 +1,14 @@
+/**
+ * Component corner smoothing radii.
+ */
+$component-radius: 8px;
+
+/** 
+ * The "categories" component acts as a page navigation bar within the
+ * settings component, which transforms based on overall component state,
+ * and has a neat glass-morphic background.
+ */
+main.component-categories {
+  border-bottom-left-radius: $component-radius;
+  border-top-left-radius: $component-radius;
+}

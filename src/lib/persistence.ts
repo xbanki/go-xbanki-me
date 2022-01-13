@@ -65,7 +65,7 @@ const persistence_defaults: PersistenceOptions = {
  * Sets & unsets temporary value in to the browser local storage to test availlability.
  * @return {boolean}
  */
-function verify_localstorage_availlability() {
+export function verify_localstorage_availlability() {
     try {
         const storage: Storage = window['localStorage'];
 

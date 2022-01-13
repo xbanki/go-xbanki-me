@@ -2,7 +2,9 @@
     <modal-component v-bind:display="true">
         
         <!-- Settings component parent wrapper //-->
-        <main class="component-settings"/>
+        <main class="component-settings">
+            <categories-component/>
+        </main>
     </modal-component>
 </template>
 
