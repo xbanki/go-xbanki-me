@@ -20,36 +20,7 @@ export default defineComponent({
         state: {
             required: true,
             type: Object,
-
-            validator(value: any) {
-                const discriminator = (discriminatee: any): discriminatee is ComponentState => {
-
-                    if (discriminatee != undefined && typeof discriminatee == 'object') {
-
-                        /**
-                         * Runtime "dictionary" of types which to compare against to discriminate type.
-                         * @type { [key: string]: any; }
-                         */
-                        const type_dictionary: { [key: string]: any; } = { critical_only: 'boolean' };
-
-                        if (Object.keys(type_dictionary).length != Object.keys(discriminatee).length) return false;
-
-                        for (const key of Object.keys(discriminatee)) {
-                            if (type_dictionary[key] && typeof discriminatee[key] == type_dictionary[key]) continue;
-
-                            return false;
-                        }
-
-                        return true;
-                    }
-
-                    return false;
-                };
-
-                if (discriminator(value)) return true;
-
-                return false;
-            }
+            validator: (value) => (value != undefined && typeof value == 'object')
         }
     }
 });
