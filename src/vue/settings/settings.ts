@@ -1,7 +1,7 @@
 import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
-import { ComponentState as CategoriesState } from '@/vue/settings/categories/categories';
+import { ComponentState as CategoriesState, ComponentData as CategoriesData } from '@/vue/settings/categories/categories';
 import { verify_localstorage_availlability } from '@/lib/persistence';
 
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
@@ -22,6 +22,11 @@ interface ComponentState {
      * Categories sub-component state.
      */
     categories_state: CategoriesState;
+
+    /**
+     * Categories sub-component data.
+     */
+    categories_data: CategoriesData;
 }
 
 export default defineComponent({
@@ -32,9 +37,12 @@ export default defineComponent({
             critical_only: false
         };
 
+        const categories_data: CategoriesData = { };
+
         const state: ComponentState = {
             component_display_state: 'STATE_SETTINGS',
-            categories_state
+            categories_state,
+            categories_data
         };
 
         return { state };

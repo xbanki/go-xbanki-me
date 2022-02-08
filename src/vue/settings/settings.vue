@@ -3,7 +3,7 @@
         
         <!-- Settings component parent wrapper //-->
         <main class="component-settings">
-            <categories-component v-bind:state="state.categories_state"/>
+            <categories-component v-bind:state="state.categories_state" v-bind:data="state.categories_data"/>
         </main>
     </modal-component>
 </template>
