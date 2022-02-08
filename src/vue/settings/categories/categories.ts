@@ -41,6 +41,36 @@ export interface ComponentData {
 }
 
 export default defineComponent({
+
+    data() { return { internal_state: { preloaded_icons: false } }; },
+
+    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.preload_category_icons(this.data.items); }); },
+
+    methods: {
+        preload_category_icons(items: [[string, CategoryItem[]]]) {
+
+            // @TO-DO(xbanki): Load icons!
+
+            if (!this.internal_state.preloaded_icons) {
+                this.internal_state.preloaded_icons = true;
+                this.$emit('ready');
+            }
+        }
+    },
+
+    watch: {
+
+        /**
+         * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
+         */
+        'data.items': {
+            handler(state: [[string, CategoryItem[]]]) { this.preload_category_icons(state); },
+
+            immediate: true,
+            deep: true
+        }
+    },
+
     props: {
         state: {
             required: true,
@@ -55,5 +85,7 @@ export default defineComponent({
             default: {},
             validator: (value: any) => (value != undefined && typeof value == 'object')
         }
-    }
+    },
+
+    emits: ['ready', 'clicked']
 });
