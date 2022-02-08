@@ -1,28 +1,11 @@
-/**
- * Component corner smoothing radii.
- */
-$component-radius: 8px;
-
-/**
- * Component fade background.
- */
-$component-background: radial-gradient(ellipse at top left, rgba(#E6E6FA, 80%), rgba(#FFFFFF, 40%));
-
-$component-border: rgba(#DCD0FF, 60%);
-
 /** 
  * The "categories" component acts as a page navigation bar within the
  * settings component, which transforms based on overall component state,
  * and has a neat glass-morphic background.
  */
 main.component-categories {
-  border-bottom-left-radius: $component-radius;
-  border-top-left-radius: $component-radius;
-  border: 2px solid $component-border;
-  background: $component-background;
-  backdrop-filter: blur(12px);
   box-sizing: border-box;
-  border-right: unset;
+  background: white;
   padding: 4px;
   width: 228px;
 }
