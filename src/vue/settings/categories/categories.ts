@@ -1,5 +1,7 @@
 import { defineComponent } from 'vue';
 
+import Queue from '@/lib/queue';
+
 /**
  * Component internal state.
  * @public
@@ -25,6 +27,24 @@ export interface CategoryItem {
      * @type {boolean}
      */
     critical: boolean;
+
+    /**
+     * Category item display name.
+     * @type {string}
+     */
+    name: string;
+
+    /**
+     * Category display icon element or URL.
+     * @type {string}
+     */
+    icon: string;
+
+    /**
+     * Category identifier.
+     * @type {string}
+     */
+    id: string;
 }
 
 /**
@@ -42,12 +62,59 @@ export interface ComponentData {
 
 export default defineComponent({
 
-    data() { return { internal_state: { preloaded_icons: false } }; },
+    data() { return { internal_state: { preloaded_icons: false, image_queue: new Queue<{id: string, el: HTMLImageElement}>() } }; },
 
     methods: {
-        get_category_items(items: CategoryItem[]): CategoryItem[] {
+        get_category_items(items: CategoryItem[]) {
             if (this.state.critical_only) return items.filter(el => el.critical);
             return items;
+        },
+
+        load_category_icons(items: [string, CategoryItem[]][]) {
+            for (const [parent, categories] of items) {
+
+                for (const category of categories) {
+                    const target_element = document.getElementById(category.id) as HTMLImageElement;
+
+                    if (!target_element) continue;
+
+                    const image_url = new URL(category.id, import.meta.url);
+                    const image_el  = new Image();
+
+                    image_el.crossOrigin = 'Anonymous';
+                    image_el.src         = image_url.href;
+
+                    image_el.onload = () => {
+                        if (image_el.complete || image_el.complete === undefined) {
+
+                            if (this.internal_state.preloaded_icons != true) {
+                                this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
+
+                                return;
+                            }
+
+                            target_element.appendChild(image_el);
+                        }
+                    };
+                }
+            }
+
+            this.internal_state.preloaded_icons = true;
+        }
+    },
+
+    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); }); },
+
+    watch: {
+
+        /**
+         * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
+         */
+        'data.items': {
+            handler(state: [[string, CategoryItem[]]]) { this.load_category_icons(state); },
+
+            immediate: true,
+            deep: true
         }
     },
 

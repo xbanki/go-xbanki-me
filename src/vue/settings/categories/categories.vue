@@ -6,11 +6,27 @@
         <!-- Main categories //-->
         <div class="categories-parent" v-for="[parent_category, category_items] of data.items" v-bind:key="data.items.indexOf([parent_category, category_items])">
 
-            <!-- Parent category title display //-->
-            <span class="parent-title"> {{ parent_category }} </span>
+            <!-- Render only categories that have child items //-->
+            <div class="parent-item" v-if="get_category_items(category_items).length >= 1">
 
-            <!-- Category icon, name & selector display //-->
-            <div class="parent-child" v-for="item of get_category_items(category_items)" v-bind:key="get_category_items(category_items).indexOf(item)"/>
+                <!-- Parent category title display //-->
+                <span class="item-title"> {{ parent_category }} </span>
+
+                <!-- Category icon, name & selector display //-->
+                <div class="item-child" v-for="item of get_category_items(category_items)" v-bind:key="item.id">
+
+                    <!-- Category item icon display //-->
+                    <div class="child-icon" v-bind:id="item.id">
+                    </div>
+
+                    <!-- Category item name display //-->
+                    <div class="child-name">
+
+                        <!-- Name display element //-->
+                        <span class="name-display"> {{ item.name }} </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 </template>

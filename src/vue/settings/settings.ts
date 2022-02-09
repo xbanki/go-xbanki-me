@@ -42,8 +42,24 @@ export default defineComponent({
             critical_only: false
         };
 
+        const date_time_category: CategoryTuple = [
+            'Date & Time Display',
+            [
+                {
+                    name: 'Date Display',
+                    critical: true,
+                    id: 'date-display-category'
+                },
+                {
+                    name: 'Time Display',
+                    critical: true,
+                    id: 'time-display-category'
+                }
+            ]
+        ];
+
         const categories_data: CategoriesData = {
-            items: []
+            items: [date_time_category]
         };
 
         const state: ComponentState = {
