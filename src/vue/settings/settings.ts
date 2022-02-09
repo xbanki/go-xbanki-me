@@ -8,6 +8,11 @@ import categoriesComponent from '@/vue/settings/categories/categories.vue';
 import modalComponent      from '@/vue/modal/modal.vue';
 
 /**
+ * Helper type to reduce code duplication.
+ */
+type CategoryTuple = [string, CategoryItem[]];
+
+/**
  * Comonent internal state.
  */
 interface ComponentState {

@@ -37,37 +37,17 @@ export interface ComponentData {
      * Component category items.
      * @type {Array<CategoryItem>}
      */
-    items: [[string, CategoryItem[]]];
+    items: [string, CategoryItem[]][];
 }
 
 export default defineComponent({
 
     data() { return { internal_state: { preloaded_icons: false } }; },
 
-    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.preload_category_icons(this.data.items); }); },
-
     methods: {
-        preload_category_icons(items: [[string, CategoryItem[]]]) {
-
-            // @TO-DO(xbanki): Load icons!
-
-            if (!this.internal_state.preloaded_icons) {
-                this.internal_state.preloaded_icons = true;
-                this.$emit('ready');
-            }
-        }
-    },
-
-    watch: {
-
-        /**
-         * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
-         */
-        'data.items': {
-            handler(state: [[string, CategoryItem[]]]) { this.preload_category_icons(state); },
-
-            immediate: true,
-            deep: true
+        get_category_items(items: CategoryItem[]): CategoryItem[] {
+            if (this.state.critical_only) return items.filter(el => el.critical);
+            return items;
         }
     },
 

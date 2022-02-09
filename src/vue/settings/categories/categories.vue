@@ -10,7 +10,7 @@
             <span class="parent-title"> {{ parent_category }} </span>
 
             <!-- Category icon, name & selector display //-->
-            <div class="parent-child" v-for="item of category_items" v-bind:key="category_items.indexOf(item)"/>
+            <div class="parent-child" v-for="item of get_category_items(category_items)" v-bind:key="get_category_items(category_items).indexOf(item)"/>
         </div>
     </main>
 </template>
