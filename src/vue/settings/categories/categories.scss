@@ -1,3 +1,13 @@
+/**
+ * Controls the category "parent" title size, or a section title size.
+ */
+$section-title-size: 20px;
+
+/**
+ * Controls the category child title size.
+ */
+$category-title-size: 18px;
+
 /** 
  * The "categories" component acts as a page navigation bar within the
  * settings component, which transforms based on overall component state,
@@ -8,4 +18,117 @@ main.component-categories {
   background: white;
   padding: 4px;
   width: 228px;
+
+  /**
+   * Category section stuff. Double nested for semantic reasons
+   * relating to Vue.
+   */
+  div.categories-parent div.parent-item {
+    padding-bottom: 16px;
+
+    &:last-of-type { padding-bottom: unset }
+
+    /**
+     * Section title stuff.
+     */
+    span.item-title {
+      line-height: $section-title-size;
+      font-size: $section-title-size;
+      height: $section-title-size;
+      margin-bottom: 8px;
+      font-weight: 600;
+      display: block;
+      width: 100%;
+    }
+
+    /**
+     * Section subsection, which is basically an anchor inside of a settings
+     * inner page, or a title to it.
+     */
+    div.item-child {
+      display: flex;
+      height: 36px;
+
+      &:last-of-type { margin-bottom: unset }
+
+      /**
+       * Icon display section, which also displays connection lines between
+       * critical configuration anchors/ links during initialization.
+       */
+      div.child-icon {
+        flex-direction: column;
+        display: flex;
+        width: 32px;
+
+        /**
+         * Icon display element that doesn't have an `img` tag before render
+         * time, as we dynamically push icons in to the wrapper itself.
+         */
+        div.icon-display {
+          display: block;
+          height: 24px;
+          width: 100%;
+
+          img {
+            display: block;
+            margin: auto;
+          }
+        }
+
+        /**
+         * Icon line connector displays, which get turned off if we're not initializing.
+         */
+        div.icon-bottom, div.icon-top {
+          overflow: hidden;
+          width: 100%;
+          flex: 1;
+
+          &.icon-bottom { padding-top: 2px }
+          &.icon-top { padding-bottom: 2px }
+
+          /**
+           * Line display element itself.
+           */
+          hr.bottom-line, hr.top-line {
+            background: var(--color);
+            margin: 0 auto;
+            display: none;
+            border: none;
+            height: 100%;
+            width: 1px;
+          }
+        }
+      }
+
+      /**
+       * Section label wrapper responsible for the positioning of itself.
+       */
+       div.child-name {
+        padding: 10px 6px;
+        flex: 1;
+
+        /**
+         * Actual anchor / link label display.
+         */
+        span.name-display {
+          line-height: $category-title-size;
+          font-size: $category-title-size;
+          height: $category-title-size;
+          display: block;
+        }
+      }
+
+      /**
+       * Critical only state stylings, or stylings which we show on initialization & re-initialization.
+       */
+       &.critical-only {
+
+        // Turn on connection lines
+        div.child-icon div.icon-bottom hr.bottom-line, div.child-icon div.icon-top hr.top-line { display: block }
+
+        &:last-of-type { div.child-icon div.icon-bottom hr.bottom-line { display: none } }
+        &:first-of-type { div.child-icon div.icon-top hr.top-line { display: none } }
+      }
+    }
+  }
 }
