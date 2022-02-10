@@ -38,7 +38,7 @@ export interface CategoryItem {
      * Category display icon element or URL.
      * @type {string}
      */
-    icon: string;
+    icon?: string;
 
     /**
      * Category identifier.
@@ -76,9 +76,9 @@ export default defineComponent({
                 for (const category of categories) {
                     const target_element = document.getElementById(category.id) as HTMLImageElement;
 
-                    if (!target_element) continue;
+                    if (!target_element || target_element.childElementCount >= 1) continue;
 
-                    const image_url = new URL(category.id, import.meta.url);
+                    const image_url = category.icon ? new URL(category.icon, import.meta.url) : new URL('/img/placeholder.png', import.meta.url);
                     const image_el  = new Image();
 
                     image_el.crossOrigin = 'Anonymous';
@@ -87,12 +87,11 @@ export default defineComponent({
                     image_el.onload = () => {
                         if (image_el.complete || image_el.complete === undefined) {
 
-                            if (this.internal_state.preloaded_icons != true) {
+                            if (!this.internal_state.preloaded_icons) {
                                 this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
 
                                 return;
                             }
-
                             target_element.appendChild(image_el);
                         }
                     };
