@@ -98,6 +98,20 @@ export default defineComponent({
                 }
             }
 
+            // Handle queued items and signal preload completion
+            if (this.internal_state.image_queue.length >= 1) while (this.internal_state.image_queue.length <= 0) {
+
+                const target_icon = this.internal_state.image_queue.Dequeue();
+
+                if (!target_icon) break;
+
+                const target_element = document.getElementById(target_icon.id);
+
+                if (!target_element) continue;
+
+                target_element.appendChild(target_icon.el);
+            }
+
             this.internal_state.preloaded_icons = true;
         }
     },
