@@ -60,9 +60,64 @@ export interface ComponentData {
     items: [string, CategoryItem[]][];
 }
 
+/**
+ * Internal Queue item used for icon pre-loading.
+ * @private
+ */
+interface QueueIcon {
+
+    /**
+     * Target element ID which to plug this icon into.
+     * @type {string}
+     */
+    id: string;
+
+    /**
+     * Loaded & assembled `Image` element.
+     * @type {Image}
+     */
+    el: HTMLImageElement;
+}
+
+/**
+ * Component private state descriptor.
+ * @private
+ */
+interface InternalComponentState {
+
+    /**
+     * Describes wether or not we have succesfully pre-loaded icons by calling
+     * `get_category_items`.
+     * @type {boolean}
+     */
+    preloaded_icons: boolean;
+
+    /**
+     * Image queue populated by `Image` elements which all get plugged in to the
+     * DOM after everything has finished loading.
+     * @type {Queue<QueueIcon>}
+     */
+    image_queue: Queue<QueueIcon>;
+
+    /**
+     * Cache of all already loaded icons to avoid loading pre-existing icons multiple
+     * times.
+     * @type {Map<string, HTMLImageElement>}
+     */
+    icon_cache: Map<string, HTMLImageElement>;
+}
+
 export default defineComponent({
 
-    data() { return { internal_state: { preloaded_icons: false, image_queue: new Queue<{id: string, el: HTMLImageElement}>() } }; },
+    data() {
+        const internal_state: InternalComponentState = {
+            icon_cache: new Map<string, HTMLImageElement>(),
+            image_queue: new Queue<QueueIcon>(),
+            preloaded_icons: false
+        };
+
+        return { internal_state };
+    },
 
     methods: {
         get_category_items(items: CategoryItem[]) {
@@ -74,6 +129,10 @@ export default defineComponent({
             for (const [parent, categories] of items) {
 
                 for (const category of categories) {
+
+                    // Skip 
+                    if (this.internal_state.icon_cache.has(category.id)) continue;
+
                     const target_element = document.getElementById(category.id) as HTMLImageElement;
 
                     if (!target_element || target_element.childElementCount >= 1) continue;
@@ -86,15 +145,14 @@ export default defineComponent({
 
                     image_el.onload = () => {
                         if (image_el.complete || image_el.complete === undefined) {
+                            this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
 
-                            if (!this.internal_state.preloaded_icons) {
-                                this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
-
-                                return;
-                            }
-                            target_element.appendChild(image_el);
+                            // Cache image so we don't set it again
+                            this.internal_state.icon_cache.set(category.id, image_el);
                         }
                     };
+
+                    image_el.onerror = (err) => console.error(`Failed loading category icon.\n\n${err}`);
                 }
             }
 
@@ -112,7 +170,11 @@ export default defineComponent({
                 target_element.appendChild(target_icon.el);
             }
 
-            this.internal_state.preloaded_icons = true;
+            // Emit state change
+            if (!this.internal_state.preloaded_icons) {
+                this.internal_state.preloaded_icons = true;
+                this.$emit('ready');
+            }
         }
     },
 
