@@ -1,6 +1,7 @@
 import { defineComponent } from 'vue';
 
-import Queue from '@/lib/queue';
+import config from '@/lib/config';
+import Queue  from '@/lib/queue';
 
 /**
  * Component internal state.
@@ -104,14 +105,14 @@ interface InternalComponentState {
      * times.
      * @type {Map<string, HTMLImageElement>}
      */
-    icon_cache: Map<string, HTMLImageElement>;
+    icon_cache: Array<string>;
 }
 
 export default defineComponent({
 
     data() {
         const internal_state: InternalComponentState = {
-            icon_cache: new Map<string, HTMLImageElement>(),
+            icon_cache: [],
             image_queue: new Queue<QueueIcon>(),
             preloaded_icons: false
         };
@@ -125,13 +126,18 @@ export default defineComponent({
             return items;
         },
 
-        load_category_icons(items: [string, CategoryItem[]][]) {
+        async load_category_icons(items: [string, CategoryItem[]][]) {
+
             for (const [parent, categories] of items) {
 
-                for (const category of categories) {
+                console.log(config.dev_mode);
 
-                    // Skip 
-                    if (this.internal_state.icon_cache.has(category.id)) continue;
+                if (config.dev_mode) console.log(`Loading icons for category: ${parent}`);
+
+                for await (const category of categories) {
+
+                    // Skip cached image
+                    if (this.internal_state.icon_cache.find((el) => el == category.id)) continue;
 
                     const target_element = document.getElementById(category.id) as HTMLImageElement;
 
@@ -143,21 +149,39 @@ export default defineComponent({
                     image_el.crossOrigin = 'Anonymous';
                     image_el.src         = image_url.href;
 
-                    image_el.onload = () => {
-                        if (image_el.complete || image_el.complete === undefined) {
-                            this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
+                    // Promiseify so we can wait for image loading correctly
+                    await new Promise<void>(
+
+                        // Res: Resolve promise, Rej: Reject promise
+                        (Res: () => void, Rej: () => void) => {
 
                             // Cache image so we don't set it again
-                            this.internal_state.icon_cache.set(category.id, image_el);
-                        }
-                    };
+                            this.internal_state.icon_cache.push(category.id);
 
-                    image_el.onerror = (err) => console.error(`Failed loading category icon.\n\n${err}`);
+                            // Loaded image stuff
+                            image_el.onload = () => {
+                                if (image_el.complete || image_el.complete === undefined) {
+                                    this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
+
+                                    return Res();
+                                }
+                            };
+
+                            // Failure stuff
+                            image_el.onerror = (err) => {
+                                this.internal_state.icon_cache.splice(this.internal_state.icon_cache.indexOf(category.id, 1));
+
+                                if (config.dev_mode) console.error(`Failed loading category icon.\n\n${err}`);
+
+                                return Rej();
+                            };
+                        }
+                    );
                 }
             }
 
             // Handle queued items and signal preload completion
-            if (this.internal_state.image_queue.length >= 1) while (this.internal_state.image_queue.length <= 0) {
+            if (this.internal_state.image_queue.length >= 1) while (this.internal_state.image_queue.length >= 0) {
 
                 const target_icon = this.internal_state.image_queue.Dequeue();
 
