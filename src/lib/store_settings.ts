@@ -1,6 +1,16 @@
 import { FormatToken } from '@/vue/init_clock/init_clock';
 
 /**
+ * Internal state for all sub-category items.
+ * @see {ModuleState}
+ */
+ export enum CategoryItemState {
+    INITIAL = 'STATE_INITIAL',
+    VISITED = 'STATE_VISITED',
+    ACTIVE = 'STATE_ACTIVE'
+}
+
+/**
  * Windows-like background image display format, to fit
  * the viewport how the user wants.
  * @see {ModuleState}
@@ -78,6 +88,15 @@ export enum AvaillableThemes {
 export interface ModuleState {
 
     /**
+     * Category item state which controls display styles for
+     * all sub-categories, giving visual feedback for items that
+     * have been visited, are active and are yet to be visited in
+     * critical-only mode.
+     * @enum {CategoryItemState}
+     */
+    critical_only_categories_state: Record<string, CategoryItemState>;
+
+    /**
      * Background image fitting method.
      * @enum {BackgroundDisplayMethod}
      */
@@ -147,7 +166,7 @@ export interface ModuleState {
      * Time display construction format.
      * @type {Array<FormatToken> | undefined>}
      */
-     time_format_active: Array<FormatToken> | undefined;
+    time_format_active: Array<FormatToken> | undefined;
 
      /**
      * Unused date format tokens.
@@ -159,7 +178,7 @@ export interface ModuleState {
      * Unused time format tokens.
      * @type {Array<FormatToken> | undefined>}
      */
-     time_format_inactive: Array<FormatToken> | undefined;
+    time_format_inactive: Array<FormatToken> | undefined;
 }
 
 const store: { state: ModuleState, [name: string]: any } = {
@@ -180,7 +199,8 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_format_inactive: undefined,
         time_format_inactive: undefined,
         date_format_active: undefined,
-        time_format_active: undefined
+        time_format_active: undefined,
+        critical_only_categories_state: {}
     },
 
     mutations: {
@@ -210,7 +230,9 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_DATE_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_active = payload,
 
-        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload
+        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload,
+
+        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: any, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload
     },
 
     actions: {
@@ -347,6 +369,12 @@ const store: { state: ModuleState, [name: string]: any } = {
 
                 context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
             }
+        },
+
+        UpdateCriticalCategoriesState: (context: any, payload: { target: string, state: CategoryItemState }) => {
+            if (!payload.target || !payload.state) return;
+
+            context.commit('UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', Object.assign(context.state.critical_only_categories_state, { [payload.target]: payload.state }));
         }
     }
 };

@@ -1,7 +1,11 @@
+import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
+
+import { CategoryItemState } from '@/lib/store_settings';
 
 import config from '@/lib/config';
 import Queue  from '@/lib/queue';
+import store  from '@/lib/store';
 
 /**
  * Component internal state.
@@ -106,15 +110,22 @@ interface InternalComponentState {
      * @type {Map<string, HTMLImageElement>}
      */
     icon_cache: Array<string>;
+
+    /**
+     * Cache of all available category items so we can work with critical state correctly.
+     * @type {Array<CategoryItem>}
+     */
+    all_category_items: Array<CategoryItem>;
 }
 
 export default defineComponent({
 
     data() {
         const internal_state: InternalComponentState = {
-            icon_cache: [],
             image_queue: new Queue<QueueIcon>(),
-            preloaded_icons: false
+            preloaded_icons: false,
+            all_category_items: [],
+            icon_cache: []
         };
 
         return { internal_state };
@@ -122,6 +133,12 @@ export default defineComponent({
 
     methods: {
         get_category_items(items: CategoryItem[]) {
+
+            // Compare cache size to determine wether we need to populate it or not
+            if (items.length != this.internal_state.all_category_items.length)  items.forEach(
+                (el) => { if (!this.internal_state.all_category_items.includes(el)) this.internal_state.all_category_items.push(el); }
+            );
+
             if (this.state.critical_only) return items.filter(el => el.critical);
             return items;
         },
@@ -129,8 +146,6 @@ export default defineComponent({
         async load_category_icons(items: [string, CategoryItem[]][]) {
 
             for (const [parent, categories] of items) {
-
-                console.log(config.dev_mode);
 
                 if (config.dev_mode) console.log(`Loading icons for category: ${parent}`);
 
@@ -199,7 +214,31 @@ export default defineComponent({
                 this.internal_state.preloaded_icons = true;
                 this.$emit('ready');
             }
-        }
+        },
+
+        populate_category_states() {
+            let first_iteration = true;
+
+            for (const item of this.internal_state.all_category_items) {
+                const target_item = this.settingsStore.critical_only_categories_state[item.id] as CategoryItemState;
+
+                if (!target_item) {
+                    if (first_iteration) {
+                        store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.ACTIVE });
+
+                        first_iteration = false;
+
+                        continue;
+                    }
+
+                    store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
+
+                    continue;
+                }
+            }
+        },
+
+        get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; }
     },
 
     mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); }); },
@@ -211,7 +250,15 @@ export default defineComponent({
          */
         'data.items': {
             handler(state: [[string, CategoryItem[]]]) { this.load_category_icons(state); },
+            immediate: true,
+            deep: true
+        },
 
+        /**
+         * Loads all critical-only progress state.
+         */
+        'state.critical_only': {
+            handler(state: boolean) { if (state) this.populate_category_states(); },
             immediate: true,
             deep: true
         }
@@ -232,6 +279,8 @@ export default defineComponent({
             validator: (value: any) => (value != undefined && typeof value == 'object')
         }
     },
+
+    computed: mapState(['settingsStore']),
 
     emits: ['ready', 'clicked']
 });
