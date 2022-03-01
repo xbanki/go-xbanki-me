@@ -22,6 +22,6 @@ export default defineConfig(
             }
         },
 
-        server: { open: true }
+        server: { open: true, strictPort: true }
     }
 );
