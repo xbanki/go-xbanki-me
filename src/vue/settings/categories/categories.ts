@@ -238,6 +238,31 @@ export default defineComponent({
             }
         },
 
+        handle_category_click(item: CategoryItem) {
+
+            if (this.state.critical_only) {
+                const clicked_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => el ==item.id);
+                const clicked_category_state = this.settingsStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
+
+                const active_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => this.settingsStore.critical_only_categories_state[el] == CategoryItemState.ACTIVE);
+                const active_category_state = this.settingsStore.critical_only_categories_state[active_category_key as string] as CategoryItemState | undefined;
+
+                if (clicked_category_key == active_category_key || !clicked_category_state || !active_category_state) return;
+
+                if (clicked_category_state == CategoryItemState.INITIAL) {
+                    const clicked_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const active_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(active_category_key as string);
+
+                    if (Math.abs(clicked_index - active_index) >= 2 || Math.abs(active_index - clicked_index) >= 2) return;
+                }
+
+                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
+                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
+            }
+
+            this.$emit('clicked', item);
+        },
+
         get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; }
     },
 

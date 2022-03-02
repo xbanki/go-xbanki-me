@@ -15,6 +15,7 @@
                 <!-- Category icon, name & selector display //-->
                 <div class="item-child"
                     v-for="item of get_category_items(category_items)"
+                    v-on:click="handle_category_click(item)"
                     v-bind:key="item.id"
                     v-bind:class="[
                         {
@@ -29,9 +30,7 @@
                 >
 
                     <!-- Category item icon display //-->
-                    <div class="child-icon" v-bind:class="{
-                        
-                    }">
+                    <div class="child-icon">
 
                         <!-- Top connection line showed during initialization //-->
                         <div class="icon-top">
