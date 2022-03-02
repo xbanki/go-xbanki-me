@@ -2,9 +2,12 @@ import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
 import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem } from '@/vue/settings/categories/categories';
+import { ComponentState as PagesState } from '@/vue/settings/pages/pages';
 import { verify_localstorage_availlability } from '@/lib/persistence';
 
+
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
+import pagesComponent      from '@/vue/settings/pages/pages.vue';
 import modalComponent      from '@/vue/modal/modal.vue';
 
 /**
@@ -32,6 +35,11 @@ interface ComponentState {
      * Categories sub-component data.
      */
     categories_data: CategoriesData;
+
+    /**
+     * Pages sub-component state.
+     */
+    pages_state: PagesState;
 }
 
 export default defineComponent({
@@ -104,10 +112,13 @@ export default defineComponent({
             items: [appearance_category, date_time_category, miscellaneous_category]
         };
 
+        const pages_state: PagesState = { active_category: undefined };
+
         const state: ComponentState = {
             component_display_state: 'STATE_SETTINGS',
             categories_state,
-            categories_data
+            categories_data,
+            pages_state
         };
 
         return { state };
@@ -115,7 +126,8 @@ export default defineComponent({
 
     components: {
         categoriesComponent,
-        modalComponent
+        modalComponent,
+        pagesComponent
     },
 
     mounted() { this.$nextTick(() => this.discriminate_component_state()); },
@@ -129,6 +141,12 @@ export default defineComponent({
 
                 return;
             }
+        },
+
+        handle_category_clicked(source: CategoryItem) {
+            if (this.state.pages_state.active_category == source.id) return;
+
+            this.state.pages_state.active_category = source.id;
         }
     },
 
