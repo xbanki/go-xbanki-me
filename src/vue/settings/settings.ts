@@ -42,9 +42,30 @@ export default defineComponent({
             critical_only: false
         };
 
+        const appearance_category: CategoryTuple = [
+            'Appearance',
+            [
+                {
+                    name: 'Theme',
+                    critical: false,
+                    id: 'theme-category'
+                },
+                {
+                    name: 'Background Fit',
+                    critical: true,
+                    id: 'background-fit-category'
+                }
+            ]
+        ];
+
         const date_time_category: CategoryTuple = [
             'Date & Time Display',
             [
+                {
+                    name: 'Time Convention',
+                    critical: true,
+                    id: 'time-convention-category'
+                },
                 {
                     name: 'Date Display',
                     critical: true,
@@ -58,8 +79,29 @@ export default defineComponent({
             ]
         ];
 
+        const miscellaneous_category: CategoryTuple = [
+            'Miscellaneous',
+            [
+                {
+                    name: 'Changelog',
+                    critical: false,
+                    id: 'changelog-category'
+                },
+                {
+                    name: 'Privacy & Safety',
+                    critical: false,
+                    id: 'privacy-and-safety-category'
+                },
+                {
+                    name: 'Delete Data',
+                    critical: false,
+                    id: 'delete-data-category'
+                }
+            ]
+        ];
+
         const categories_data: CategoriesData = {
-            items: [date_time_category]
+            items: [appearance_category, date_time_category, miscellaneous_category]
         };
 
         const state: ComponentState = {
