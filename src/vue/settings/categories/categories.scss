@@ -123,10 +123,17 @@ main.component-categories {
       /**
        * Critical only state stylings, or stylings which we show on initialization & re-initialization.
        */
-       &.critical-only {
+      &.critical-only {
+        &.state-initial span.name-display { opacity: 32% }
 
-        // Turn on connection lines
-        div.child-icon div.icon-bottom hr.bottom-line, div.child-icon div.icon-top hr.top-line { display: block }
+        &.state-visited span.name-display { opacity: 72% }
+
+        div.child-icon div.icon-bottom hr.bottom-line, div.child-icon div.icon-top hr.top-line {
+          background: var(--color);
+          display: block;
+
+          &.faint { opacity: 16% }
+        }
 
         &:last-of-type { div.child-icon div.icon-bottom hr.bottom-line { display: none } }
         &:first-of-type { div.child-icon div.icon-top hr.top-line { display: none } }

@@ -263,6 +263,17 @@ export default defineComponent({
             this.$emit('clicked', item);
         },
 
+        get_next_category_state(key: string): string | undefined {
+            const target_keys = Object.keys(this.settingsStore.critical_only_categories_state);
+            const target_item_index = target_keys.indexOf(key);
+
+            if (target_item_index != -1 && !(target_item_index >= target_keys.length)) {
+                return this.settingsStore.critical_only_categories_state[target_keys[target_item_index + 1]];
+            }
+
+            return undefined;
+        },
+
         get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; }
     },
 

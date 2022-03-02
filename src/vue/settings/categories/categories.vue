@@ -36,7 +36,7 @@
                         <div class="icon-top">
 
                             <!-- Connection line display element //-->
-                            <hr class="top-line"/>
+                            <hr class="top-line" v-bind:class="{ faint: get_category_state(item.id) == 'STATE_INITIAL'}"/>
                         </div>
 
                         <!-- Icon container which will get populated at render time //-->
@@ -46,7 +46,7 @@
                         <div class="icon-bottom">
 
                             <!-- Connection line display element //-->
-                            <hr class="bottom-line"/>
+                            <hr class="bottom-line" v-bind:class="{ faint: (get_category_state(item.id) == 'STATE_INITIAL' || get_next_category_state(item.id) == 'STATE_INITIAL') }"/>
                         </div>
                     </div>
 
