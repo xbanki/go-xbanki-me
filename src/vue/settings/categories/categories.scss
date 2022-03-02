@@ -8,6 +8,11 @@ $section-title-size: 20px;
  */
 $category-title-size: 18px;
 
+/**
+ * Version display text size.
+ */
+$application-version-size: 14px;
+
 /** 
  * The "categories" component acts as a page navigation bar within the
  * settings component, which transforms based on overall component state,
@@ -139,5 +144,20 @@ main.component-categories {
         &:first-of-type { div.child-icon div.icon-top hr.top-line { display: none } }
       }
     }
+  }
+
+  /**
+   * Application last used version.
+   */
+  span.categories-version {
+    margin-top: $application-version-size / 2;
+    line-height: $application-version-size;
+    font-size: $application-version-size;
+    height: $application-version-size;
+    user-select: none;
+    text-align: end;
+    display: block;
+    padding: 4px;
+    opacity: 24%;
   }
 }

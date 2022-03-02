@@ -59,6 +59,10 @@
                 </div>
             </div>
         </div>
+
+        <span class="categories-version">
+            version: {{ __metaData.last_used_version }}
+        </span>
     </main>
 </template>
 

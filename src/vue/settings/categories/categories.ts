@@ -316,7 +316,7 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['settingsStore']),
+    computed: mapState(['settingsStore', '__metaData']),
 
     emits: ['ready', 'clicked']
 });
