@@ -132,7 +132,7 @@ main.component-categories {
           background: var(--color);
           display: block;
 
-          &.faint { opacity: 16% }
+          &.faint { opacity: 32% }
         }
 
         &:last-of-type { div.child-icon div.icon-bottom hr.bottom-line { display: none } }
