@@ -144,9 +144,21 @@ export default defineComponent({
         },
 
         handle_category_clicked(source: CategoryItem) {
-            if (this.state.pages_state.active_category == source.id) return;
+            let target_match_name: string | undefined = undefined;
 
-            this.state.pages_state.active_category = source.id;
+            for (const [name, contents] of this.state.categories_data.items) {
+
+                // Search through parent category children for a match
+                const target_search = contents.find((el) => el.id == source.id);
+
+                if (target_search != undefined) {
+                    target_match_name = name;
+
+                    break;
+                }
+            }
+
+            if (typeof target_match_name == 'string' && this.state.pages_state.active_category != target_match_name) this.state.pages_state.active_category = target_match_name;
         }
     },
 
