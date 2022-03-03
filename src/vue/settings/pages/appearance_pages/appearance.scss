@@ -1,0 +1,8 @@
+/**
+ * The appearance settings page is a mostly non-critical section which controls many of the
+ * visual styles of the application. For now, we only allow switching the app theme & background fit.
+ */
+main.component-appearance {
+  flex-direction: column;
+  display: flex;
+}

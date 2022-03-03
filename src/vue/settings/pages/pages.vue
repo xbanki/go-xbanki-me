@@ -1,7 +1,9 @@
 <template>
 
     <!-- Dynamically rendered settings page component //-->
-    <main class="component-pages"/>
+    <main class="component-pages">
+        <component v-bind:is="state.active_category"/>
+    </main>
 </template>
 
 <script lang="ts" src="./pages.ts"></script>

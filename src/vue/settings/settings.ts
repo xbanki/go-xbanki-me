@@ -67,7 +67,7 @@ export default defineComponent({
         ];
 
         const date_time_category: CategoryTuple = [
-            'Date & Time Display',
+            'Date & Time',
             [
                 {
                     name: 'Time Convention',

@@ -1,0 +1,9 @@
+/**
+ * The Date & Time settings page is extremely critical to the functionality of the application,
+ * as we do not make any assumptions on where the user is in the world. We also enable format
+ * mutation via draggable 
+ */
+main.component-date-and-time {
+  flex-direction: column;
+  display: flex;
+}
