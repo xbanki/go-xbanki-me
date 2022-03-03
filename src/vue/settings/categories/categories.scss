@@ -20,7 +20,9 @@ $application-version-size: 14px;
  */
 main.component-categories {
   box-sizing: border-box;
+  flex-direction: column;
   background: white;
+  display: flex;
   padding: 4px;
   width: 228px;
 
@@ -150,11 +152,11 @@ main.component-categories {
    * Application last used version.
    */
   span.categories-version {
-    margin-top: $application-version-size / 2;
     line-height: $application-version-size;
     font-size: $application-version-size;
     height: $application-version-size;
     user-select: none;
+    margin-top: auto;
     text-align: end;
     display: block;
     padding: 4px;

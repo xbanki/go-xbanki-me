@@ -1,7 +1,9 @@
 <template>
 
     <!-- Dynamically rendered settings page component //-->
-    <component :is="state.active_category"/>
+    <main class="component-pages">
+        <component :is="state.active_category"/>
+    </main>
 </template>
 
 <script lang="ts" src="./pages.ts"></script>
