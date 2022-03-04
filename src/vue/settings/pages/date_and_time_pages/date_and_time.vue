@@ -1,9 +1,32 @@
 <template>
     <!-- Date & Time pages root element //-->
     <main class="component-date-and-time">
-        <time-convention-page-component/>
-        <date-display-page-component/>
-        <time-display-page-component/>
+
+        <!-- Date & Time pages titlebar //-->
+        <section class="date-and-time-bar">
+
+            <!-- Date & Time title display itself //-->
+            <span class="bar-title"> Date & Time </span>
+        </section>
+
+        <!-- Date & Time pages content wrapper //-->
+        <section class="date-and-time-content">
+
+            <!-- Clock time convention display option section //-->
+            <div class="content-item">
+                <time-convention-page-component/>
+            </div>
+
+            <!-- Date display format option section //-->
+            <div class="content-item">
+                <date-display-page-component/>
+            </div>
+
+            <!-- Time display format option section //-->
+            <div class="content-item">
+                <time-display-page-component/>
+            </div>
+        </section>
     </main>
 </template>
 

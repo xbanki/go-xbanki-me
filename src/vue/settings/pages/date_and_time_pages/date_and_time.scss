@@ -1,9 +1,65 @@
+@use "sass:math";
+
+/**
+ * Titlebar & title display sizing style.
+ */
+$title-size: 48px;
+
+/**
+ * Overall component padding.
+ */
+$component-padding: 32px;
+
 /**
  * The Date & Time settings page is extremely critical to the functionality of the application,
  * as we do not make any assumptions on where the user is in the world. We also enable format
  * mutation via draggable 
  */
 main.component-date-and-time {
+  padding: $component-padding - 4px;
   flex-direction: column;
   display: flex;
+
+  /**
+   * If we were to ever support mobile, we would have the infrastructure ready for mobile navigation
+   * controls for the settings view.
+   */
+   section.date-and-time-bar {
+    flex-direction: row;
+    height: $title-size;
+    display: flex;
+    width: 100%;
+
+    /**
+     * Date & Time bar title element.
+     */
+    span.bar-title {
+      font-size: math.div($title-size, 2);
+      line-height: $title-size;
+      height: $title-size;
+      font-weight: 700;
+      display: block;
+      flex: 1;
+    }
+  }
+
+  /**
+   * Date & Time page content wrapper where all the sections will be passed into.
+   */
+  section.date-and-time-content {
+    padding-top: $component-padding;
+    flex-direction: column;
+    height: fit-content;
+    display: flex;
+    width: 100%;
+
+    /**
+     * Content "item", or section dividing box so we can correctly pad all page sections correctly.
+     */
+    div.content-item {
+      padding-top: math.div($component-padding, 2);
+
+      &:first-of-type { padding-top: unset }
+    }
+  }
 }
