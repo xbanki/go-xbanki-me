@@ -3,9 +3,9 @@
  * displays different self-contained pages of settings options.
  */
 main.component-pages {
-  border-left: 1px solid lightgray;
+  border-left: 1px solid var(--accent);
   flex-direction: column;
-  background: white;
+  background: var(--bg);
   display: flex;
   padding: 4px;
   height: 100%;

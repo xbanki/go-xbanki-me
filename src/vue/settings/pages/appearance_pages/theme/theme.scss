@@ -30,7 +30,7 @@ main.component-theme {
    * Parent element for theme options themselves.
    */
   section.theme-selections {
-    background: lightgray;
+    background: var(--accent);
     flex-direction: row;
     width: fit-content;
     display: flex;

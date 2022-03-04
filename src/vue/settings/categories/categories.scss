@@ -21,7 +21,7 @@ $application-version-size: 14px;
 main.component-categories {
   box-sizing: border-box;
   flex-direction: column;
-  background: white;
+  background: var(--bg);
   display: flex;
   padding: 4px;
   width: 228px;
