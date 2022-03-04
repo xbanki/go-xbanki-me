@@ -24,7 +24,7 @@ main.component-date-and-time {
    * If we were to ever support mobile, we would have the infrastructure ready for mobile navigation
    * controls for the settings view.
    */
-   section.date-and-time-bar {
+  section.date-and-time-bar {
     flex-direction: row;
     height: $title-size;
     display: flex;

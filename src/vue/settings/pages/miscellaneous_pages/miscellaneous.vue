@@ -2,9 +2,32 @@
 
     <!-- Miscellaneous pages root element //-->
     <main class="component-miscellaneous">
-        <privacy-and-safety-page-component/>
-        <changelog-page-component/>
-        <delete-data-page-component/>
+
+        <!-- Miscellaneous pages titlebar //-->
+        <section class="miscellaneous-bar">
+
+            <!-- Miscellaneous title display itself //-->
+            <span class="bar-title"> Miscellaneous </span>
+        </section>
+
+        <!-- Miscellaneous pages content wrapper //-->
+            <section class="miscellaneous-content">
+
+                <!-- Privacy & safety statement option section //-->
+                <div class="content-item">
+                    <privacy-and-safety-page-component/>
+                </div>
+
+                <!-- Application changelog option section //-->
+                <div class="content-item">
+                    <changelog-page-component/>
+                </div>
+
+                <!-- User persisted data delete option section //-->
+                <div class="content-item">
+                    <delete-data-page-component/>
+                </div>
+            </section>
     </main>
 </template>
 

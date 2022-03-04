@@ -15,8 +15,8 @@ $component-padding: 32px;
  * visual styles of the application. For now, we only allow switching the app theme & background fit.
  */
 main.component-appearance {
-  flex-direction: column;
   padding: $component-padding - 4px;
+  flex-direction: column;
   display: flex;
 
   /**
