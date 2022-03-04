@@ -4,8 +4,11 @@
  */
 main.component-pages {
   border-left: 1px solid lightgray;
+  flex-direction: column;
   background: white;
   display: flex;
   padding: 4px;
+  height: 100%;
+  width: 100%;
   flex: 1;
 }

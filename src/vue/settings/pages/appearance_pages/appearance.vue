@@ -2,8 +2,27 @@
 
     <!-- Appearance pages root element //-->
     <main class="component-appearance">
-        <background-fit-page-component/>
-        <theme-page-component/>
+
+        <!-- Appearance pages titlebar //-->
+        <section class="appearance-bar">
+
+            <!-- Appearance title display itself //-->
+            <span class="bar-title"> Appearance </span>
+        </section>
+
+        <!-- Appearance pages content wrapper //-->
+        <section class="appearance-content">
+
+            <!-- Application theme option section //-->
+            <div class="content-item">
+                <theme-page-component/>
+            </div>
+
+            <!-- Application background fit style //-->
+            <div class="content-item">
+                <background-fit-page-component/>
+            </div>
+        </section>
     </main>
 </template>
 
