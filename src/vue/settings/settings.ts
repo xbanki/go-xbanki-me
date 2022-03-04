@@ -2,13 +2,14 @@ import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
 import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem } from '@/vue/settings/categories/categories';
-import { ComponentState as PagesState } from '@/vue/settings/pages/pages';
-import { verify_localstorage_availlability } from '@/lib/persistence';
-
+import { ComponentState as PagesState }                                                     from '@/vue/settings/pages/pages';
+import { verify_localstorage_availlability }                                                from '@/lib/persistence';
 
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
 import pagesComponent      from '@/vue/settings/pages/pages.vue';
 import modalComponent      from '@/vue/modal/modal.vue';
+
+import { version } from '~/package.json';
 
 /**
  * Helper type to reduce code duplication.
@@ -108,9 +109,9 @@ export default defineComponent({
             ]
         ];
 
-        const categories_data: CategoriesData = {
-            items: [appearance_category, date_time_category, miscellaneous_category]
-        };
+        const items: CategoryTuple[] = [appearance_category, date_time_category, miscellaneous_category];
+
+        const categories_data: CategoriesData = { version,  items };
 
         const pages_state: PagesState = { active_category: undefined };
 

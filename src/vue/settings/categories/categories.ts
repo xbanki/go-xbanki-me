@@ -63,6 +63,12 @@ export interface ComponentData {
      * @type {Array<CategoryItem>}
      */
     items: [string, CategoryItem[]][];
+
+    /**
+     * Valid semver representation of the application version.
+     * @ype {string}
+     */
+    version: string;
 }
 
 /**
@@ -316,7 +322,7 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['settingsStore', '__metaData']),
+    computed: mapState(['settingsStore']),
 
     emits: ['ready', 'clicked']
 });
