@@ -1,0 +1,74 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * The "Theme" option allows the user to specify which theme they want to use. These themes are
+ * light, dark & automatic, which, in other words, matches the current Operating System theme
+ * if detection is supported.
+ */
+main.component-theme {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.theme-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Parent element for theme options themselves.
+   */
+  section.theme-selections {
+    background: lightgray;
+    flex-direction: row;
+    width: fit-content;
+    display: flex;
+    padding: 4px;
+    height: 72px;
+
+    /**
+     * Individual selection bounding box.
+     */
+    div.selections-item {
+      flex-direction: column;
+      margin-right: 8px;
+      display: flex;
+      height: 100%;
+      width: 128px;
+
+      &:last-of-type { margin-right: unset }
+
+      /**
+       * Input button, or in the future icon centering styles.
+       */
+      input {
+        margin: auto;
+        flex: 1;
+      }
+
+      /**
+       * Icon description label.
+       */
+      label {
+        text-align: center;
+        line-height: 14px;
+        font-size: 14px;
+        margin-top: 4px;
+        display: block;
+        height: 14px;
+        width: 100%;
+      }
+    }
+  }
+}
