@@ -1,5 +1,5 @@
-import { mapState }        from 'vuex';
-import { defineComponent } from 'vue';
+import { mapState }                  from 'vuex';
+import { defineComponent, computed } from 'vue';
 
 import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem } from '@/vue/settings/categories/categories';
 import { ComponentState as PagesState }                                                     from '@/vue/settings/pages/pages';
@@ -162,6 +162,8 @@ export default defineComponent({
             if (typeof target_match_name == 'string' && this.state.pages_state.active_category != target_match_name) this.state.pages_state.active_category = target_match_name;
         }
     },
+
+    provide() { return { critical_only: computed(() => this.state.categories_state.critical_only) }; },
 
     computed: mapState(['eventBusStore', '__metaData'])
 });

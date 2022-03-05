@@ -1,7 +1,7 @@
 <template>
 
     <!-- Theme category page root element //-->
-    <main class="component-theme">
+    <main class="component-theme" v-if="!critical_only || critical_only && data.is_critical">
 
         <!-- Theme component title display //-->
         <span class="theme-title"> Application Theme </span>

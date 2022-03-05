@@ -141,7 +141,7 @@ export default defineComponent({
         get_category_items(items: CategoryItem[]) {
 
             // Compare cache size to determine wether we need to populate it or not
-            if (items.length != this.internal_state.all_category_items.length)  items.forEach(
+            if (items.length != this.internal_state.all_category_items.length) items.forEach(
                 (el) => { if (!this.internal_state.all_category_items.includes(el)) this.internal_state.all_category_items.push(el); }
             );
 
