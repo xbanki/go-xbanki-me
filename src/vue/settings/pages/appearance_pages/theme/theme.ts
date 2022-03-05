@@ -1,4 +1,4 @@
-import { mapState, Store }        from 'vuex';
+import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
 
 import { AvaillableThemes, ModuleState } from '@/lib/store_settings';
@@ -20,7 +20,7 @@ interface ComponentState {
 /**
  * Component data internal description interface.
  */
- interface ComponentData {
+interface ComponentData {
 
     /**
      * Denotes if this section is critical or not.

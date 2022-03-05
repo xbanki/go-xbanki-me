@@ -1,0 +1,77 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * The "Background Fit" option controls how the background image is displayed.
+ */
+main.component-background-fit {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.background-fit-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Parent element for theme options themselves.
+   */
+  section.background-fit-selections {
+    background: var(--accent);
+    flex-direction: row;
+    width: fit-content;
+    display: flex;
+    padding: 4px;
+    height: 72px;
+
+    /**
+     * Individual selection bounding box.
+     */
+    div.selections-item {
+      flex-direction: column;
+      margin-right: 8px;
+      display: flex;
+      height: 100%;
+      width: 128px;
+
+      &:last-of-type { margin-right: unset }
+
+      /**
+       * Input button, or in the future icon centering styles.
+       */
+      input {
+        margin: auto;
+        flex: 1;
+      }
+
+      /**
+       * Icon description label.
+       */
+      label {
+        line-height: $label-size;
+        font-size: $label-size;
+        height: $label-size;
+        text-align: center;
+        margin-top: 4px;
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+}

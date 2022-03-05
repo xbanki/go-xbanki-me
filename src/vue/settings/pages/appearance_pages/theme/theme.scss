@@ -4,6 +4,11 @@
 $title-size: 16px;
 
 /**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
  * The "Theme" option allows the user to specify which theme they want to use. These themes are
  * light, dark & automatic, which, in other words, matches the current Operating System theme
  * if detection is supported.
@@ -61,12 +66,12 @@ main.component-theme {
        * Icon description label.
        */
       label {
+        line-height: $label-size;
+        font-size: $label-size;
+        height: $label-size;
         text-align: center;
-        line-height: 14px;
-        font-size: 14px;
         margin-top: 4px;
         display: block;
-        height: 14px;
         width: 100%;
       }
     }

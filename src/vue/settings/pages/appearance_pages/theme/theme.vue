@@ -13,29 +13,29 @@
             <div class="selections-item">
 
                 <!-- Theme selection icon //-->
-                <input type="radio" name="item-light" id="settings-theme-light" value="THEME_LIGHT" v-on:change="update" v-model="state.selected_application_theme">
+                <input type="radio" name="theme-light" id="settings-theme-light" value="THEME_LIGHT" v-on:change="update" v-model="state.selected_application_theme">
                 
                 <!-- Theme name descriptor //-->
-                <label for="item-light"> Light </label>
+                <label for="theme-light"> Light </label>
             </div>
 
             <!-- Dark theme item container //-->
             <div class="selections-item">
                 <!-- Theme selection icon //-->
-                <input type="radio" name="item-dark" id="settings-theme-dark" value="THEME_DARK" v-on:change="update" v-model="state.selected_application_theme">
+                <input type="radio" name="theme-dark" id="settings-theme-dark" value="THEME_DARK" v-on:change="update" v-model="state.selected_application_theme">
                 
                 <!-- Theme name descriptor //-->
-                <label for="item-dark"> Dark </label>
+                <label for="theme-dark"> Dark </label>
             </div>
 
             <!-- OS matched theme item container //-->
             <div class="selections-item">
                 
                 <!-- Theme selection icon //-->
-                <input type="radio" name="item-system" id="settings-theme-system" value="THEME_SYSTEM" v-on:change="update" v-model="state.selected_application_theme">
+                <input type="radio" name="theme-system" id="settings-theme-system" value="THEME_SYSTEM" v-on:change="update" v-model="state.selected_application_theme">
                 
                 <!-- Theme name descriptor //-->
-                <label for="item-system"> Automatic </label>
+                <label for="theme-system"> Automatic </label>
             </div>
         </section>
     </main>
