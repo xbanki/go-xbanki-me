@@ -6,18 +6,6 @@ import { BackgroundDisplayMethod, ModuleState } from '@/lib/store_settings';
 import store from '@/lib/store';
 
 /**
- * Component data internal description interface.
- */
-interface ComponentData {
-
-    /**
-     * Denotes if this section is critical or not.
-     * @type {boolean}
-     */
-    is_critical: boolean;
-}
-
-/**
  * Comonent internal state.
  */
  interface ComponentState {
@@ -38,9 +26,7 @@ export default defineComponent({
 
         const state: ComponentState = { selected_background_display_method };
 
-        const data: ComponentData = { is_critical: true };
-
-        return { state, data };
+        return { state };
     },
 
     methods: {
@@ -50,8 +36,6 @@ export default defineComponent({
             }
         }
     },
-
-    inject: ['critical_only'],
 
     computed: mapState(['settingsStore'])
 });

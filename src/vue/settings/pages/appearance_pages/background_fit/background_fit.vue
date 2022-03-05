@@ -1,7 +1,7 @@
 <template>
 
     <!-- Background Fit category page root element //-->
-    <main class="component-background-fit" v-if="!critical_only || critical_only && data.is_critical">
+    <main class="component-background-fit">
 
         <!-- Background Fit component title display //-->
         <span class="background-fit-title"> Background Image Fit </span>

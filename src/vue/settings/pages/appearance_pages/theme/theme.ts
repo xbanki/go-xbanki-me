@@ -17,18 +17,6 @@ interface ComponentState {
     selected_application_theme: AvaillableThemes;
 }
 
-/**
- * Component data internal description interface.
- */
-interface ComponentData {
-
-    /**
-     * Denotes if this section is critical or not.
-     * @type {boolean}
-     */
-    is_critical: boolean;
-}
-
 export default defineComponent({
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
@@ -37,9 +25,7 @@ export default defineComponent({
 
         const state: ComponentState = { selected_application_theme };
 
-        const data: ComponentData = { is_critical: false };
-
-        return { state, data };
+        return { state };
     },
 
     methods: {
@@ -49,8 +35,6 @@ export default defineComponent({
             }
         }
     },
-
-    inject: ['critical_only'],
 
     computed: mapState(['settingsStore'])
 });

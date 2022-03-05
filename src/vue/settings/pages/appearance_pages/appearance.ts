@@ -16,9 +16,36 @@ export interface ComponentState {
     critical_only: boolean;
 }
 
+/**
+ * Component data internal description interface.
+ */
+ interface ComponentData {
+
+    /**
+     * Dictionary of all category items in this page that should
+     * be rendered if we are in critical only mode.
+     * @type {Record<string, boolean>}
+     */
+    critical_categories: Record<string, boolean>;
+}
+
 export default defineComponent({
+
+    data() {
+        const critical_categories: Record<string, boolean> = {
+            'background-fit': true,
+            'theme': false
+        };
+
+        const data: ComponentData = { critical_categories };
+
+        return { data };
+    },
+
     components: {
         backgroundFitPageComponent,
         themePageComponent
-    }
+    },
+
+    inject: ['critical_only']
 });
