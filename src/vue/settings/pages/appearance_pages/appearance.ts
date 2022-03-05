@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { Component, defineComponent } from 'vue';
 
 import backgroundFitPageComponent from '@/vue/settings/pages/appearance_pages/background_fit/background_fit.vue';
 import themePageComponent         from '@/vue/settings/pages/appearance_pages/theme/theme.vue';
@@ -31,7 +31,7 @@ export interface ComponentState {
 
 export default defineComponent({
 
-    data() {
+    data(): { data: ComponentData, critical_only?: boolean } {
         const critical_categories: Record<string, boolean> = {
             'background-fit': true,
             'theme': false
