@@ -10,7 +10,7 @@
             <div class="bar-upper">
 
                 <!-- Bar close button //-->
-                <button class="bar-close"> × </button>
+                <button class="bar-close" v-on:click="close_settings_component"> × </button>
             </div>
 
             <!--  Lower bar, for search sizing & positioning //-->

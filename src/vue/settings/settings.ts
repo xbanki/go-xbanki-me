@@ -41,6 +41,11 @@ interface ComponentState {
      * Pages sub-component state.
      */
     pages_state: PagesState;
+
+    /**
+     * Displays or hides the settings component.
+     */
+    render_state: boolean;
 }
 
 export default defineComponent({
@@ -117,6 +122,7 @@ export default defineComponent({
 
         const state: ComponentState = {
             component_display_state: 'STATE_SETTINGS',
+            render_state: false,
             categories_state,
             categories_data,
             pages_state
@@ -139,6 +145,7 @@ export default defineComponent({
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`)) {
                 this.state.component_display_state = 'STATE_INIT';
+                this.state.render_state = true;
 
                 return;
             }
@@ -160,7 +167,9 @@ export default defineComponent({
             }
 
             if (typeof target_match_name == 'string' && this.state.pages_state.active_category != target_match_name) this.state.pages_state.active_category = target_match_name;
-        }
+        },
+
+        handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }
     },
 
     provide() { return { critical_only: computed(() => this.state.categories_state.critical_only) }; },

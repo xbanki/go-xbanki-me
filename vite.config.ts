@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
+import { defineConfig }     from 'vite';
 
 import vue  from '@vitejs/plugin-vue';
-import html from 'vite-plugin-html';
 import path from 'path';
 
 export default defineConfig(
@@ -12,7 +12,7 @@ export default defineConfig(
 
         plugins: [
             vue(),
-            html()
+            createHtmlPlugin()
         ],
 
         resolve: {

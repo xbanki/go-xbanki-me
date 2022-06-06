@@ -280,7 +280,9 @@ export default defineComponent({
             return undefined;
         },
 
-        get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; }
+        get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; },
+
+        close_settings_component() { this.$emit('close', false); }
     },
 
     mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); }); },
@@ -324,5 +326,5 @@ export default defineComponent({
 
     computed: mapState(['settingsStore']),
 
-    emits: ['ready', 'clicked']
+    emits: ['ready', 'clicked', 'close']
 });
