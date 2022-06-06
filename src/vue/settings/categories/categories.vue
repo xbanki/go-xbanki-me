@@ -3,6 +3,24 @@
     <!-- Left-side category section //-->
     <main class="component-categories">
 
+        <!-- Upper bar of categories //-->
+        <div class="categories-bar">
+
+            <!-- Upper close button & panel title bar //-->
+            <div class="bar-upper">
+
+                <!-- Bar close button //-->
+                <button class="bar-close"> × </button>
+            </div>
+
+            <!--  Lower bar, for search sizing & positioning //-->
+            <div class="bar-lower">
+
+                <!-- Categories search bar //-->
+                <input class="bar-search"/>
+            </div>
+        </div>
+
         <!-- Main categories //-->
         <div class="categories-parent" v-for="[parent_category, category_items] of data.items" v-bind:key="data.items.indexOf([parent_category, category_items])">
 
@@ -61,7 +79,7 @@
         </div>
 
         <span class="categories-version">
-            version: {{ data.version }}
+            {{ data.version }}
         </span>
     </main>
 </template>
