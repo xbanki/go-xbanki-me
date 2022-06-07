@@ -345,6 +345,17 @@ export default defineComponent({
 
         get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; },
 
+        clear_search_content() {
+
+            const element = this.$refs.search as HTMLInputElement;
+
+            for (const item of this.internal_state.all_category_items) item.filtered = false;
+
+            this.internal_state.is_searching = false;
+            element.value = '';
+
+        },
+
         close_settings_component() { this.$emit('close', false); }
     },
 

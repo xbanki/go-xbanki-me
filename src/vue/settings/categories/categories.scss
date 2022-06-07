@@ -61,6 +61,7 @@ main.component-categories {
         text-align: center;
         line-height: 24px;
         background: unset;
+        cursor: pointer;
         font-size: 16px;
         border: unset;
         height: 24px;
@@ -74,13 +75,33 @@ main.component-categories {
     div.bar-lower {
       margin-bottom: math.div($component-margin, 2);
       height: fit-content;
+      position: relative;
+      height: 24px;
       width: 100%;
 
       input.bar-search {
         box-sizing: border-box;
+        position: absolute;
         display: block;
         height: 24px;
         width: 100%;
+      }
+
+      button.bar-clear {
+        background: transparent;
+        position: absolute;
+        color: lightgray;
+        line-height: 24px;
+        user-select: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: unset;
+        border: unset;
+        height: 24px;
+        width: 24px;
+        right: 0;
+        
+        &:hover { color: gray }
       }
     }
   }

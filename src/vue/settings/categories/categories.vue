@@ -17,7 +17,10 @@
             <div class="bar-lower">
 
                 <!-- Categories search bar //-->
-                <input class="bar-search" v-on:focus="internal_state.is_searching = true" v-on:blur="internal_state.is_searching = false" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
+                <input class="bar-search" ref="search" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
+
+                <!-- Clear search button //-->
+                <button class="bar-clear" v-on:click="clear_search_content" v-if="internal_state.is_searching"> × </button>
             </div>
         </div>
 
