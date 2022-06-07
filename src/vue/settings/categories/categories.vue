@@ -17,7 +17,7 @@
             <div class="bar-lower">
 
                 <!-- Categories search bar //-->
-                <input class="bar-search"/>
+                <input class="bar-search" v-on:focus="internal_state.is_searching = true" v-on:blur="internal_state.is_searching = false" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
             </div>
         </div>
 
@@ -37,10 +37,11 @@
                     v-bind:key="item.id"
                     v-bind:class="[
                         {
-                            'state-initial': get_category_state(item.id) == 'STATE_INITIAL',
-                            'state-visited': get_category_state(item.id) == 'STATE_VISITED',
-                            'state-active' : get_category_state(item.id) == 'STATE_ACTIVE',
-                            'critical-only': state.critical_only
+                            'search-filtered': item.filtered && internal_state.is_searching,
+                            'state-initial'  : get_category_state(item.id) == 'STATE_INITIAL',
+                            'state-visited'  : get_category_state(item.id) == 'STATE_VISITED',
+                            'state-active'   : get_category_state(item.id) == 'STATE_ACTIVE',
+                            'critical-only'  : state.critical_only,
                         },
 
                         item.id

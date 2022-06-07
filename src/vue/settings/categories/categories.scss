@@ -117,6 +117,8 @@ main.component-categories {
 
       &:last-of-type { margin-bottom: unset }
 
+      &.search-filtered { opacity: 25% }
+
       /**
        * Icon display section, which also displays connection lines between
        * critical configuration anchors/ links during initialization.

@@ -50,6 +50,18 @@ export interface CategoryItem {
      * @type {string}
      */
     id: string;
+
+    /**
+     * Is set to true if it should not be shown if search mode is enabled.
+     * @type {boolean}
+     */
+    filtered: boolean;
+
+    /**
+     * Search keywords which this category item is associated with.
+     * @type {Array<string>}
+     */
+    keywords: string[];
 }
 
 /**
@@ -122,6 +134,11 @@ interface InternalComponentState {
      * @type {Array<CategoryItem>}
      */
     all_category_items: Array<CategoryItem>;
+
+    /**
+     * Denotes wether or not we are in search mode.
+     */
+     is_searching: boolean;
 }
 
 export default defineComponent({
@@ -131,6 +148,7 @@ export default defineComponent({
             image_queue: new Queue<QueueIcon>(),
             preloaded_icons: false,
             all_category_items: [],
+            is_searching: false,
             icon_cache: []
         };
 
@@ -138,6 +156,51 @@ export default defineComponent({
     },
 
     methods: {
+        handle_search_input(input: Event) {
+
+            const target = input.target as HTMLInputElement;
+
+            if (target.value.length >= 1) {
+                this.internal_state.is_searching = true;
+
+                const value = target.value.toLowerCase().trim();
+
+                for (const item of this.internal_state.all_category_items) {
+                    if (!item.name.toLowerCase().trim().includes(value)) {
+
+                        if (item.keywords.length >= 1) {
+                            let has_matching_keyword = false;
+
+                            for (const keyword of item.keywords) {
+
+                                if (keyword.toLowerCase().trim().includes(value)) {
+                                    has_matching_keyword = true;
+
+                                    break;
+                                }
+                            }
+
+                            if (!has_matching_keyword)
+                                item.filtered = true;
+                        }
+
+                        else
+                            item.filtered = true;
+
+                    }
+
+                    else
+                        item.filtered = false;
+                }
+            }
+
+            else {
+                for (const item of this.internal_state.all_category_items) item.filtered = false;
+
+                this.internal_state.is_searching = false;
+            }
+    },
+
         get_category_items(items: CategoryItem[]) {
 
             // Compare cache size to determine wether we need to populate it or not
