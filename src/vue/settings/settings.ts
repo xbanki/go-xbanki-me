@@ -61,13 +61,28 @@ export default defineComponent({
             [
                 {
                     name: 'Theme',
+                    filtered: false,
                     critical: false,
-                    id: 'theme-category'
+                    id: 'theme-category',
+                    keywords: [
+                        'automatic',
+                        'darkmode',
+                        'lightmode'
+                    ]
                 },
                 {
                     name: 'Background Fit',
+                    filtered: false,
                     critical: true,
-                    id: 'background-fit-category'
+                    id: 'background-fit-category',
+                    keywords: [
+                        'bg',
+                        'critical',
+                        'fill',
+                        'fit',
+                        'stretch',
+                        'image'
+                    ]
                 }
             ]
         ];
@@ -77,18 +92,35 @@ export default defineComponent({
             [
                 {
                     name: 'Time Convention',
+                    filtered: false,
                     critical: true,
-                    id: 'time-convention-category'
+                    id: 'time-convention-category',
+                    keywords: [
+                        'clock',
+                        'critical'
+                    ]
                 },
                 {
                     name: 'Date Display',
+                    filtered: false,
                     critical: true,
-                    id: 'date-display-category'
+                    id: 'date-display-category',
+                    keywords: [
+                        'day',
+                        'day format',
+                        'critical'
+                    ]
                 },
                 {
                     name: 'Time Display',
+                    filtered: false,
                     critical: true,
-                    id: 'time-display-category'
+                    id: 'time-display-category',
+                    keywords: [
+                        'clock format',
+                        'critical',
+                        'time format'
+                    ]
                 }
             ]
         ];
@@ -98,18 +130,34 @@ export default defineComponent({
             [
                 {
                     name: 'Changelog',
+                    filtered: false,
                     critical: false,
-                    id: 'changelog-category'
+                    id: 'changelog-category',
+                    keywords: [
+                        'changes',
+                        'updates'
+                    ]
                 },
                 {
                     name: 'Privacy & Safety',
+                    filtered: false,
                     critical: false,
-                    id: 'privacy-and-safety-category'
+                    id: 'privacy-and-safety-category',
+                    keywords: [
+                        'eula',
+                        'licenses'
+                    ]
                 },
                 {
                     name: 'Delete Data',
+                    filtered: false,
                     critical: false,
-                    id: 'delete-data-category'
+                    id: 'delete-data-category',
+                    keywords: [
+                        'remove',
+                        'rm',
+                        'save'
+                    ]
                 }
             ]
         ];
