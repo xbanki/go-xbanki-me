@@ -7,11 +7,7 @@
         <transition v-on:enter="animate_modal_enter" v-on:leave="animate_modal_exit">
 
             <!-- Modal base wrapper/ positioner //-->
-            <main class="component-modal" v-if="display">
-
-                <!-- Modal centered wrapper content //-->
-                <slot name="default"/>
-            </main>
+            <main class="component-modal" v-if="display"> <slot name="default"/> </main>
         </transition>
     </teleport>
 </template>
