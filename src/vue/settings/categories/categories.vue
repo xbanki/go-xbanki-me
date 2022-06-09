@@ -14,7 +14,7 @@
             </div>
 
             <!--  Lower bar, for search sizing & positioning //-->
-            <div class="bar-lower">
+            <div class="bar-lower" v-if="!state.critical_only">
 
                 <!-- Categories search bar //-->
                 <input class="bar-search" ref="search" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
