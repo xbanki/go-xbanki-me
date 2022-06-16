@@ -1,4 +1,4 @@
-import { FormatToken } from '@/vue/init_clock/init_clock';
+import { FormatToken } from '@/vue/settings/pages/date_and_time_pages/time_display/time_display';
 
 /**
  * Internal state for all sub-category items.
@@ -158,28 +158,34 @@ export interface ModuleState {
 
     /**
      * Date display construction format.
-     * @type {Array<Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    date_format_active: Array<FormatToken> | undefined;
+    date_format_active: Array<FormatToken>;
 
     /**
      * Time display construction format.
-     * @type {Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    time_format_active: Array<FormatToken> | undefined;
+    time_format_active: Array<FormatToken>;
 
      /**
      * Unused date format tokens.
-     * @type {Array<Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    date_format_inactive: Array<FormatToken> | undefined;
+    date_format_inactive: Array<FormatToken>;
 
     /**
      * Unused time format tokens.
-     * @type {Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    time_format_inactive: Array<FormatToken> | undefined;
+    time_format_inactive: Array<FormatToken>;
 }
+
+/**
+ * Delimiter token description.
+ * @type {string}
+ */
+const delimiter_description = 'Display format items separator/ delimiter';
 
 const store: { state: ModuleState, [name: string]: any } = {
 
@@ -196,10 +202,48 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
         time_display_format: 'HH:mm:ss',
-        date_format_inactive: undefined,
-        time_format_inactive: undefined,
-        date_format_active: undefined,
-        time_format_active: undefined,
+        date_format_inactive: [
+            { delimiter: false, index: 0, dynamic: false, token: 'dd', description: 'Day of the month padded to two digits' },
+            { delimiter: false, index: 1, dynamic: false, token: 'E', description: 'Day of the week in number form' },
+            { delimiter: false, index: 2, dynamic: false, token: 'EEE', description: 'Day of the week abbreviated' },
+            { delimiter: false, index: 3, dynamic: false, token: 'M', description: 'Month in number form with no padding' },
+            { delimiter: false, index: 4, dynamic: false, token: 'MM', description: 'Month in number form padded to two digits' },
+            { delimiter: false, index: 5, dynamic: false, token: 'MMM', description: 'Month abbreviated' },
+            { delimiter: false, index: 6, dynamic: false, token: 'yy', description: 'Year padded to two digits' },
+            { delimiter: false, index: 7, dynamic: false, token: 'yyyy', description: 'Year padded to four digits' },
+            { delimiter: false, index: 8, dynamic: false, token: 'G', description: 'Abbreviated era' },
+            { delimiter: false, index: 9, dynamic: false, token: 'GG', description: 'Full era' },
+            { delimiter: false, index: 10, dynamic: false, token: 'W', description: 'Week number with no padding' },
+            { delimiter: false, index: 11, dynamic: false, token: 'WW', description: 'Week number padded to two digits' },
+            { delimiter: false, index: 12, dynamic: false, token: 'o', description: 'Day of year with no padding' },
+            { delimiter: false, index: 13, dynamic: false, token: 'ooo', description: 'Day of year padded to three digits' },
+            { delimiter: false, index: 14, dynamic: false, token: 'q', description: 'Quarter of date' }
+        ],
+        time_format_inactive: [
+            { delimiter: false, index: 0, dynamic: false, token: 'SSS', description: 'Millisecond padded to three digits' },
+            { delimiter: false, index: 1, dynamic: false, token: 's', description: 'Second with no padding' },
+            { delimiter: false, index: 2, dynamic: false, token: 'm', description: 'Minute with no padding' },
+            { delimiter: false, index: 3, dynamic: true, token: 'HOUR_UNPADDED', description: 'Hour with no padding' },
+            { delimiter: false, index: 4, dynamic: false, token: 'Z', description: 'Narrow offset' },
+            { delimiter: false, index: 5, dynamic: false, token: 'ZZ', description: 'Short offset' },
+            { delimiter: false, index: 6, dynamic: false, token: 'ZZZZ', description: 'Abbreviated offset' },
+            { delimiter: false, index: 7, dynamic: false, token: 'ZZZZZ', description: 'Full named offset' }
+        ],
+        date_format_active: [
+            { delimiter: false, index: 0, dynamic: false, token: 'EEEE', description: 'Day of the week in full form' },
+            { delimiter: true, index: 1, description: delimiter_description },
+            { delimiter: false, index: 2, dynamic: false, token: 'MMMM', description: 'Month in full form' },
+            { delimiter: false, index: 3, dynamic: false, token: 'd', description: 'Day of the month with no padding' },
+            { delimiter: true, index: 4, description: delimiter_description },
+            { delimiter: false, index: 5, dynamic: false, token: 'y', description: 'Year with no padding' }
+        ],
+        time_format_active: [
+            { delimiter: false, index: 8, dynamic: true, token: 'HOUR_PADDED', description: 'Hour padded to two digits' },
+            { delimiter: true, index: 9, description: delimiter_description },
+            { delimiter: false, index: 10, dynamic: false, token: 'mm', description: 'Minute padded to two digits' },
+            { delimiter: true, index: 11, description: delimiter_description },
+            { delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' }
+        ],
         critical_only_categories_state: {}
     },
 
