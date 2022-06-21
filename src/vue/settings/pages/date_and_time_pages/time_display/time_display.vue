@@ -16,15 +16,14 @@
         <!-- Clock display format //-->
         <section class="time-display-format">
 
-            <!-- Upper "non-active" format rail //-->
-            <div class="format-upper">
+            <!-- Left "non-active" format rail //-->
+            <div class="format-left">
 
                 <!-- VueDraggable based dragging container //-->
                 <draggable
 
                     v-bind:component-data="{
-                        type: 'transition-group',
-                        tag: 'ul'
+                        type: 'transition-group'
                     }"
 
                     v-bind="{
@@ -32,7 +31,6 @@
                         group: 'time-format',
                         animation: 120
                     }"
-
 
                     v-on:start="state.dragging = true"
 
@@ -42,39 +40,52 @@
 
                     v-model="state.format.inactive"
 
-                    class="upper-group"
+                    handle="span.item-handle"
+
+                    class="left-group"
 
                     item-key="index"
+
+                    tag="ul"
 
                 >
 
                     <!-- VueDraggable based dragging container //-->
                     <template v-slot:item="{ element }">
 
-                        <li class="group-item delimiter" v-if="element?.delimiter">
+                        <li class="group-item"
+                        
+                            v-bind:class="{
+                                delimiter: element?.delimiter,
+                                option: !element?.delimiter
+                            }"
+                        >
+
+                            <!-- Dragging handle //-->
+                            <span class="item-handle"> ☰ </span>
 
                             <!-- Delimiter format item //-->
-                            {{ get_delimiter(state.format.delimiter) }}
-                        </li>
-
-                        <li class="group-item option" v-else>
+                            <span class="item-display" v-if="element?.delimiter">
+                                {{ get_delimiter(state.format.delimiter) }}
+                            </span>
 
                             <!-- Format option item //-->
-                            {{ state.display[element.token] }}
+                            <span class="item-display" v-else>
+                                {{ state.display[element.token] }}
+                            </span>
                         </li>
                     </template>
                 </draggable>
             </div>
 
-            <!-- Upper "active" format rail //-->
-            <div class="format-lower">
+            <!-- Right "active" format rail //-->
+            <div class="format-right">
 
                 <!-- VueDraggable based dragging container //-->
                 <draggable
 
                     v-bind:component-data="{
-                        type: 'transition-group',
-                        tag: 'ul'
+                        type: 'transition-group'
                     }"
 
                     v-bind="{
@@ -83,32 +94,45 @@
                         animation: 120
                     }"
 
-
                     v-on:start="state.dragging = true"
 
                     v-on:end="state.dragging = false"
 
-                    v-model="state.format.inactive"
+                    v-model="state.format.active"
 
-                    class="lower-group"
+                    handle="span.item-handle"
+
+                    class="right-group"
 
                     item-key="index"
+
+                    tag="ul"
 
                 >
 
                     <!-- VueDraggable based dragging container //-->
                     <template v-slot:item="{ element }">
 
-                        <li class="group-item delimiter" v-if="element?.delimiter">
+                        <li class="group-item"
+                        
+                            v-bind:class="{
+                                delimiter: element?.delimiter,
+                                option: !element?.delimiter
+                            }"
+                        >
+
+                            <!-- Dragging handle //-->
+                            <span class="item-handle"> ☰ </span>
 
                             <!-- Delimiter format item //-->
-                            {{ get_delimiter(state.format.delimiter) }}
-                        </li>
-
-                        <li class="group-item option" v-else>
+                            <span class="item-display" v-if="element?.delimiter">
+                                {{ get_delimiter(state.format.delimiter) }}
+                            </span>
 
                             <!-- Format option item //-->
-                            {{ state.display[element.token] }}
+                            <span class="item-display" v-else>
+                                {{ state.display[element.token] }}
+                            </span>
                         </li>
                     </template>
                 </draggable>

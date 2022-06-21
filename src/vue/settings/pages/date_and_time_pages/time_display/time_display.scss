@@ -54,46 +54,67 @@ main.component-time-display {
    * Format draggable rails parent wrapper.
    */
   section.time-display-format {
-    flex-direction: column;
+    flex-direction: row;
     display: flex;
 
     /**
      * Upper format rail wrapper.
      */
-    div.format-upper, div.format-lower {
+    div.format-left, div.format-right {
       background: var(--accent);
+      box-sizing: border-box;
       border-radius: 4px;
-      margin-bottom: 8px;
       padding: 4px;
+      width: 50%;
 
-      &.format-lower { margin-bottom: unset }
+      &.format-left  { margin-right: 8px }
 
       /**
        * Vertical aligner for the format rail.
        */
-      div.upper-group, div.lower-group {
-        flex-direction: row;
+      ul.right-group, ul.left-group {
+        flex-direction: column;
+        padding: unset;
         display: flex;
+        margin: unset;
 
         /**
          * Individual format item.
          */
         li.group-item {
-          border: 1px solid dimgray;
-          background: whitesmoke;
-          width: fit-content;
-          border-radius: 2px;
+          height: fit-content;
+          flex-direction: row;
           text-align: center;
           line-height: 24px;
-          margin-right: 4px;
           min-height: 24px;
-          padding: 0 12px;
           display: block;
           color: black;
-          cursor: grab;
-          height: fit-content;
+          display: flex;
+          cursor: unset;
+          width: 100%;
 
-          &:last-of-type { margin-right: unset }
+          /**
+           * Item drag handle element.
+           */
+          span.item-handle {
+            text-align: center;
+            margin-right: auto;
+            user-select: none;
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            cursor: grab;
+            width: 24px;
+          }
+
+          /**
+           * Item contents display element.
+           */
+          span.item-display {
+            text-align: center;
+            display: block;
+            flex: 1;
+          }
 
           &.dragging { opacity: 75% }
         }
