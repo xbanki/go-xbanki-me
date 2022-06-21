@@ -2,8 +2,8 @@ import { DateTime }        from 'luxon';
 import { Store, mapState } from 'vuex';
 import { defineComponent } from 'vue';
 
-import { ModuleState, FormatDelimiter } from '@/lib/store_settings';
-import { TimerManager }                 from '@/lib/timers';
+import { ModuleState, FormatDelimiter, ClockConvention } from '@/lib/store_settings';
+import { TimerManager }                                  from '@/lib/timers';
 
 import draggable from 'vuedraggable';
 
@@ -19,6 +19,12 @@ interface ComponentStateFormat {
      * @enum {FormatDelimiter}
      */
     delimiter: FormatDelimiter;
+
+    /**
+     * Manages what format we should display the clock in.
+     * @enum {ClockConvention}
+     */
+    convention: ClockConvention;
 
     /**
      * Currently active format.
@@ -141,6 +147,8 @@ export default defineComponent({
 
         // Format object state
 
+        const convention = typed_store.state.settingsStore.time_convention;
+
         const delimiter = typed_store.state.settingsStore.time_delimiter;
 
         const inactive = typed_store.state.settingsStore.time_format_inactive;
@@ -162,6 +170,7 @@ export default defineComponent({
         };
 
         const format: ComponentStateFormat = {
+            convention,
             delimiter,
             inactive,
             active
@@ -183,7 +192,75 @@ export default defineComponent({
         /**
          * Refreshes all internal timers based on the token input.
          */
-        set_up_timer_refreshing() { this; },
+        set_up_timer_refreshing() {
+
+            // Millisecond updater
+            const UPDATE_GROUP_IMMEDIATE = TimerManager.AddTimerGroup(TokenUpdateType.IMMEDIATE, 1);
+
+            // Second updater
+            const UPDATE_GROUP_LAZY = TimerManager.AddTimerGroup(TokenUpdateType.LAZY, 1000);
+
+            // Minute updater
+            const UPDATE_GROUP_LATE = TimerManager.AddTimerGroup(TokenUpdateType.LAZY, 60000);
+
+            // Get all of the format tokens & update them 
+            for (const item of [...this.state.format.active, ...this.state.format.inactive]) {
+
+                if (item.delimiter) continue;
+
+                // Dynamic token case
+                if (item?.dynamic && item?.token) {
+
+                    if (item?.token == 'HOUR_UNPADDED') {
+
+                        if (this.state.format.convention == ClockConvention.AMERICAN) {
+
+                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('h'));
+
+                            this.state.display[item.token as string] = DateTime.now().toFormat('h');
+                        }
+
+                        if (this.state.format.convention == ClockConvention.EUROPEAN) {
+
+                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('H'));
+
+                            this.state.display[item.token as string] = DateTime.now().toFormat('H');
+                        }
+                    }
+
+                    if (item?.token == 'HOUR_PADDED') {
+
+                        if (this.state.format.convention == ClockConvention.AMERICAN) {
+
+                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('hh'));
+
+                            this.state.display[item.token as string] = DateTime.now().toFormat('hh');
+                        }
+
+                        if (this.state.format.convention == ClockConvention.EUROPEAN) {
+
+                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('HH'));
+
+                            this.state.display[item.token as string] = DateTime.now().toFormat('HH');
+                        }
+                    }
+                }
+
+                // Non-dynamic token case
+                if (item?.token && !item.dynamic) {
+                    const TARGET_GROUP = TOKEN_UPDATE_TABLE[item.token] ?? TokenUpdateType.LAZY;
+
+                    TimerManager.AddGroupFunction(TARGET_GROUP, () => this.state.display[item.token as string] = DateTime.now().toFormat(item.token as string));
+
+                    this.state.display[item.token as string] = DateTime.now().toFormat(item.token as string);
+                }
+            }
+
+            // Start all updaters
+            UPDATE_GROUP_IMMEDIATE?.();
+            UPDATE_GROUP_LAZY?.();
+            UPDATE_GROUP_LATE?.();
+        },
 
         /**
          * Handles format updates.
