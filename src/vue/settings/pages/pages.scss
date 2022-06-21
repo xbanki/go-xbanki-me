@@ -6,6 +6,7 @@ main.component-pages {
   border-left: 1px solid var(--accent);
   flex-direction: column;
   background: var(--bg);
+  overflow: scroll;
   display: flex;
   padding: 4px;
   height: 100%;
