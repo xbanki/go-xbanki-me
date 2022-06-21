@@ -79,6 +79,29 @@ main.component-time-display {
         margin: unset;
 
         /**
+         * Header text above both rails.
+         */
+        div.group-header {
+          flex-direction: row;
+          margin-bottom: 4px;
+          padding-left: 6px;
+          display: block;
+          display: flex;
+          height: 24px;
+
+          /**
+           * Title display itself.
+           */
+          span.header-title {
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            opacity: 50%;
+            flex: 1;
+          }
+        }
+
+        /**
          * Individual format item.
          */
         li.group-item {

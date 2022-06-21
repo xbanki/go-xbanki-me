@@ -49,9 +49,20 @@
                     tag="ul"
 
                 >
+                    <!-- Rail section header display //-->
+                    <template v-slot:header>
+
+                        <div class="group-header">
+
+                            <!-- Rail title //-->
+                            <span class="header-title">
+                                Inactive Format Tokens
+                            </span>
+                        </div>
+                    </template>
 
                     <!-- VueDraggable based dragging container //-->
-                    <template v-slot:item="{ element }">
+                    <template  v-slot:item="{ element }" name="default">
 
                         <li class="group-item"
                         
@@ -109,6 +120,17 @@
                     tag="ul"
 
                 >
+                    <!-- Rail section header display //-->
+                    <template v-slot:header>
+
+                        <div class="group-header">
+
+                            <!-- Rail title //-->
+                            <span class="header-title">
+                                Active Time Format
+                            </span>
+                        </div>
+                    </template>
 
                     <!-- VueDraggable based dragging container //-->
                     <template v-slot:item="{ element }">
