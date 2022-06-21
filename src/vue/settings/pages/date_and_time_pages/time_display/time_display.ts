@@ -268,6 +268,16 @@ export default defineComponent({
         handle_drag_event(event: any) { this; },
 
         /**
+         * Handles format changes in the settings panel, displaying them
+         * automatically on screen.
+         */
+        update_active_format() {
+            store.dispatch('settingsStore/SetTimeFormat', [this.state.format.active, this.state.format.inactive]);
+
+            this.state.display.time = DateTime.now().toFormat(this.settingsStore.time_display_format);
+        },
+
+        /**
          * Gets the display item for a delimiter.
          */
         get_delimiter(delimiter: FormatDelimiter) {

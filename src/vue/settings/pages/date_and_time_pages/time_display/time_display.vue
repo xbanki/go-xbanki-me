@@ -105,6 +105,8 @@
                         animation: 120
                     }"
 
+                    v-on:change="update_active_format"
+
                     v-on:start="state.dragging = true"
 
                     v-on:end="state.dragging = false"
