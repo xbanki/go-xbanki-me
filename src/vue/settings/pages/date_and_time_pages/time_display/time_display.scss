@@ -64,6 +64,7 @@ main.component-time-display {
       background: var(--accent);
       box-sizing: border-box;
       border-radius: 4px;
+      display: flex;
       padding: 4px;
       width: 50%;
 
@@ -77,6 +78,7 @@ main.component-time-display {
         padding: unset;
         display: flex;
         margin: unset;
+        flex: 1;
 
         /**
          * Header text above both rails.
