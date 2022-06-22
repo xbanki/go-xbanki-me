@@ -2,8 +2,8 @@ import { DateTime }        from 'luxon';
 import { Store, mapState } from 'vuex';
 import { defineComponent } from 'vue';
 
-import { ModuleState, FormatDelimiter, ClockConvention } from '@/lib/store_settings';
-import { TimerManager }                                  from '@/lib/timers';
+import { ModuleState, FormatDelimiter, ClockConvention, DELIMITER_DESCRIPTION } from '@/lib/store_settings';
+import { TimerManager }                                                         from '@/lib/timers';
 
 import draggable from 'vuedraggable';
 
@@ -358,7 +358,18 @@ export default defineComponent({
         /**
          * Adds a new delmiter to the pool.
          */
-        add_new_delimiter() { this; },
+        add_new_delimiter() {
+            const index = this.state.format.active.length + this.state.format.inactive.length;
+
+            this.state.format.inactive.push({ index, delimiter: true, description: DELIMITER_DESCRIPTION });
+
+            this.state.delimiters.inactive_delimiters += 1;
+
+            if (this.state.delimiters.inactive_delimiters >= MAXIMUM_DELIMITERS_INACTIVE || this.state.delimiters.active_delimiters + this.state.delimiters.inactive_delimiters >= MAXIMUM_DELIMITERS_OVERALL)
+                this.state.delimiters.disable_add = true;
+
+            this.state.delimiters.disable_remove = false;
+        },
 
         /**
          * Removes the newest delimiter in the inactive pool, OR the oldest from the
