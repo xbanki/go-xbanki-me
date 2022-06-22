@@ -10,6 +10,36 @@ import draggable from 'vuedraggable';
 import store from '@/lib/store';
 
 /**
+ * Component delimiter tracking.
+ */
+interface ComponentStateDelimiters {
+
+    /**
+     * Number of delimiter tokens in the `active` rail.
+     * @type {number}
+     */
+    active_delimiters: number;
+
+    /**
+     * Number of delimiter tokens in the `inactive` rail.
+     * @type {number}
+     */
+    inactive_delimiters: number;
+
+    /**
+     * Disables removing delimiters from the currently active pool.
+     * @type {boolean}
+     */
+    disable_remove: boolean;
+
+    /**
+     * Disables adding new delimiters to the currently active pool.
+     * @type {boolean}
+     */
+    disable_add: boolean;
+}
+
+/**
  * Active format state.
  */
 interface ComponentStateFormat {
@@ -76,6 +106,12 @@ interface ComponentState {
      * @type {ComponentStateDisplay}
      */
     display: ComponentStateDisplay;
+
+    /**
+     * Internal delimiter tracking object.
+     * @type {ComponentStateDelimiters}
+     */
+    delimiters: ComponentStateDelimiters;
 }
 
 /**
@@ -140,6 +176,16 @@ const TOKEN_UPDATE_TABLE: Record<string, TokenUpdateType> = {
     SSS: TokenUpdateType.IMMEDIATE
 };
 
+/**
+ * Maximum number of delimiters allowed in the inactive pool.
+ */
+const MAXIMUM_DELIMITERS_INACTIVE = 3;
+
+/**
+ * Maximum number of delmiters allowed in the pool overall.
+ */
+const MAXIMUM_DELIMITERS_OVERALL = 10;
+
 export default defineComponent({
 
     data() {
@@ -155,6 +201,16 @@ export default defineComponent({
 
         const active = typed_store.state.settingsStore.time_format_active;
 
+        // Delimiter tracking state
+
+        const inactive_delimiters = function() { let i = 0; inactive.forEach((el) => { if (el.delimiter) i+=1; });  return i; }();
+
+        const active_delimiters = function() { let i = 0; active.forEach((el) => { if (el.delimiter) i+=1; });  return i; }();
+
+        const disable_remove = inactive_delimiters + active_delimiters >= 1 ? false : true;
+
+        const disable_add = (inactive_delimiters >= MAXIMUM_DELIMITERS_INACTIVE || active_delimiters + inactive_delimiters >= MAXIMUM_DELIMITERS_OVERALL) ? true : false;
+
         // Display object state
 
         const time = DateTime.now().toFormat(typed_store.state.settingsStore.time_display_format);
@@ -164,6 +220,13 @@ export default defineComponent({
         const dragging = false;
 
         // Final objects
+
+        const delimiters: ComponentStateDelimiters = {
+            inactive_delimiters,
+            active_delimiters,
+            disable_remove,
+            disable_add
+        };
 
         const display: ComponentStateDisplay = {
             time
@@ -177,6 +240,7 @@ export default defineComponent({
         };
 
         const state: ComponentState = {
+            delimiters,
             dragging,
             display,
             format
@@ -263,11 +327,6 @@ export default defineComponent({
         },
 
         /**
-         * Handles format updates.
-         */
-        handle_drag_event(event: any) { this; },
-
-        /**
          * Handles format changes in the settings panel, displaying them
          * automatically on screen.
          */
@@ -289,7 +348,23 @@ export default defineComponent({
                 case FormatDelimiter.DASH  : return '-';
                 case FormatDelimiter.DOT   : return '.';
             }
-        }
+        },
+
+        /**
+         * Handles inactive rail format updates.
+         */
+         handle_drag_event(event: any) { this; },
+
+        /**
+         * Adds a new delmiter to the pool.
+         */
+        add_new_delimiter() { this; },
+
+        /**
+         * Removes the newest delimiter in the inactive pool, OR the oldest from the
+         * active pool.
+         */
+        remove_newest_delimiter() { this; }
     },
 
     components: { draggable },
