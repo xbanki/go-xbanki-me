@@ -393,7 +393,54 @@ export default defineComponent({
          * Removes the newest delimiter in the inactive pool, OR the oldest from the
          * active pool.
          */
-        remove_newest_delimiter() { this; }
+        remove_newest_delimiter() {
+
+            /**
+             * Updates button activation state after delimiter operation.
+             */
+            const update_boundaries = (): void => {
+
+                if (this.state.delimiters.active_delimiters + this.state.delimiters.inactive_delimiters <= 0) {
+                    this.state.delimiters.disable_remove = true;
+                }
+
+                this.state.delimiters.disable_add = false;
+            };
+
+            // Remove the newest delimiter in the inactive rail
+            for (let i = this.state.format.inactive.length; i >= 0; i--) {
+
+                const item = this.state.format.inactive[i];
+
+                if (item?.delimiter) {
+
+                    this.state.format.inactive.splice(i, 1);
+                    this.state.delimiters.inactive_delimiters -= 1;
+
+                    update_boundaries();
+
+                    return;
+                }
+            }
+
+            // Remove the oldest delimiter in the active rail
+            for (let i = 0; i <= this.state.format.active.length; i++) {
+
+                const item = this.state.format.active[i];
+
+                if (item?.delimiter) {
+
+                    this.state.format.active.splice(i, 1);
+                    this.state.delimiters.active_delimiters -= 1;
+
+                    update_boundaries();
+
+                    return;
+                }
+            }
+
+
+        }
     },
 
     components: { draggable },
