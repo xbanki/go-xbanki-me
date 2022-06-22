@@ -101,6 +101,29 @@ main.component-time-display {
             opacity: 50%;
             flex: 1;
           }
+
+          /**
+           * Header buttons box.
+           */
+          div.header-buttons {
+            flex-direction: row;
+            width: fit-content;
+            margin-left: auto;
+            display: flex;
+            height: 24px;
+
+            /**
+             * Add & remove buttons logic.
+             */
+            button.buttons-add, button.buttons-remove {
+              line-height: 22px;
+              padding: unset;
+              height: 24px;
+              width: 24px;
+
+              &.buttons-add { margin-right: 2px }
+            }
+          }
         }
 
         /**

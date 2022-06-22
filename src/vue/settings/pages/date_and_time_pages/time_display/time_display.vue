@@ -58,6 +58,16 @@
                             <span class="header-title">
                                 Inactive Format Tokens
                             </span>
+
+                            <!-- Rail delimiter mutations //-->
+                            <div class="header-buttons">
+
+                                <!-- Add new delimiter to the inactive pool //-->
+                                <button class="buttons-add" v-on:click="add_new_delimiter" v-bind:disabled="state.delimiters.disable_add"> + </button>
+
+                                <!-- Remove newest or oldest delimiter from the pool //-->
+                                <button class="buttons-remove" v-on:click="remove_newest_delimiter" v-bind:disabled="state.delimiters.disable_remove"> - </button>
+                            </div>
                         </div>
                     </template>
 
