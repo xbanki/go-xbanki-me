@@ -185,7 +185,7 @@ export interface ModuleState {
  * Delimiter token description.
  * @type {string}
  */
-const delimiter_description = 'Display format items separator/ delimiter';
+export const DELIMITER_DESCRIPTION = 'Display format items separator/ delimiter';
 
 const store: { state: ModuleState, [name: string]: any } = {
 
@@ -231,17 +231,17 @@ const store: { state: ModuleState, [name: string]: any } = {
         ],
         date_format_active: [
             { delimiter: false, index: 0, dynamic: false, token: 'EEEE', description: 'Day of the week in full form' },
-            { delimiter: true, index: 1, description: delimiter_description },
+            { delimiter: true, index: 1, description: DELIMITER_DESCRIPTION },
             { delimiter: false, index: 2, dynamic: false, token: 'MMMM', description: 'Month in full form' },
             { delimiter: false, index: 3, dynamic: false, token: 'd', description: 'Day of the month with no padding' },
-            { delimiter: true, index: 4, description: delimiter_description },
+            { delimiter: true, index: 4, description: DELIMITER_DESCRIPTION },
             { delimiter: false, index: 5, dynamic: false, token: 'y', description: 'Year with no padding' }
         ],
         time_format_active: [
             { delimiter: false, index: 8, dynamic: true, token: 'HOUR_PADDED', description: 'Hour padded to two digits' },
-            { delimiter: true, index: 9, description: delimiter_description },
+            { delimiter: true, index: 9, description: DELIMITER_DESCRIPTION },
             { delimiter: false, index: 10, dynamic: false, token: 'mm', description: 'Minute padded to two digits' },
-            { delimiter: true, index: 11, description: delimiter_description },
+            { delimiter: true, index: 11, description: DELIMITER_DESCRIPTION },
             { delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' }
         ],
         critical_only_categories_state: {}
