@@ -371,6 +371,8 @@ export default defineComponent({
                 if (this.state.delimiters.inactive_delimiters >= MAXIMUM_DELIMITERS_INACTIVE)
                     this.state.delimiters.disable_add = true;
             }
+
+            this.update_active_format();
          },
 
         /**
@@ -387,6 +389,8 @@ export default defineComponent({
                 this.state.delimiters.disable_add = true;
 
             this.state.delimiters.disable_remove = false;
+
+            this.update_active_format();
         },
 
         /**
@@ -405,6 +409,8 @@ export default defineComponent({
                 }
 
                 this.state.delimiters.disable_add = false;
+
+                this.update_active_format();
             };
 
             // Remove the newest delimiter in the inactive rail
@@ -438,8 +444,6 @@ export default defineComponent({
                     return;
                 }
             }
-
-
         }
     },
 

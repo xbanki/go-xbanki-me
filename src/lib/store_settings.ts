@@ -358,61 +358,59 @@ const store: { state: ModuleState, [name: string]: any } = {
         SetTimeFormat: (context: any, payload: [Array<FormatToken>, Array<FormatToken>]) => {
             const [active_format, inactive_format] = payload;
 
-            if (inactive_format != context.state.time_format_inactive) context.commit('UPDATE_TIME_FORMAT_INACTIVE', inactive_format);
+            context.commit('UPDATE_TIME_FORMAT_INACTIVE', inactive_format);
 
-            if (active_format != context.state.time_format_active) {
-                context.commit('UPDATE_TIME_FORMAT_ACTIVE', active_format);
+            context.commit('UPDATE_TIME_FORMAT_ACTIVE', active_format);
 
-                const assembled_active_format: string[] = [];
+            const assembled_active_format: string[] = [];
 
-                for (const item of active_format) {
-                    const next_item = active_format.at(active_format.indexOf(item) + 1);
+            for (const item of active_format) {
+                const next_item = active_format.at(active_format.indexOf(item) + 1);
 
-                    if (!item.token && item.delimiter) {
+                if (!item.token && item.delimiter) {
 
-                        switch (context.state.time_delimiter) {
-                            case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
-                            case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
-                            case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
-                            case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
-                            case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
-                            case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
-                        }
-
-                        continue;
+                    switch (context.state.time_delimiter) {
+                        case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
+                        case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
+                        case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
+                        case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
+                        case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
+                        case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
                     }
 
-                    if (item.dynamic) {
-                        let token = '';
-
-                        if (item?.token == 'HOUR_UNPADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'h';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'H';
-                        }
-
-                        if (item?.token == 'HOUR_PADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
-                        }
-
-                        if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                        assembled_active_format.push(token);
-
-                        continue;
-                    }
-
-                    if (next_item != undefined && !next_item.delimiter) {
-                        assembled_active_format.push(`${item.token} `);
-
-                        continue;
-                    }
-
-                    if (item?.token) assembled_active_format.push(item.token);
+                    continue;
                 }
 
-                context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
+                if (item.dynamic) {
+                    let token = '';
+
+                if (item?.token == 'HOUR_UNPADDED') {
+                    if (context.state.time_convention == ClockConvention.AMERICAN) token = 'h';
+                    if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'H';
+                }
+
+                if (item?.token == 'HOUR_PADDED') {
+                    if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
+                    if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
+                }
+
+                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
+
+                    assembled_active_format.push(token);
+
+                    continue;
+                }
+
+                if (next_item != undefined && !next_item.delimiter) {
+                    assembled_active_format.push(`${item.token} `);
+
+                    continue;
+                }
+
+                if (item?.token) assembled_active_format.push(item.token);
             }
+
+            context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
         },
 
         UpdateCriticalCategoriesState: (context: any, payload: { target: string, state: CategoryItemState }) => {
