@@ -353,7 +353,25 @@ export default defineComponent({
         /**
          * Handles inactive rail format updates.
          */
-         handle_drag_event(event: any) { this; },
+         handle_drag_event(event: any) {
+
+            if (event?.removed && event.removed.element.delimiter) {
+
+                this.state.delimiters.inactive_delimiters -= 1;
+                this.state.delimiters.active_delimiters += 1;
+
+                if (!(this.state.delimiters.active_delimiters + this.state.delimiters.inactive_delimiters >= MAXIMUM_DELIMITERS_OVERALL))
+                    this.state.delimiters.disable_add = false;
+            }
+
+            if (event?.added && event.added.element.delimiter) {
+                this.state.delimiters.inactive_delimiters += 1;
+                this.state.delimiters.active_delimiters -= 1;
+
+                if (this.state.delimiters.inactive_delimiters >= MAXIMUM_DELIMITERS_INACTIVE)
+                    this.state.delimiters.disable_add = true;
+            }
+         },
 
         /**
          * Adds a new delmiter to the pool.
