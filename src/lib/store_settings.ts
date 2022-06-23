@@ -365,8 +365,6 @@ const store: { state: ModuleState, [name: string]: any } = {
             const assembled_active_format: string[] = [];
 
             for (const item of active_format) {
-                const next_item = active_format.at(active_format.indexOf(item) + 1);
-
                 if (!item.token && item.delimiter) {
 
                     switch (context.state.time_delimiter) {
@@ -393,16 +391,7 @@ const store: { state: ModuleState, [name: string]: any } = {
                     if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
                     if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
                 }
-
-                    if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
                     assembled_active_format.push(token);
-
-                    continue;
-                }
-
-                if (next_item != undefined && !next_item.delimiter) {
-                    assembled_active_format.push(`${item.token} `);
 
                     continue;
                 }
