@@ -333,10 +333,13 @@ export default defineComponent({
                 }
             }
 
-            // Start all updaters
+            // We start the milisecond timer because it literally fires every tick
             UPDATE_GROUP_IMMEDIATE?.();
-            UPDATE_GROUP_LAZY?.();
-            UPDATE_GROUP_LATE?.();
+
+            const now = DateTime.now();
+
+            setTimeout(() => UPDATE_GROUP_LAZY?.(), 1000 - now.millisecond);
+            setTimeout(() => UPDATE_GROUP_LATE?.(), 60000 - ((now.second * 1000) - now.millisecond));
         },
 
         /**
