@@ -1,0 +1,79 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * The "Date Display" option controls how the date component is rendered,
+ * with a fully customizable formatting system.
+ */
+main.component-date-display {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.date-display-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Time format delimiter section.
+   */
+  section.date-display-delimiter {
+    background: var(--accent);
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+    height: 72px;
+    padding: 4px;
+    width: 100%;
+
+    /**
+     * Individual selection bounding box.
+     */
+    div.selections-item {
+      flex-direction: column;
+      margin-right: 8px;
+      display: flex;
+      height: 100%;
+      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+
+      /**
+       * Input button, or in the future icon centering styles.
+       */
+      input {
+        margin: auto;
+        flex: 1;
+      }
+
+      /**
+       * Icon description label.
+       */
+      label {
+        line-height: $label-size;
+        font-size: $label-size;
+        height: $label-size;
+        text-align: center;
+        margin-top: 4px;
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+}
