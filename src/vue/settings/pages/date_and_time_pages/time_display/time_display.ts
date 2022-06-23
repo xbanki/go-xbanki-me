@@ -80,6 +80,11 @@ interface ComponentStateDisplay {
      */
     time: string;
 
+    /**
+     * Dynamic token updater function IDs.
+     */
+    ids: symbol[];
+
     // All other keys!
     [key: string]: any;
 }
@@ -220,6 +225,8 @@ export default defineComponent({
 
         const time = DateTime.now().toFormat(typed_store.state.settingsStore.time_display_format);
 
+        const ids: symbol[] = [];
+
         // Constants
 
         const dragging = false;
@@ -234,7 +241,8 @@ export default defineComponent({
         };
 
         const display: ComponentStateDisplay = {
-            time
+            time,
+            ids
         };
 
         const format: ComponentStateFormat = {
@@ -284,14 +292,14 @@ export default defineComponent({
 
                         if (this.state.format.convention == ClockConvention.AMERICAN) {
 
-                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('h'));
+                            this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('h')));
 
                             this.state.display[item.token as string] = DateTime.now().toFormat('h');
                         }
 
                         if (this.state.format.convention == ClockConvention.EUROPEAN) {
 
-                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('H'));
+                            this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('H')));
 
                             this.state.display[item.token as string] = DateTime.now().toFormat('H');
                         }
@@ -301,14 +309,14 @@ export default defineComponent({
 
                         if (this.state.format.convention == ClockConvention.AMERICAN) {
 
-                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('hh'));
+                            this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('hh')));
 
                             this.state.display[item.token as string] = DateTime.now().toFormat('hh');
                         }
 
                         if (this.state.format.convention == ClockConvention.EUROPEAN) {
 
-                            TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('HH'));
+                            this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display[item.token as string] = DateTime.now().toFormat('HH')));
 
                             this.state.display[item.token as string] = DateTime.now().toFormat('HH');
                         }
@@ -459,6 +467,76 @@ export default defineComponent({
 
                 this.update_active_format();
             }
+        },
+
+        update_convention(state: ClockConvention) {
+
+            this.state.format.convention = state;
+
+            /**
+             * Enables or disables the meridem token.
+             * @param {boolean} disabled Should the token be disabled?
+             */
+            const enable_disable_meridem = (disabled: boolean) => {
+                for (const item of this.state.format.active) if (item.token && item.token == 'a') {
+                    item.disabled = disabled;
+                    return;
+                }
+
+                for (const item of this.state.format.inactive) if (item.token && item.token == 'a') {
+                    item.disabled = disabled;
+                    return;
+                }
+            };
+
+            // Handle AM/PM clock updates
+            if (state == ClockConvention.AMERICAN) {
+
+                // Remove active updaters
+                this.state.display.ids = this.state.display.ids.filter(
+                    (id) => {
+                        TimerManager.RemoveGroupFunction(TokenUpdateType.LAZY, id);
+
+                        return false;
+                    }
+                );
+
+                this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display['HOUR_UNPADDED'] = DateTime.now().toFormat('h')));
+                this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display['HOUR_PADDED'] = DateTime.now().toFormat('hh')));
+
+                this.state.display['HOUR_UNPADDED'] = DateTime.now().toFormat('h');
+                this.state.display['HOUR_PADDED'] = DateTime.now().toFormat('hh');
+
+                enable_disable_meridem(false);
+            }
+
+            // Handle 24H clock updates
+            else if (state == ClockConvention.EUROPEAN) {
+                // Remove active updaters
+                this.state.display.ids = this.state.display.ids.filter(
+                    (id) => {
+                        TimerManager.RemoveGroupFunction(TokenUpdateType.LAZY, id);
+
+                        return false;
+                    }
+                );
+
+                this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display['HOUR_UNPADDED'] = DateTime.now().toFormat('H')));
+                this.state.display.ids.push(TimerManager.AddGroupFunction(TokenUpdateType.LAZY, () => this.state.display['HOUR_PADDED'] = DateTime.now().toFormat('HH')));
+
+                this.state.display['HOUR_UNPADDED'] = DateTime.now().toFormat('H');
+                this.state.display['HOUR_PADDED'] = DateTime.now().toFormat('HH');
+
+                enable_disable_meridem(true);
+            }
+        }
+    },
+
+    watch: {
+        'settingsStore.time_convention': {
+            handler(state) { this.update_convention(state); },
+
+            deep: true
         }
     },
 

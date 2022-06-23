@@ -242,7 +242,8 @@ const store: { state: ModuleState, [name: string]: any } = {
             { disabled: false, delimiter: true, index: 9, description: DELIMITER_DESCRIPTION },
             { disabled: false, delimiter: false, index: 10, dynamic: false, token: 'mm', description: 'Minute padded to two digits' },
             { disabled: false, delimiter: true, index: 11, description: DELIMITER_DESCRIPTION },
-            { disabled: false, delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' }
+            { disabled: false, delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' },
+            { disabled: true, delimiter: false, index: 13, dynamic: false, token: 'a', description: 'Meridem' }
         ],
         critical_only_categories_state: {}
     },
