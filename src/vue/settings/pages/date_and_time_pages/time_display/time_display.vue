@@ -6,6 +6,73 @@
         <!-- Time Display component title display //-->
         <span class="time-display-title"> Time Display </span>
 
+        <!-- Delimiter choise section //-->
+        <section class="time-display-delimiter">
+
+            <!-- Space delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-space" id="delimiter-space" value="DELIMITER_SPACE" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-space"> Blank </label>
+            </div>
+
+            <!-- Comma delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-comma" id="delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-comma"> Comma </label>
+            </div>
+
+            <!-- Slash delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-slash" id="delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-slash"> Slash </label>
+            </div>
+
+            <!-- Dash delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-dash" id="delimiter-dash" value="DELIMITER_DASH" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-dash"> Dash </label>
+            </div>
+
+            <!-- Dot delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-dot" id="delimiter-dot" value="DELIMITER_DOT" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-dot"> Period </label>
+            </div>
+
+            <!-- Colon delimiter //-->
+            <div class="selections-item">
+
+                <!-- Radio input element //-->
+                <input type="radio" name="delimiter-colon" id="delimiter-colon" value="DELIMITER_COLON" v-on:change="update_delimiter" v-model="state.format.delimiter">
+
+                <!-- Radio label element //-->
+                <label for="delimiter-colon"> Colon </label>
+            </div>
+        </section>
+
+        <!-- Time display format section //-->
+        <span class="time-display-title"> Time format </span>
+
         <!-- Clock display format //-->
         <section class="time-display-format">
 
@@ -165,11 +232,12 @@
                 </draggable>
             </div>
         </section>
+        
+        <!-- Clock example title //-->
+        <span class="time-display-title"> Example </span>
 
         <!-- Static clock example //-->
         <section class="time-display-example">
-
-            <span class="example-title"> Example </span>
 
             <!-- Clock example, which is static //-->
             <span class="example-display"> {{ state.display.time }} </span>

@@ -444,6 +444,16 @@ export default defineComponent({
                     return;
                 }
             }
+        },
+
+        update_delimiter() {
+
+            if (this.state.format.delimiter != this.settingsStore.time_delimiter) {
+
+                store.commit('settingsStore/UPDATE_TIME_FORMAT_DELIMITER', this.state.format.delimiter);
+
+                this.update_active_format();
+            }
         }
     },
 
