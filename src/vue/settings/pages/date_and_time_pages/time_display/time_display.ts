@@ -138,6 +138,11 @@ export interface FormatToken {
     description: string;
 
     /**
+     * Enables or disables showing this token in format list.
+     */
+    disabled: boolean;
+
+    /**
      * If item is format token, specifies wether this token should have a special display.
      * @type {boolean}
      */
@@ -381,7 +386,7 @@ export default defineComponent({
         add_new_delimiter() {
             const index = this.state.format.active.length + this.state.format.inactive.length;
 
-            this.state.format.inactive.push({ index, delimiter: true, description: DELIMITER_DESCRIPTION });
+            this.state.format.inactive.push({ index, disabled: false, delimiter: true, description: DELIMITER_DESCRIPTION });
 
             this.state.delimiters.inactive_delimiters += 1;
 

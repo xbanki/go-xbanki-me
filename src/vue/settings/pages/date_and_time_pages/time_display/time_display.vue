@@ -140,6 +140,8 @@
                                 delimiter: element?.delimiter,
                                 option: !element?.delimiter
                             }"
+
+                            v-if="!element.disabled"
                         >
 
                             <!-- Dragging handle //-->
@@ -213,6 +215,8 @@
                                 delimiter: element?.delimiter,
                                 option: !element?.delimiter
                             }"
+
+                            v-if="!element.disabled"
                         >
 
                             <!-- Dragging handle //-->
