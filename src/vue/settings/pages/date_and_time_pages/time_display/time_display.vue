@@ -6,13 +6,6 @@
         <!-- Time Display component title display //-->
         <span class="time-display-title"> Time Display </span>
 
-        <!-- Updated clock display //-->
-        <section class="time-display-example">
-
-            <!-- Clock example, which is static //-->
-            <span class="example-display"> {{ state.display.time }} </span>
-        </section>
-
         <!-- Clock display format //-->
         <section class="time-display-format">
 
@@ -171,6 +164,15 @@
                     </template>
                 </draggable>
             </div>
+        </section>
+
+        <!-- Static clock example //-->
+        <section class="time-display-example">
+
+            <span class="example-title"> Example </span>
+
+            <!-- Clock example, which is static //-->
+            <span class="example-display"> {{ state.display.time }} </span>
         </section>
     </main>
 </template>

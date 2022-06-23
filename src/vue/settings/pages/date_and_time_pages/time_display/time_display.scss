@@ -35,18 +35,31 @@ main.component-time-display {
    */
   section.time-display-example {
     flex-direction: column;
-    margin-bottom: 16px;
     width: fit-content;
     display: flex;
+
+    /**
+     * Clock example section title.
+     */
+    span.example-title {
+      padding-bottom: $title-size;
+      line-height: $title-size;
+      font-size: $title-size;
+      height: $title-size;
+      font-weight: 500;
+      display: block;
+    }
 
     /**
      * Example clock actual display.
      */
     span.example-display {
       text-shadow: var(--color) 0px 0px 4px;
+      line-height: 48px;
       color: var(--bg);
       font-size: 48px;
       display: block;
+      height: 48px;
     }
   }
 
@@ -55,6 +68,7 @@ main.component-time-display {
    */
   section.time-display-format {
     flex-direction: row;
+    margin-bottom: 16px;
     display: flex;
 
     /**
