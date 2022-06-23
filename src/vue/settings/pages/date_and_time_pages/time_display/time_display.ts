@@ -529,6 +529,8 @@ export default defineComponent({
 
                 enable_disable_meridem(true);
             }
+
+            this.update_active_format();
         }
     },
 

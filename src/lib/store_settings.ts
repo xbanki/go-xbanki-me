@@ -366,6 +366,8 @@ const store: { state: ModuleState, [name: string]: any } = {
             const assembled_active_format: string[] = [];
 
             for (const item of active_format) {
+                if (item.disabled) continue;
+
                 if (!item.token && item.delimiter) {
 
                     switch (context.state.time_delimiter) {
