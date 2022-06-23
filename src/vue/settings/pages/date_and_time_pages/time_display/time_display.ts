@@ -2,8 +2,8 @@ import { DateTime }        from 'luxon';
 import { Store, mapState } from 'vuex';
 import { defineComponent } from 'vue';
 
-import { ModuleState, FormatDelimiter, ClockConvention, DELIMITER_DESCRIPTION } from '@/lib/store_settings';
-import { TimerManager }                                                         from '@/lib/timers';
+import { ModuleState, FormatToken, FormatDelimiter, ClockConvention, DELIMITER_DESCRIPTION } from '@/lib/store_settings';
+import { TimerManager }                                                                      from '@/lib/timers';
 
 import draggable from 'vuedraggable';
 
@@ -111,51 +111,6 @@ interface ComponentState {
      * @type {ComponentStateDelimiters}
      */
     delimiters: ComponentStateDelimiters;
-}
-
-/**
- * Time/ Date format item.
- */
-export interface FormatToken {
-
-    /**
-     * Order index which determines the *starting* position in the format array(s).
-     * @type {number}
-     */
-    index: number;
-
-    /**
-     * Discriminates between a delimiter item and a format option item.
-     * @type {boolean}
-     */
-    delimiter: boolean;
-
-    /**
-     * Description of item which is shown when the hover event is active.
-     * @type {string}
-     */
-    description: string;
-
-    /**
-     * Enables or disables showing this token in format list.
-     */
-    disabled: boolean;
-
-    /**
-     * If item is format token, specifies wether this token should have a special display.
-     * @type {boolean}
-     */
-    dynamic?: boolean;
-
-    /**
-     * Luxon format token which is ignored in cases:
-     * 
-     * `<FormatToken>.dynamic: true`
-     * 
-     * `<FormatToken>.delimiter: true`
-     * @type {string}
-     */
-    token?: string;
 }
 
 /**

@@ -1,4 +1,47 @@
-import { FormatToken } from '@/vue/settings/pages/date_and_time_pages/time_display/time_display';
+/**
+ * Time/ Date format item.
+ */
+ export interface FormatToken {
+
+    /**
+     * Order index which determines the *starting* position in the format array(s).
+     * @type {number}
+     */
+    index: number;
+
+    /**
+     * Discriminates between a delimiter item and a format option item.
+     * @type {boolean}
+     */
+    delimiter: boolean;
+
+    /**
+     * Description of item which is shown when the hover event is active.
+     * @type {string}
+     */
+    description: string;
+
+    /**
+     * Enables or disables showing this token in format list.
+     */
+    disabled: boolean;
+
+    /**
+     * If item is format token, specifies wether this token should have a special display.
+     * @type {boolean}
+     */
+    dynamic?: boolean;
+
+    /**
+     * Luxon format token which is ignored in cases:
+     * 
+     * `<FormatToken>.dynamic: true`
+     * 
+     * `<FormatToken>.delimiter: true`
+     * @type {string}
+     */
+    token?: string;
+}
 
 /**
  * Internal state for all sub-category items.
