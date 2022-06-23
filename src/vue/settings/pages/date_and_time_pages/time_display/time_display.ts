@@ -295,7 +295,7 @@ export default defineComponent({
          * Handles format changes in the settings panel, displaying them
          * automatically on screen.
          */
-        update_active_format() { store.dispatch('settingsStore/SetTimeFormat', [this.state.format.active, this.state.format.inactive]);  },
+        update_active_format() { store.dispatch('settingsStore/SetTimeFormat', [this.state.format.active, this.state.format.inactive]); },
 
         /**
          * Gets the display item for a delimiter.
