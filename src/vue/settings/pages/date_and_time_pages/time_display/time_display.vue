@@ -236,16 +236,6 @@
                 </draggable>
             </div>
         </section>
-        
-        <!-- Clock example title //-->
-        <span class="time-display-title"> Example </span>
-
-        <!-- Static clock example //-->
-        <section class="time-display-example">
-
-            <!-- Clock example, which is static //-->
-            <span class="example-display"> {{ state.display.time }} </span>
-        </section>
     </main>
 </template>
 

@@ -78,27 +78,6 @@ main.component-time-display {
   }
 
   /**
-   * Clock example display section.
-   */
-  section.time-display-example {
-    flex-direction: column;
-    width: fit-content;
-    display: flex;
-
-    /**
-     * Example clock actual display.
-     */
-    span.example-display {
-      text-shadow: var(--color) 0px 0px 4px;
-      line-height: 48px;
-      color: var(--bg);
-      font-size: 48px;
-      display: block;
-      height: 48px;
-    }
-  }
-
-  /**
    * Format draggable rails parent wrapper.
    */
   section.time-display-format {

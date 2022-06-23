@@ -75,12 +75,6 @@ interface ComponentStateFormat {
 interface ComponentStateDisplay {
 
     /**
-     * Time clock display.
-     * @type {string}
-     */
-    time: string;
-
-    /**
      * Dynamic token updater function IDs.
      */
     ids: symbol[];
@@ -346,11 +340,7 @@ export default defineComponent({
          * Handles format changes in the settings panel, displaying them
          * automatically on screen.
          */
-        update_active_format() {
-            store.dispatch('settingsStore/SetTimeFormat', [this.state.format.active, this.state.format.inactive]);
-
-            this.state.display.time = DateTime.now().toFormat(this.settingsStore.time_display_format);
-        },
+        update_active_format() { store.dispatch('settingsStore/SetTimeFormat', [this.state.format.active, this.state.format.inactive]);  },
 
         /**
          * Gets the display item for a delimiter.
