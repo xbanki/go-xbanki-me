@@ -17,14 +17,14 @@
                 <time-convention-page-component/>
             </div>
 
-            <!-- Date display format option section //-->
-            <div class="content-item">
-                <date-display-page-component/>
-            </div>
-
             <!-- Time display format option section //-->
             <div class="content-item">
                 <time-display-page-component/>
+            </div>
+
+            <!-- Date display format option section //-->
+            <div class="content-item">
+                <date-display-page-component/>
             </div>
         </section>
     </main>
