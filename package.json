@@ -1,6 +1,6 @@
 {
   "name": "go-xbanki-me",
-  "version": "0.2.0+alpha.6",
+  "version": "0.2.0+alpha.7",
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
     "dev": "vite",
