@@ -61,5 +61,35 @@ main.component-date-and-time {
 
       &:first-of-type { padding-top: unset }
     }
+
+    /**
+     * Example clock section which is useful for updating the format.
+     */
+    div.content-example {
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      width: 100%;
+
+      /**
+       * Display texts wrapper.
+       */
+      div.example-display {
+        padding: $component-padding;
+
+        /**
+         * Format display elements.
+         */
+        span.display-time, span.display-date {
+          text-shadow: var(--color) 0px 0px 4px;
+          font-size: $title-size;
+          text-align: center;
+          color: var(--bg);
+          display: block;
+
+          &.display-date { font-size: math.div($title-size, 3) }
+        }
+      }
+    }
   }
 }

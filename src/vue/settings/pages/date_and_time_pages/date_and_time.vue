@@ -12,6 +12,24 @@
         <!-- Date & Time pages content wrapper //-->
         <section class="date-and-time-content">
 
+            <!-- Example clock for easier configuration //-->
+            <div class="content-example">
+                
+                <!-- Display wrapper for both date & time displays. //-->
+                <div class="example-display">
+
+                    <!-- Larger time display //-->
+                    <span class="display-time">
+                        {{ state.time }}
+                    </span>
+
+                    <!-- Smaller current date display //-->
+                    <span class="display-date">
+                        {{ state.date }}
+                    </span>
+                </div>
+            </div>
+
             <!-- Clock time convention display option section //-->
             <div class="content-item">
                 <time-convention-page-component/>
