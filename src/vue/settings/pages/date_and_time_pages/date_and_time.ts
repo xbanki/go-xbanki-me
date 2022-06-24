@@ -41,12 +41,12 @@ export default defineComponent({
 
         // State constants
 
-        const time = DateTime.now().toFormat(typed_store.state.settingsStore.time_display_format);
-
-        const date = DateTime.now().toFormat(typed_store.state.settingsStore.date_display_format);
-
         // @ts-ignore
         const build = LAST_BUILD_TIME;
+
+        const time = DateTime.fromRFC2822(build).toFormat(typed_store.state.settingsStore.time_display_format);
+
+        const date = DateTime.fromRFC2822(build).toFormat(typed_store.state.settingsStore.date_display_format);
 
         // Final object construction
 
