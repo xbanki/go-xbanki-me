@@ -1,4 +1,5 @@
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { DateTime }         from 'luxon';
 import { defineConfig }     from 'vite';
 
 import vue  from '@vitejs/plugin-vue';
@@ -9,6 +10,10 @@ export default defineConfig(
         build: {
             minify: 'terser',
             terserOptions: { mangle: true }
+        },
+
+        define: {
+            'LAST_BUILD_TIME': `'${DateTime.now().toRFC2822()}'`
         },
 
         plugins: [

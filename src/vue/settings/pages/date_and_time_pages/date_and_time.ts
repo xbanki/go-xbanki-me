@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { DateTime }        from 'luxon';
 import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
@@ -25,6 +27,11 @@ interface ComponentState {
      * @type {string}
      */
     time: string;
+
+    /**
+     * Last build time in RFC2822 format.
+     */
+    build: string;
 }
 
 export default defineComponent({
@@ -38,9 +45,13 @@ export default defineComponent({
 
         const date = DateTime.now().toFormat(typed_store.state.settingsStore.date_display_format);
 
+        // @ts-ignore
+        const build = LAST_BUILD_TIME;
+
         // Final object construction
 
         const state: ComponentState = {
+            build,
             time,
             date
         };
@@ -52,6 +63,18 @@ export default defineComponent({
         timeConventionPageComponent,
         dateDisplayPageComponent,
         timeDisplayPageComponent
+    },
+
+    watch: {
+        'settingsStore.time_display_format': {
+            handler(state) { this.state.time = DateTime.fromRFC2822(this.state.build).toFormat(state); },
+            deep: true
+        },
+
+        'settingsStore.date_display_format': {
+            handler(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
+            deep: true
+        }
     },
 
     computed: mapState(['settingsStore'])
