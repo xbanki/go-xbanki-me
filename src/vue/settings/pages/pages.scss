@@ -4,6 +4,7 @@
  */
 main.component-pages {
   border-left: 1px solid var(--accent);
+  box-sizing: border-box;
   flex-direction: column;
   background: var(--bg);
   overflow: scroll;
