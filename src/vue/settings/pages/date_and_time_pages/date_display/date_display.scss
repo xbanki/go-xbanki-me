@@ -31,7 +31,7 @@ main.component-date-display {
   }
 
   /**
-   * Time format delimiter section.
+   * Date format delimiter section.
    */
   section.date-display-delimiter {
     background: var(--accent);
@@ -73,6 +73,127 @@ main.component-date-display {
         margin-top: 4px;
         display: block;
         width: 100%;
+      }
+    }
+  }
+
+  /**
+   * Format draggable rails parent wrapper.
+   */
+  section.date-display-format {
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+
+    /**
+     * Upper format rail wrapper.
+     */
+    div.format-left, div.format-right {
+      background: var(--accent);
+      box-sizing: border-box;
+      border-radius: 4px;
+      display: flex;
+      padding: 4px;
+      width: 50%;
+
+      &.format-left  { margin-right: 8px }
+
+      /**
+       * Vertical aligner for the format rail.
+       */
+      ul.right-group, ul.left-group {
+        flex-direction: column;
+        padding: unset;
+        display: flex;
+        margin: unset;
+        flex: 1;
+
+        /**
+         * Header text above both rails.
+         */
+        div.group-header {
+          flex-direction: row;
+          margin-bottom: 4px;
+          padding-left: 6px;
+          display: block;
+          display: flex;
+          height: 24px;
+
+          /**
+           * Title display itself.
+           */
+          span.header-title {
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            opacity: 50%;
+            flex: 1;
+          }
+
+          /**
+           * Header buttons box.
+           */
+          div.header-buttons {
+            flex-direction: row;
+            width: fit-content;
+            margin-left: auto;
+            display: flex;
+            height: 24px;
+
+            /**
+             * Add & remove buttons logic.
+             */
+            button.buttons-add, button.buttons-remove {
+              line-height: 22px;
+              padding: unset;
+              height: 24px;
+              width: 24px;
+
+              &.buttons-add { margin-right: 2px }
+            }
+          }
+        }
+
+        /**
+         * Individual format item.
+         */
+        li.group-item {
+          height: fit-content;
+          flex-direction: row;
+          text-align: center;
+          line-height: 24px;
+          min-height: 24px;
+          display: block;
+          color: black;
+          display: flex;
+          cursor: unset;
+          width: 100%;
+
+          /**
+           * Item drag handle element.
+           */
+          span.item-handle {
+            text-align: center;
+            margin-right: auto;
+            user-select: none;
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            cursor: grab;
+            width: 24px;
+          }
+
+          /**
+           * Item contents display element.
+           */
+          span.item-display {
+            text-align: center;
+            display: block;
+            flex: 1;
+          }
+
+          &.dragging { opacity: 75% }
+        }
       }
     }
   }
