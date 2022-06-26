@@ -63,6 +63,8 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         ENABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = true,
 
+        DISABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = false,
+
         SIGNAL_SIGNIFICANT_UPDATE: (state: any) => state.version_change_significant_update = true,
 
         START_USER_INITIALIZATION: (state: any) => state.is_user_initialized = false

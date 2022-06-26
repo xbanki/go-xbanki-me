@@ -163,6 +163,8 @@ export default defineComponent({
                 this.state.disabled.disable_remove = true;
 
                 this.state.display.remove = DeleteButtonLabel.INITIAL;
+
+                store.commit('eventBusStore/DISABLE_DATA_PERSISTENCE');
             }
         },
 
