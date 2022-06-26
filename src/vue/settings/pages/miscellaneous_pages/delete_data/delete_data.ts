@@ -1,6 +1,8 @@
 import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
 
+import FileSaver from 'file-saver';
+
 import type { PersistenceMetadata } from '@/lib/persistence';
 
 import { ModuleState as EventState }    from '@/lib/store_event_bus';
@@ -156,7 +158,34 @@ export default defineComponent({
         /**
          * Handles downloading all persisted data into a singular JSON file.
          */
-        handle_click_backup() { this; },
+        handle_click_backup() {
+
+            if (this.state.display.backup == BackupButtonLabel.INITIAL)
+                this.state.display.backup = BackupButtonLabel.CONFIRM;
+
+            else if (this.state.display.backup == BackupButtonLabel.CONFIRM) {
+
+                const metadata: PersistenceMetadata = this.__metaData;
+
+                const version: string = metadata.last_used_version;
+                const data: Record<string, any> = { };
+
+                for (const namespace of metadata.known_namespaces) {
+                    const target = localStorage.getItem(`${metadata.application_name}-${namespace}`);
+
+                    if (!target) continue;
+
+                    data[namespace] = JSON.parse(target);
+                }
+
+                // Assemble final data object
+                const result = JSON.stringify({ version, data }, undefined, 2);
+
+                FileSaver.saveAs(new Blob([result], { type: 'application/json' }), `${metadata.application_name}-backup.json`);
+
+                this.state.display.backup = BackupButtonLabel.INITIAL;
+            }
+        },
 
         /**
          * Handles loading backup JSON file & setting the appropriate data.
