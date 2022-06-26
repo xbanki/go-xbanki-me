@@ -1,5 +1,13 @@
-import { mapState }        from 'vuex';
+import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
+
+import type { PersistenceMetadata } from '@/lib/persistence';
+
+import { ModuleState as EventState }    from '@/lib/store_event_bus';
+import { ModuleState as SettingsState } from '@/lib/store_settings';
+
+
+import store from '@/lib/store';
 
 /**
  * Delete button labels.
@@ -42,6 +50,24 @@ interface ComponentStateDisplay {
 }
 
 /**
+ * Button disable states.
+ */
+interface ComponentStateDisabled {
+
+    /**
+     * Delete button disable state.
+     * @type {boolean}
+     */
+    disable_remove: boolean;
+
+    /**
+     * Disabled back up button.
+     * @type {boolean}
+     */
+    disable_backup: boolean;
+}
+
+/**
  * Comonent internal state.
  */
 interface ComponentState {
@@ -51,11 +77,19 @@ interface ComponentState {
      * @type {ComponentStateDisplay}
      */
     display: ComponentStateDisplay;
+
+    /**
+     * Button disabled states.
+     * @type {ComponentStateDisabled}
+     */
+    disabled: ComponentStateDisabled;
 }
 
 export default defineComponent({
 
     data() {
+
+        const typed_store = store as Store<{ eventBusStore: EventState, settingsStore: SettingsState }>;
 
         // Display state defaults
 
@@ -65,7 +99,18 @@ export default defineComponent({
 
         const restore = 'Restore Saved Data';
 
+        // Disable state defaults
+
+        const disable_remove = !(typed_store.state.eventBusStore.supports_data_persistence);
+
+        const disable_backup = !(typed_store.state.eventBusStore.supports_data_persistence);
+
         // Final assembled state objects
+
+        const disabled: ComponentStateDisabled = {
+            disable_backup,
+            disable_remove
+        };
 
         const display: ComponentStateDisplay = {
             restore,
@@ -74,6 +119,7 @@ export default defineComponent({
         };
 
         const state: ComponentState = {
+            disabled,
             display
         };
 
@@ -85,7 +131,24 @@ export default defineComponent({
         /**
          * Handles deletion of all user-saved cookies.
          */
-        handle_click_delete() { this; },
+        handle_click_delete() {
+
+            // This exists purely to guard users from deleting prematurely
+            if (this.state.display.remove == DeleteButtonLabel.INITIAL)
+                this.state.display.remove = DeleteButtonLabel.CONFIRM;
+
+            else if (this.state.display.remove == DeleteButtonLabel.CONFIRM) {
+
+                const metadata = this.__metaData as PersistenceMetadata;
+
+                for (const item of metadata.known_namespaces)
+                    localStorage.removeItem(`${metadata.application_name}-${item}`);
+
+                localStorage.removeItem(`metadata-${metadata.application_name}`);
+
+                this.state.display.remove = DeleteButtonLabel.INITIAL;
+            }
+        },
 
         /**
          * Handles downloading all persisted data into a singular JSON file.
@@ -98,5 +161,15 @@ export default defineComponent({
         handle_click_restore() { this; }
     },
 
-    computed: mapState(['settingsStore', '__metaData'])
+    watch: {
+        'eventBusStore.supports_data_persistence': {
+            handler(state) {
+                this.state.disabled.disable_backup = !(state);
+                this.state.disabled.disable_remove = !(state);
+            },
+            deep: true
+        }
+    },
+
+    computed: mapState(['settingsStore', 'eventBusStore', '__metaData'])
 });

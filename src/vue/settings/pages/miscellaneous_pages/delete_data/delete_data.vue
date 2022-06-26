@@ -10,10 +10,10 @@
         <section class="delete-data-buttons">
 
             <!-- Delete data itself //-->
-            <button class="buttons-delete" v-on:click="handle_click_delete"> {{ state.display.remove }} </button>
+            <button class="buttons-delete" v-on:click="handle_click_delete" v-bind:disabled="state.disabled.disable_remove"> {{ state.display.remove }} </button>
 
             <!-- Backup all active data //-->
-            <button class="buttons-backup" v-on:click="handle_click_backup"> {{ state.display.backup }} </button>
+            <button class="buttons-backup" v-on:click="handle_click_backup" v-bind:disabled="state.disabled.disable_backup"> {{ state.display.backup }} </button>
 
             <!-- Restore backup data //-->
             <button class="buttons-restore" v-on:click="handle_click_restore"> {{ state.display.restore }} </button>

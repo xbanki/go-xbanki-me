@@ -31,7 +31,7 @@ export interface PersistenceOptions {
  * Internal metadata for the persistence plugin.
  * @private
  */
-interface PersistenceMetadata {
+export interface PersistenceMetadata {
 
     /**
      * Last valid semantic version used with this persistence module.
