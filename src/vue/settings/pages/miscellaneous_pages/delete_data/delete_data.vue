@@ -16,7 +16,7 @@
             <button class="buttons-backup" v-on:click="handle_click_backup" v-bind:disabled="state.disabled.disable_backup"> {{ state.display.backup }} </button>
 
             <!-- Restore backup data //-->
-            <button class="buttons-restore" v-on:click="handle_click_restore"> {{ state.display.restore }} </button>
+            <button class="buttons-restore" v-on:click="handle_click_restore" v-bind:disabled="state.disabled.disable_restore"> {{ state.display.restore }} </button>
         </section>
     </main>
 </template>

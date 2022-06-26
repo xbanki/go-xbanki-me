@@ -5,8 +5,9 @@ import FileSaver from 'file-saver';
 
 import type { PersistenceMetadata } from '@/lib/persistence';
 
-import { ModuleState as EventState }    from '@/lib/store_event_bus';
-import { ModuleState as SettingsState } from '@/lib/store_settings';
+import { ModuleState as EventState }          from '@/lib/store_event_bus';
+import { ModuleState as SettingsState }       from '@/lib/store_settings';
+import { verify_localstorage_availlability  } from '@/lib/persistence';
 
 
 import store from '@/lib/store';
@@ -67,6 +68,12 @@ interface ComponentStateDisabled {
      * @type {boolean}
      */
     disable_backup: boolean;
+
+    /**
+     * Disables restore button.
+     * @type {boolean}
+     */
+    disable_restore: boolean;
 }
 
 /**
@@ -107,9 +114,12 @@ export default defineComponent({
 
         const disable_backup = !(typed_store.state.eventBusStore.supports_data_persistence);
 
+        const disable_restore = false;
+
         // Final assembled state objects
 
         const disabled: ComponentStateDisabled = {
+            disable_restore,
             disable_backup,
             disable_remove
         };
@@ -200,7 +210,45 @@ export default defineComponent({
         /**
          * Handles loading backup JSON file & setting the appropriate data.
          */
-        handle_click_restore() { this; }
+        handle_click_restore() {
+
+            if (!verify_localstorage_availlability()) {
+
+                if (!this.state.disabled.disable_restore)
+                    this.state.disabled.disable_restore = true;
+
+                return;
+            }
+
+            const input = document.createElement('input');
+
+            input.type = 'file';
+            input.accept = '.json,application/json';
+
+            input.onchange = async ev => {
+
+                // To surpress TypeScript moaning
+                if (ev) ev;
+
+                if (input.files) for (const file of Array.from(input.files)) {
+                   const raw_data = JSON.parse(await file.text());
+
+                    const data = Object.assign(store.state as Record<any, any>, raw_data.data);
+
+                    for (const namespace of raw_data.meta.namespaces)
+                        localStorage.setItem(`${raw_data.meta.name}-${namespace}`, JSON.stringify(raw_data.data[namespace]));
+
+                    store.replaceState(data);
+                }
+
+                store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
+
+                // Clean up after ourselves
+                input.remove();
+            };
+
+            input.click();
+        }
     },
 
     watch: {
