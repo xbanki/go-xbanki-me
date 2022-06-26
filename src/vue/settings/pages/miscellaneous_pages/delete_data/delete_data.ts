@@ -146,6 +146,9 @@ export default defineComponent({
 
                 localStorage.removeItem(`metadata-${metadata.application_name}`);
 
+                this.state.disabled.disable_backup = true;
+                this.state.disabled.disable_remove = true;
+
                 this.state.display.remove = DeleteButtonLabel.INITIAL;
             }
         },
