@@ -31,11 +31,21 @@ main.component-delete-data {
   }
 
   /**
+   * Combined kilobyte size of all persisted data.
+   */
+  span.delete-data-size {
+    line-height: $label-size;
+    font-size: $label-size;
+    color: var(--accent);
+  }
+
+  /**
    * Delete data component buttons.
    */
   section.delete-data-buttons {
     box-sizing: border-box;
     flex-direction: row;
+    margin-bottom: 16px;
     display: flex;
     height: 28px;
     width: 100%;

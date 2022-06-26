@@ -255,7 +255,9 @@ export default defineComponent({
             };
 
             input.click();
-        }
+        },
+
+        get_size_data: () => `Cache Size: ${(new Blob(Object.values(localStorage)).size / 1000).toString().slice(0, -1)}Kb`
     },
 
     watch: {

@@ -18,6 +18,8 @@
             <!-- Restore backup data //-->
             <button class="buttons-restore" v-on:click="handle_click_restore" v-bind:disabled="state.disabled.disable_restore"> {{ state.display.restore }} </button>
         </section>
+
+        <span class="delete-data-size" v-if="eventBusStore.supports_data_persistence"> {{ get_size_data()  }} </span>
     </main>
 </template>
 
