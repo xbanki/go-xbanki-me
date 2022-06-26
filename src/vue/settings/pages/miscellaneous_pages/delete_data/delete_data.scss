@@ -1,0 +1,54 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * The "Delete Data" option allows users to delete all saved data, along with backing the data up
+ * for viewing or restoring previous state.
+ */
+main.component-delete-data {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.delete-data-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Delete data component buttons.
+   */
+  section.delete-data-buttons {
+    box-sizing: border-box;
+    flex-direction: row;
+    display: flex;
+    height: 28px;
+    width: 100%;
+
+    /**
+     * Button stylings.
+     */
+    button.buttons-delete, button.buttons-restore, button.buttons-backup {
+      margin-right: 8px;
+      height: 100%;
+      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+    }
+  }
+}
