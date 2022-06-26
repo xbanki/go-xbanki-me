@@ -1,7 +1,8 @@
 import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
 
-import FileSaver from 'file-saver';
+import application_data from '~/package.json';
+import FileSaver        from 'file-saver';
 
 import type { PersistenceMetadata } from '@/lib/persistence';
 
@@ -237,6 +238,12 @@ export default defineComponent({
 
                     for (const namespace of raw_data.meta.namespaces)
                         localStorage.setItem(`${raw_data.meta.name}-${namespace}`, JSON.stringify(raw_data.data[namespace]));
+
+                    const last_used_version = application_data.version;
+                    const application_name  = raw_data.meta.name;
+                    const known_namespaces  = raw_data.meta.namespaces;
+
+                    localStorage.setItem(`metadata-${raw_data.meta.name}`, JSON.stringify({ last_used_version, application_name, known_namespaces }));
 
                     store.replaceState(data);
                 }
