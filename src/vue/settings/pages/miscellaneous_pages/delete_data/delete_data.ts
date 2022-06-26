@@ -167,7 +167,10 @@ export default defineComponent({
 
                 const metadata: PersistenceMetadata = this.__metaData;
 
+                const namespaces: Array<string> = metadata.known_namespaces;
                 const version: string = metadata.last_used_version;
+                const name: string = metadata.application_name;
+
                 const data: Record<string, any> = { };
 
                 for (const namespace of metadata.known_namespaces) {
@@ -179,7 +182,14 @@ export default defineComponent({
                 }
 
                 // Assemble final data object
-                const result = JSON.stringify({ version, data }, undefined, 2);
+
+                const meta = {
+                    namespaces,
+                    version,
+                    name
+                };
+
+                const result = JSON.stringify({ meta, data }, undefined, 2);
 
                 FileSaver.saveAs(new Blob([result], { type: 'application/json' }), `${metadata.application_name}-backup.json`);
 
