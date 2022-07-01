@@ -2,6 +2,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import { DateTime }         from 'luxon';
 import { defineConfig }     from 'vite';
 
+import md   from '@jackfranklin/rollup-plugin-markdown';
 import vue  from '@vitejs/plugin-vue';
 import path from 'path';
 
@@ -17,6 +18,7 @@ export default defineConfig(
         },
 
         plugins: [
+            md(),
             vue(),
             createHtmlPlugin()
         ],
