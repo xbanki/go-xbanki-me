@@ -11,23 +11,23 @@
         </section>
 
         <!-- Miscellaneous pages content wrapper //-->
-            <section class="miscellaneous-content">
+        <section class="miscellaneous-content">
 
-                <!-- Application changelog option section //-->
-                <div class="content-item">
-                    <changelog-page-component/>
-                </div>
+            <!-- Application changelog option section //-->
+            <div class="content-item">
+                <changelog-page-component/>
+            </div>
 
-                <!-- Privacy & safety statement option section //-->
-                <div class="content-item">
-                    <privacy-and-safety-page-component/>
-                </div>
+            <!-- Privacy & safety statement option section //-->
+            <div class="content-item">
+                <privacy-and-safety-page-component/>
+            </div>
 
-                <!-- User persisted data delete option section //-->
-                <div class="content-item">
-                    <delete-data-page-component/>
-                </div>
-            </section>
+            <!-- User persisted data delete option section //-->
+            <div class="content-item">
+                <delete-data-page-component/>
+            </div>
+        </section>
     </main>
 </template>
 
