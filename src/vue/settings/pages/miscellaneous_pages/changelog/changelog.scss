@@ -156,6 +156,7 @@ main.component-changelog {
       }
 
       &.active div.item-content {
+        padding: 0 $title-size;
         height: fit-content;
         overflow: auto;
         display: block;
