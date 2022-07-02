@@ -1,0 +1,27 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * The changelog component is responsible for displaying all update logs by rendering
+ * markdown based articles.
+ */
+main.component-changelog {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.changelog-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+}
