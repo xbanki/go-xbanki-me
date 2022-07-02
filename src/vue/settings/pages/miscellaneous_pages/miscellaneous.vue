@@ -13,14 +13,14 @@
         <!-- Miscellaneous pages content wrapper //-->
             <section class="miscellaneous-content">
 
-                <!-- Privacy & safety statement option section //-->
-                <div class="content-item">
-                    <privacy-and-safety-page-component/>
-                </div>
-
                 <!-- Application changelog option section //-->
                 <div class="content-item">
                     <changelog-page-component/>
+                </div>
+
+                <!-- Privacy & safety statement option section //-->
+                <div class="content-item">
+                    <privacy-and-safety-page-component/>
                 </div>
 
                 <!-- User persisted data delete option section //-->

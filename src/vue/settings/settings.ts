@@ -101,17 +101,6 @@ export default defineComponent({
                     ]
                 },
                 {
-                    name: 'Date Display',
-                    filtered: false,
-                    critical: true,
-                    id: 'date-display-category',
-                    keywords: [
-                        'day',
-                        'day format',
-                        'critical'
-                    ]
-                },
-                {
                     name: 'Time Display',
                     filtered: false,
                     critical: true,
@@ -120,6 +109,17 @@ export default defineComponent({
                         'clock format',
                         'critical',
                         'time format'
+                    ]
+                },
+                {
+                    name: 'Date Display',
+                    filtered: false,
+                    critical: true,
+                    id: 'date-display-category',
+                    keywords: [
+                        'day',
+                        'day format',
+                        'critical'
                     ]
                 }
             ]
