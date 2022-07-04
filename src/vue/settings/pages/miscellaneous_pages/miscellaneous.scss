@@ -32,13 +32,26 @@ main.component-miscellaneous {
     /**
      * Date & Time bar title element.
      */
-    span.bar-title {
+    span.bar-title, span.bar-separator, span.bar-label {
       font-size: math.div($title-size, 2);
+      margin-right: math.div($component-padding, 4);
       line-height: $title-size;
       height: $title-size;
       font-weight: 700;
       display: block;
-      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+      &.bar-separator { color: var(--accent) }
+
+      /**
+       * Interact mode stylings.
+       */
+      &.interactable {
+        transition: color 0.06s linear;
+        cursor: pointer;
+
+        &:hover { color: darkgray }
+      }
     }
   }
 
