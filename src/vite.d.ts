@@ -11,6 +11,6 @@ declare module 'virtual:licenses' {
         text?: string;
     }
     type LicenseItem = Record<string, LicenseData>;
-    const data: { DEPENDENCY_LICENSES: LicenseItem };
+    const data: LicenseItem;
     export default data;
 }
