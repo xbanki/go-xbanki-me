@@ -31,7 +31,6 @@ export default defineComponent({
 
     data() {
 
-        // @TO-DO (xbanki): Get this data in a RFC
         const revision: DateTime = DateTime.fromRFC2822(article.metadata.latest_revision);
 
         const version: string = article.metadata.version;
