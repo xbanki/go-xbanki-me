@@ -24,7 +24,7 @@ main.component-cookie-usage {
     width: 100%;
 
     /**
-     * Statement version label.
+     * Statement labels.
      */
     span.rail-version, span.rail-date {
       line-height: $label-size;
@@ -32,7 +32,7 @@ main.component-cookie-usage {
       height: $label-size;
       display: block;
 
-      &.rail-date { margin-left: auto }
+      &.rail-date    { margin-left: auto }
       &.rail-version { flex: 1 }
     }
   }
