@@ -6,7 +6,7 @@
     "dev": "vite",
     "lint": "eslint ./**/*.{js,jsx,ts,tsx} --format table",
     "lint:fix": "eslint ./**/*.{js,jsx,ts,tsx} --fix --format table",
-    "postinstall": "husky install",
+    "postinstall": "husky install && license-checker --json --out ./deps.json",
     "serve": "vercel dev"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "eslint": "^8.2.0",
     "eslint-formatter-table": "^7.32.1",
     "husky": "^8.0.1",
+    "license-checker": "^25.0.1",
     "sass": "^1.43.4",
     "typescript": "^4.4.3",
     "vercel": "^25.0.1",
