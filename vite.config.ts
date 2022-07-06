@@ -6,6 +6,8 @@ import md   from '@jackfranklin/rollup-plugin-markdown';
 import vue  from '@vitejs/plugin-vue';
 import path from 'path';
 
+import licensePlugin from './license_plugin';
+
 export default defineConfig(
     {
         build: {
@@ -20,6 +22,7 @@ export default defineConfig(
         plugins: [
             md(),
             vue(),
+            licensePlugin(),
             createHtmlPlugin()
         ],
 
