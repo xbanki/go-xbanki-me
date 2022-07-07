@@ -1,0 +1,140 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * Dropdown title bar size.
+ */
+$bar-size: 48px;
+
+/**
+ * In-content information rail padding.
+ */
+$rail-padding: 8px;
+
+/**
+ * The licenses component lists *every single public package* this application uses, in
+ * an easy-to-read format.
+ */
+main.component-licenses {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Single dropdown item styles.
+   */
+  section.licenses-item {
+    height: fit-content;
+    margin-bottom: 8px;
+    width: 100%;
+
+    &:last-of-type { margin-bottom: unset }
+
+    /**
+     * Title bar itself.
+     */
+    div.item-title {
+      background: var(--accent);
+      flex-direction: row;
+      cursor: pointer;
+      display: flex;
+      height: 48px;
+
+      /**
+       * Title chevron display.
+       */
+      span.title-arrow {
+        padding-left: $title-size;
+        line-height: $bar-size;
+        width: fit-content;
+        height: $bar-size;
+        user-select: none;
+        display: block;
+        opacity: 60%;
+      }
+
+      /**
+       * Package name label.
+       */
+      span.title-name {
+        padding-left: $title-size;
+        font-size: $label-size;
+        line-height: $bar-size;
+        user-select: none;
+        height: $bar-size;
+      }
+
+      /**
+       * Package homepage link.
+       */
+      a.title-home {
+        padding-right: $title-size;
+        line-height: $bar-size;
+        height: $bar-size;
+        user-select: none;
+        margin-left: auto;
+        font-weight: 700;
+      }
+    }
+
+    /**
+     * Rendered content.
+     */
+    div.item-content {
+      padding: 0 $title-size;
+      box-sizing: border-box;
+      height: fit-content;
+      overflow: auto;
+      display: block;
+      width: 100%;
+
+      /**
+       * Creator information rail.
+       */
+      div.content-upper {
+        margin-top: $rail-padding;
+        box-sizing: border-box;
+        flex-direction: row;
+        height: fit-content;
+        display: flex;
+        width: 100%;
+
+        /**
+         * Author label.
+         */
+        span.upper-name {
+          line-height: $label-size;
+          font-size: $label-size;
+          height: $label-size;
+          display: block;
+          flex: 1;
+        }
+
+        /**
+         * Rail links.
+         */
+        a.upper-email, a.upper-repo {
+          margin-right: $rail-padding;
+          line-height: $label-size;
+          font-size: $label-size;
+          margin-left: auto;
+
+          &:last-of-type { margin-right: unset }
+        }
+      }
+
+      /**
+       * Markdown rendered content.
+       */
+      div.content-display { margin-top: $rail-padding }
+    }
+  }
+}
