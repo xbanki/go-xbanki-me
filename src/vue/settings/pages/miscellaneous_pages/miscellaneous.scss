@@ -71,7 +71,14 @@ main.component-miscellaneous {
     div.content-item {
       padding-top: math.div($component-padding, 2);
 
+      &.highlighted { animation: highlight 0.96s }
       &:first-of-type { padding-top: unset }
     }
   }
+}
+
+@keyframes highlight {
+  0%   { background: transparent }
+  25%  { background: var(--accent-faded) }
+  100% { background: transparent }
 }

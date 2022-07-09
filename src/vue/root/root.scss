@@ -12,6 +12,7 @@ html, body {
   &.theme-dark {
     transition: background 0.12s, color 0.24s;
     transition-timing-function: ease;
+    --accent-faded: rgba(82, 82, 82, 60%);
     --accent: #525252;
     --color:  #FFFFFF;
     --bg:     #000;
@@ -20,6 +21,7 @@ html, body {
   &.theme-light {
     transition: background 0.12s, color 0.24s;
     transition-timing-function: ease;
+    --accent-faded: rgba(230, 230, 230, 60%);
     --accent: #E6E6E6;
     --color:  #000000;
     --bg:     #FFFFFF;

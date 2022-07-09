@@ -46,6 +46,11 @@ interface ComponentState {
      * Displays or hides the settings component.
      */
     render_state: boolean;
+
+    /**
+     * Last clicked category item.
+     */
+    last_clicked_category?: string;
 }
 
 export default defineComponent({
@@ -214,13 +219,19 @@ export default defineComponent({
                 }
             }
 
-            if (typeof target_match_name == 'string' && this.state.pages_state.active_category != target_match_name) this.state.pages_state.active_category = target_match_name;
+            if (typeof target_match_name == 'string') {
+
+                if (this.state.pages_state.active_category != target_match_name)
+                    this.state.pages_state.active_category = target_match_name;
+
+                this.state.last_clicked_category = source.name;
+            }
         },
 
         handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }
     },
 
-    provide() { return { critical_only: computed(() => this.state.categories_state.critical_only) }; },
+    provide() { return { critical_only: computed(() => this.state.categories_state.critical_only), last_clicked_category: computed(() => this.state.last_clicked_category) }; },
 
     computed: mapState(['eventBusStore', '__metaData'])
 });

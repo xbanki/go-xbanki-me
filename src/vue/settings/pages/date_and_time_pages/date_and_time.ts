@@ -4,6 +4,8 @@ import { DateTime }        from 'luxon';
 import { mapState, Store } from 'vuex';
 import { defineComponent } from 'vue';
 
+import anime from 'animejs';
+
 import { ModuleState } from '@/lib/store_settings';
 
 import timeConventionPageComponent from '@/vue/settings/pages/date_and_time_pages/time_convention/time_convention.vue';
@@ -59,6 +61,44 @@ export default defineComponent({
         return { state };
     },
 
+    mounted() { this.$nextTick(() => this.handle_category_click()); },
+
+    methods: {
+        handle_category_click() {
+
+            // @ts-ignore
+            const target = this.last_clicked_category as string;
+
+            if (['Time Convention', 'Time Display', 'Date Display'].includes(target)) {
+
+                const scrollable = document.getElementsByClassName('component-pages')[0];
+                const el         = this.$refs[target] as HTMLDivElement;
+
+                // Highlight animation stuff
+                const highlight = anime({
+                    autoplay: false,
+                    duration: 960
+                });
+
+                // Scroll animation stuff
+                const scroll = anime({
+                    scrollTop: (el.offsetTop - scrollable.scrollTop),
+                    easing: 'easeInOutQuad',
+                    targets: scrollable,
+                    autoplay: false,
+                    duration: 480
+                });
+
+                highlight.complete = () => el.classList.remove('highlighted');
+                highlight.begin    = () => el.classList.add('highlighted');
+                scroll.complete    = () => highlight.play();
+
+                // Play the animation
+                scroll.play();
+            }
+        }
+    },
+
     components: {
         timeConventionPageComponent,
         dateDisplayPageComponent,
@@ -74,8 +114,12 @@ export default defineComponent({
         'settingsStore.date_display_format': {
             handler(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
             deep: true
-        }
+        },
+
+        last_clicked_category() { this.handle_category_click(); }
     },
+
+    inject: ['last_clicked_category'],
 
     computed: mapState(['settingsStore'])
 });

@@ -20,17 +20,17 @@
         <section class="miscellaneous-content" v-if="state.active == 'MISC_TAB_DEFAULT'">
 
             <!-- Application changelog option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Changelog">
                 <changelog-page-component/>
             </div>
 
             <!-- Privacy & safety statement option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Privacy & Safety">
                 <privacy-and-safety-page-component v-on:clicked="handle_click_event"/>
             </div>
 
             <!-- User persisted data delete option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Delete Data">
                 <delete-data-page-component/>
             </div>
         </section>

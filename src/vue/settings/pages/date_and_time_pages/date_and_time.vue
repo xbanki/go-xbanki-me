@@ -31,17 +31,17 @@
             </div>
 
             <!-- Clock time convention display option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Time Convention">
                 <time-convention-page-component/>
             </div>
 
             <!-- Time display format option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Time Display">
                 <time-display-page-component/>
             </div>
 
             <!-- Date display format option section //-->
-            <div class="content-item">
+            <div class="content-item" ref="Date Display">
                 <date-display-page-component/>
             </div>
         </section>
