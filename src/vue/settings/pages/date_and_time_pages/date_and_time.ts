@@ -67,9 +67,12 @@ export default defineComponent({
         handle_category_click() {
 
             // @ts-ignore
-            const target = this.last_clicked_category as string;
+            const target: string = this.last_clicked_category;
 
-            if (['Time Convention', 'Time Display', 'Date Display'].includes(target)) {
+            // @ts-ignore
+            const critical: boolean = this.critical_only;
+
+            if (!critical) if (['time-convention-category', 'time-display-category', 'date-display-category'].includes(target)) {
 
                 const scrollable = document.getElementsByClassName('component-pages')[0];
                 const el         = this.$refs[target] as HTMLDivElement;
@@ -96,6 +99,20 @@ export default defineComponent({
                 // Play the animation
                 scroll.play();
             }
+        },
+
+        handle_critical_category(name :string): boolean {
+
+            // @ts-ignore
+            const critical: boolean = this.critical_only;
+
+            if (critical)
+
+                // @ts-ignore
+                return this.critical_categories.includes(name);
+
+            else
+                return true;
         }
     },
 
@@ -119,7 +136,7 @@ export default defineComponent({
         last_clicked_category() { this.handle_category_click(); }
     },
 
-    inject: ['last_clicked_category'],
+    inject: ['critical_only', 'critical_categories', 'last_clicked_category'],
 
     computed: mapState(['settingsStore'])
 });

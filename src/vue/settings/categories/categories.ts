@@ -289,6 +289,9 @@ export default defineComponent({
             let first_iteration = true;
 
             for (const item of this.internal_state.all_category_items) {
+
+                if (!item.critical) continue;
+
                 const target_item = this.settingsStore.critical_only_categories_state[item.id] as CategoryItemState;
 
                 if (!target_item) {
@@ -310,6 +313,7 @@ export default defineComponent({
         handle_category_click(item: CategoryItem) {
 
             if (this.state.critical_only) {
+
                 const clicked_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => el ==item.id);
                 const clicked_category_state = this.settingsStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
 
@@ -359,7 +363,7 @@ export default defineComponent({
         close_settings_component() { this.$emit('close', false); }
     },
 
-    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); }); },
+    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); if (this.state.critical_only) this.populate_category_states(); }); },
 
     watch: {
 

@@ -28,11 +28,19 @@ interface ComponentState {
      * @type {string}
      */
     label: string;
+
+    /**
+     * Disables moving between tabs on critical only mode.
+     * @type {boolean}
+     */
+    disable: boolean;
 }
 
 export default defineComponent({
 
     data() {
+
+        const disable = false;
 
         const active: CurrentTab = CurrentTab.DEFAULT;
 
@@ -41,6 +49,7 @@ export default defineComponent({
         // Assembled state objects
 
         const state: ComponentState = {
+            disable,
             active,
             label
         };
@@ -48,7 +57,7 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => this.handle_category_click()); },
+    mounted() { this.$nextTick(() => { this.handle_category_click(); this.discriminate_component_state(); }); },
 
     methods: {
         handle_click_event(event: CurrentTab) {
@@ -66,9 +75,20 @@ export default defineComponent({
             }
         },
 
+        discriminate_component_state() {
+
+            // @ts-ignore
+            const critical: boolean = this.critical_only;
+
+            if (critical) {
+                this.state.active = CurrentTab.COOKIES;
+                this.state.disable = true;
+            }
+        },
+
         handle_return_click() {
 
-            if (this.state.active == CurrentTab.DEFAULT) return;
+            if (this.state.active == CurrentTab.DEFAULT || this.state.disable) return;
 
             this.state.active = CurrentTab.DEFAULT;
         },
@@ -76,7 +96,10 @@ export default defineComponent({
         handle_category_click() {
 
             // @ts-ignore
-            const target = this.last_clicked_category as string;
+            const target: string = this.last_clicked_category;
+
+            // @ts-ignore
+            const critical: boolean = this.critical_only;
 
             const runner = () => {
                 const scrollable = document.getElementsByClassName('component-pages')[0];
@@ -105,7 +128,7 @@ export default defineComponent({
                 scroll.play();
             };
 
-            if (['Changelog', 'Privacy & Safety', 'Delete Data'].includes(target)) {
+            if (!critical) if (['changelog-category', 'privacy-and-safety-category', 'delete-data-category'].includes(target)) {
 
                 if (this.state.active != CurrentTab.DEFAULT) {
 
@@ -116,14 +139,32 @@ export default defineComponent({
                 else
                     runner();
             }
-        }
+        },
+
+        handle_critical_category(name :string): boolean {
+
+            // @ts-ignore
+            const critical: boolean = this.critical_only;
+
+            if (critical)
+
+                // @ts-ignore
+                return this.critical_categories.includes(name);
+
+            else
+                return true;
+        },
+
+        pass_close() { this.$emit('close'); }
     },
 
     watch: {
         last_clicked_category() { this.handle_category_click(); }
     },
 
-    inject: ['last_clicked_category'],
+    inject: ['critical_only', 'critical_categories', 'last_clicked_category'],
+
+    emits: ['close'],
 
     components: {
 

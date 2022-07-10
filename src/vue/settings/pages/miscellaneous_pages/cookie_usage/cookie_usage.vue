@@ -15,6 +15,9 @@
 
         <!-- Rendered Markdown article //-->
         <section class="cookie-usage-article" v-html="state.content"/>
+
+        <!-- Accept cookie usage button //-->
+        <button class="cookie-usage-consent" v-if="state.disable" v-on:click="accept_cookie_usage"> Accept & Continue </button>
     </main>
 </template>
 

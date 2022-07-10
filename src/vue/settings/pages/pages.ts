@@ -25,6 +25,12 @@ export default defineComponent({
         'Appearance'    : appearancePageComponent
     },
 
+    methods: {
+        pass_close() { this.$emit('close', false); }
+    },
+
+    emits: ['close'],
+
     props: {
         state: {
             required: true,

@@ -51,6 +51,11 @@ interface ComponentState {
      * Last clicked category item.
      */
     last_clicked_category?: string;
+
+    /**
+     * Array containing critical only mode IDs.
+     */
+    critical_categories: string[];
 }
 
 export default defineComponent({
@@ -58,7 +63,7 @@ export default defineComponent({
     data() {
 
         const categories_state: CategoriesState = {
-            critical_only: false
+            critical_only: true
         };
 
         const appearance_category: CategoryTuple = [
@@ -146,7 +151,7 @@ export default defineComponent({
                 {
                     name: 'Privacy & Safety',
                     filtered: false,
-                    critical: false,
+                    critical: true,
                     id: 'privacy-and-safety-category',
                     keywords: [
                         'eula',
@@ -173,9 +178,15 @@ export default defineComponent({
 
         const pages_state: PagesState = { active_category: undefined };
 
+        const critical_categories: string[] = [];
+
+        // Populate IDs
+        [...appearance_category[1], ...date_time_category[1], ...miscellaneous_category[1]].forEach(el => el.critical ? critical_categories.push(el.id) : false);
+
         const state: ComponentState = {
-            component_display_state: 'STATE_SETTINGS',
+            component_display_state: 'STATE_INIT',
             render_state: false,
+            critical_categories,
             categories_state,
             categories_data,
             pages_state
@@ -224,14 +235,19 @@ export default defineComponent({
                 if (this.state.pages_state.active_category != target_match_name)
                     this.state.pages_state.active_category = target_match_name;
 
-                this.state.last_clicked_category = source.name;
+                this.state.last_clicked_category = source.id;
             }
         },
 
         handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }
     },
 
-    provide() { return { critical_only: computed(() => this.state.categories_state.critical_only), last_clicked_category: computed(() => this.state.last_clicked_category) }; },
+    provide() {
+        return {
+            last_clicked_category: computed(() => this.state.last_clicked_category),
+            critical_categories: computed(() => this.state.critical_categories),
+            critical_only: computed(() => this.state.categories_state.critical_only)
+        }; },
 
     computed: mapState(['eventBusStore', '__metaData'])
 });

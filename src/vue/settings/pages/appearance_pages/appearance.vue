@@ -14,12 +14,12 @@
         <section class="appearance-content">
 
             <!-- Application theme option section //-->
-            <div class="content-item" v-if="!critical_only || critical_only && data.critical_categories['theme']" ref="Theme">
+            <div class="content-item" v-if="handle_critical_category('theme-category')" ref="theme-category">
                 <theme-page-component/>
             </div>
 
             <!-- Application background fit style //-->
-            <div class="content-item" v-if="!critical_only || critical_only && data.critical_categories['background-fit']" ref="Background Fit">
+            <div class="content-item" v-if="handle_critical_category('background-fit-category')" ref="background-fit-category">
                 <background-fit-page-component/>
             </div>
         </section>
