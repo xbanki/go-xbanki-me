@@ -14,7 +14,7 @@ import { version } from '~/package.json';
 /**
  * Helper type to reduce code duplication.
  */
-type CategoryTuple = [string, CategoryItem[]];
+export type CategoryTuple = [string, CategoryItem[]];
 
 /**
  * Comonent internal state.
@@ -176,7 +176,7 @@ export default defineComponent({
 
         const categories_data: CategoriesData = { version,  items };
 
-        const pages_state: PagesState = { active_category: undefined };
+        const pages_state: PagesState = { active_category: undefined, categories: items };
 
         const critical_categories: string[] = [];
 
@@ -236,7 +236,7 @@ export default defineComponent({
 
             if (typeof target_match_name == 'string') {
 
-                if (this.state.pages_state.active_category != target_match_name)
+                if (this.state.pages_state.active_category != target_match_name && this.state.component_display_state != 'STATE_INIT')
                     this.state.pages_state.active_category = target_match_name;
 
                 this.state.last_clicked_category = source.id;
@@ -257,7 +257,8 @@ export default defineComponent({
             last_clicked_category: computed(() => this.state.last_clicked_category),
             critical_categories: computed(() => this.state.critical_categories),
             critical_only: computed(() => this.state.categories_state.critical_only)
-        }; },
+        };
+    },
 
     computed: mapState(['eventBusStore', '__metaData'])
 });

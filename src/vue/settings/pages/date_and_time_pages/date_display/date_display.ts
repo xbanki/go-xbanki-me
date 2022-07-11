@@ -317,5 +317,13 @@ export default defineComponent({
 
     components: { draggable },
 
-    computed: mapState(['settingsStore'])
+    computed: mapState(['settingsStore']),
+
+    props: {
+        standalone: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    }
 });

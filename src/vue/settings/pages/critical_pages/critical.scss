@@ -1,0 +1,47 @@
+@use "sass:math";
+
+/**
+ * Titlebar & title display sizing style.
+ */
+$title-size: 48px;
+
+/**
+ * Overall component padding.
+ */
+$component-padding: 32px;
+
+/**
+ * The "Critical" pages component is shown only on first initialization to users.
+ * It renders all critical deemed settings components in their own pages, so the user
+ * is not overwhelmed by many settings being clumped together.
+ */
+main.component-critical {
+  padding: $component-padding - 4px;
+
+  /**
+   * If we were to ever support mobile, we would have the infrastructure ready for mobile navigation
+   * controls for the settings view.
+   */
+  section.critical-bar {
+    margin-bottom: $component-padding;
+    flex-direction: row;
+    height: $title-size;
+    display: flex;
+    width: 100%;
+
+    /**
+     * Title elements, which change based on what critical input the user is currently changing or reviewing.
+     */
+    span.bar-label, span.bar-title, span.bar-separator {
+      margin-right: math.div($component-padding, 4);
+      font-size: math.div($title-size, 2);
+      line-height: $title-size;
+      height: $title-size;
+      font-weight: 700;
+      display: block;
+      
+      &:last-of-type  { margin-right: unset }
+      &.bar-separator { color: var(--accent) }
+    }
+  }
+}

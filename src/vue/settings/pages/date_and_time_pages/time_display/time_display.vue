@@ -4,7 +4,7 @@
     <main class="component-time-display">
 
         <!-- Time Display component title display //-->
-        <span class="time-display-title"> Time Display </span>
+        <span class="time-display-title" v-if="!standalone"> Time Display </span>
 
         <!-- Delimiter choise section //-->
         <section class="time-display-delimiter">

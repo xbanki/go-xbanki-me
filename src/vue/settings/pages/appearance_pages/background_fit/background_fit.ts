@@ -37,5 +37,13 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['settingsStore'])
+    computed: mapState(['settingsStore']),
+
+    props: {
+        standalone: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    }
 });

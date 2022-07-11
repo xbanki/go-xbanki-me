@@ -4,7 +4,7 @@
     <main class="component-date-display">
 
         <!-- Date Display component title display //-->
-        <span class="date-display-title"> Date Display </span>
+        <span class="date-display-title" v-if="!standalone"> Date Display </span>
 
         <!-- Delimiter choise section //-->
         <section class="date-display-delimiter">

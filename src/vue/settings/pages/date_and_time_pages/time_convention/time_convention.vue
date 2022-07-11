@@ -4,7 +4,7 @@
     <main class="component-time-convention">
 
         <!-- Time Convention component title display //-->
-        <span class="time-convention-title"> Time Convention </span>
+        <span class="time-convention-title" v-if="!standalone"> Time Convention </span>
 
         <!-- Time Convention selections container //-->
         <section class="time-convention-selections">

@@ -4,7 +4,7 @@
     <main class="component-background-fit">
 
         <!-- Background Fit component title display //-->
-        <span class="background-fit-title"> Background Image Fit </span>
+        <span class="background-fit-title" v-if="!standalone"> Background Image Fit </span>
 
         <!-- Background Fit selections container //-->
         <section class="background-fit-selections">

@@ -76,5 +76,13 @@ export default defineComponent({
 
     emits: ['close'],
 
-    inject: ['critical_only']
+    inject: ['critical_only'],
+
+    props: {
+        standalone: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    }
 });
