@@ -48,6 +48,7 @@ main.component-categories {
      */
     div.bar-upper {
       margin-bottom: math.div($component-margin, 2);
+      justify-content: end;
       align-items: center;
       flex-direction: row;
       display: flex;
@@ -58,6 +59,7 @@ main.component-categories {
        */
       button.bar-close {
         color: var(--color);
+        margin-right: auto;
         text-align: center;
         line-height: 24px;
         background: unset;
@@ -69,6 +71,17 @@ main.component-categories {
         padding: 0;
 
         &:hover { background: var(--accent) }
+      }
+
+      /**
+       * Navigation buttons.
+       */
+      button.bar-forward, button.bar-back {
+        font-weight: bold;
+        height: 24px;
+        width: 24px;
+
+        &.bar-back { margin-right: 2px }
       }
     }
 

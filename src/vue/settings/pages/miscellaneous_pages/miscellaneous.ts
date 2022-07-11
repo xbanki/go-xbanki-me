@@ -93,53 +93,7 @@ export default defineComponent({
             this.state.active = CurrentTab.DEFAULT;
         },
 
-        handle_category_click() {
-
-            // @ts-ignore
-            const target: string = this.last_clicked_category;
-
-            // @ts-ignore
-            const critical: boolean = this.critical_only;
-
-            const runner = () => {
-                const scrollable = document.getElementsByClassName('component-pages')[0];
-                const el         = this.$refs[target] as HTMLDivElement;
-
-                // Highlight animation stuff
-                const highlight = anime({
-                    autoplay: false,
-                    duration: 960
-                });
-
-                // Scroll animation stuff
-                const scroll = anime({
-                    scrollTop: (el.offsetTop - scrollable.scrollTop),
-                    easing: 'easeInOutQuad',
-                    targets: scrollable,
-                    autoplay: false,
-                    duration: 480
-                });
-
-                highlight.complete = () => el.classList.remove('highlighted');
-                highlight.begin    = () => el.classList.add('highlighted');
-                scroll.complete    = () => highlight.play();
-
-                // Play the animation
-                scroll.play();
-            };
-
-            if (!critical) if (['changelog-category', 'privacy-and-safety-category', 'delete-data-category'].includes(target)) {
-
-                if (this.state.active != CurrentTab.DEFAULT) {
-
-                    this.state.active = CurrentTab.DEFAULT;
-                    this.$nextTick(() => runner());
-                }
-
-                else
-                    runner();
-            }
-        },
+        handle_category_click() { this; },
 
         handle_critical_category(name :string): boolean {
 

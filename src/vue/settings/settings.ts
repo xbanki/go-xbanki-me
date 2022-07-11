@@ -63,7 +63,7 @@ export default defineComponent({
     data() {
 
         const categories_state: CategoriesState = {
-            critical_only: true
+            critical_only: false
         };
 
         const appearance_category: CategoryTuple = [
@@ -209,9 +209,13 @@ export default defineComponent({
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`)) {
                 this.state.component_display_state = 'STATE_INIT';
+                this.state.categories_state.critical_only = true;
                 this.state.render_state = true;
+            }
 
-                return;
+            else {
+                this.state.component_display_state = 'STATE_SETTINGS';
+                this.state.categories_state.critical_only = false;
             }
         },
 
@@ -237,6 +241,12 @@ export default defineComponent({
 
                 this.state.last_clicked_category = source.id;
             }
+        },
+
+        handle_settings_open() {
+            this.discriminate_component_state();
+
+            this.$nextTick(() => this.state.render_state = true);
         },
 
         handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }

@@ -137,8 +137,21 @@ interface InternalComponentState {
 
     /**
      * Denotes wether or not we are in search mode.
+     * @type {boolean}
      */
-     is_searching: boolean;
+    is_searching: boolean;
+
+    /**
+     * Disables forward navigation.
+     * @type {boolean}
+     */
+    disable_forward: boolean;
+
+    /**
+     * Disables back navigation.
+     * @type {boolean}
+     */
+    disable_back: boolean;
 }
 
 export default defineComponent({
@@ -148,7 +161,9 @@ export default defineComponent({
             image_queue: new Queue<QueueIcon>(),
             preloaded_icons: false,
             all_category_items: [],
+            disable_forward: false,
             is_searching: false,
+            disable_back: true,
             icon_cache: []
         };
 
@@ -360,7 +375,51 @@ export default defineComponent({
 
         },
 
-        close_settings_component() { this.$emit('close', false); }
+        handle_navigation_previous() {
+
+            const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
+
+            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+
+                const index = filtered_items.indexOf(item) - 1;
+
+                this.handle_category_click(filtered_items[index]);
+
+                if (index <= 0)
+                    this.internal_state.disable_back = true;
+
+                break;
+            }
+
+            this.internal_state.disable_forward = false;
+        },
+
+        handle_navigation_next() {
+
+            const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
+
+            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+
+                const index = filtered_items.indexOf(item) + 1;
+
+                this.handle_category_click(filtered_items[index]);
+
+                if (index >= filtered_items.length - 1)
+                    this.internal_state.disable_forward = true;
+
+                break;
+            }
+
+            this.internal_state.disable_back = false;
+        },
+
+        close_settings_component() {
+
+            if (Object.keys(this.internal_state.all_category_items).length >= 1)
+                store.commit('settingsStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
+
+            this.$emit('close', false);
+        }
     },
 
     mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); if (this.state.critical_only) this.populate_category_states(); }); },

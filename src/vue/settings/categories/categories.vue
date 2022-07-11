@@ -10,7 +10,13 @@
             <div class="bar-upper">
 
                 <!-- Bar close button //-->
-                <button class="bar-close" v-on:click="close_settings_component"> × </button>
+                <button class="bar-close" v-on:click="close_settings_component"> &#215; </button>
+
+                <!-- Navigation button back //-->
+                <button class="bar-back" v-on:click="handle_navigation_previous" v-if="state.critical_only" v-bind:disabled="internal_state.disable_back"> &#5176; </button>
+
+                <!-- Navigation button forward //-->
+                <button class="bar-forward" v-on:click="handle_navigation_next" v-if="state.critical_only" v-bind:disabled="internal_state.disable_forward"> &#5171; </button>
             </div>
 
             <!--  Lower bar, for search sizing & positioning //-->
