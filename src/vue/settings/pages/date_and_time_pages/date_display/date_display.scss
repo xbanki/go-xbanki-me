@@ -1,0 +1,201 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * The "Date Display" option controls how the date component is rendered,
+ * with a fully customizable formatting system.
+ */
+main.component-date-display {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.date-display-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Date format delimiter section.
+   */
+  section.date-display-delimiter {
+    background: var(--accent);
+    box-sizing: border-box;
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+    height: 80px;
+    padding: 4px;
+    width: 100%;
+
+    /**
+     * Individual selection bounding box.
+     */
+    div.selections-item {
+      flex-direction: column;
+      margin-right: 8px;
+      display: flex;
+      height: 100%;
+      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+
+      /**
+       * Input button, or in the future icon centering styles.
+       */
+      input {
+        margin: auto;
+        flex: 1;
+      }
+
+      /**
+       * Icon description label.
+       */
+      label {
+        line-height: $label-size;
+        font-size: $label-size;
+        height: $label-size;
+        text-align: center;
+        margin-top: 4px;
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
+  /**
+   * Format draggable rails parent wrapper.
+   */
+  section.date-display-format {
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+
+    /**
+     * Upper format rail wrapper.
+     */
+    div.format-left, div.format-right {
+      background: var(--accent);
+      box-sizing: border-box;
+      border-radius: 4px;
+      display: flex;
+      padding: 4px;
+      width: 50%;
+
+      &.format-left  { margin-right: 8px }
+
+      /**
+       * Vertical aligner for the format rail.
+       */
+      ul.right-group, ul.left-group {
+        flex-direction: column;
+        padding: unset;
+        display: flex;
+        margin: unset;
+        flex: 1;
+
+        /**
+         * Header text above both rails.
+         */
+        div.group-header {
+          flex-direction: row;
+          margin-bottom: 4px;
+          padding-left: 6px;
+          display: block;
+          display: flex;
+          height: 24px;
+
+          /**
+           * Title display itself.
+           */
+          span.header-title {
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            opacity: 50%;
+            flex: 1;
+          }
+
+          /**
+           * Header buttons box.
+           */
+          div.header-buttons {
+            flex-direction: row;
+            width: fit-content;
+            margin-left: auto;
+            display: flex;
+            height: 24px;
+
+            /**
+             * Add & remove buttons logic.
+             */
+            button.buttons-add, button.buttons-remove {
+              line-height: 22px;
+              padding: unset;
+              height: 24px;
+              width: 24px;
+
+              &.buttons-add { margin-right: 2px }
+            }
+          }
+        }
+
+        /**
+         * Individual format item.
+         */
+        li.group-item {
+          height: fit-content;
+          flex-direction: row;
+          text-align: center;
+          line-height: 24px;
+          min-height: 24px;
+          display: block;
+          color: black;
+          display: flex;
+          cursor: unset;
+          width: 100%;
+
+          /**
+           * Item drag handle element.
+           */
+          span.item-handle {
+            text-align: center;
+            margin-right: auto;
+            user-select: none;
+            line-height: 24px;
+            font-size: 14px;
+            display: block;
+            cursor: grab;
+            width: 24px;
+          }
+
+          /**
+           * Item contents display element.
+           */
+          span.item-display {
+            text-align: center;
+            display: block;
+            flex: 1;
+          }
+
+          &.dragging { opacity: 75% }
+        }
+      }
+    }
+  }
+}

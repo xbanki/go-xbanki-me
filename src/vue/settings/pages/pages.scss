@@ -1,0 +1,16 @@
+/**
+ * The "Pages" component is the sibling component to "Categories" component, which
+ * displays different self-contained pages of settings options.
+ */
+main.component-pages {
+  border-left: 1px solid var(--accent);
+  box-sizing: border-box;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: scroll;
+  display: flex;
+  padding: 4px;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+}

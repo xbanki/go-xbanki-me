@@ -8,8 +8,10 @@
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": false,
     "lib": [
       "esnext",
       "dom"
@@ -26,6 +28,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
+    "src/**/*.md",
     "src/**/*.tsx",
     "src/**/*.vue"
   ]

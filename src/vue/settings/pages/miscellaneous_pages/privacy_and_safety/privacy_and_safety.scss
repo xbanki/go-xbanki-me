@@ -1,0 +1,50 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * The Privacy and Safety component lists all of the uses we have for persisted data, cookies,
+ * and the licenses we have used to build this application.
+ */
+main.privacy-and-safety {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.privacy-and-safety-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Tab switching buttons wrapper.
+   */
+  section.privacy-and-safety-buttons {
+    box-sizing: border-box;
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+    height: 28px;
+    width: 100%;
+
+    /**
+     * Buttons actual.
+     */
+    button.buttons-cookies, button.buttons-licenses {
+      margin-right: 8px;
+      height: 100%;
+      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+    }
+  }
+}

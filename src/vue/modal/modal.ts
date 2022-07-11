@@ -1,57 +1,68 @@
 import { defineComponent } from 'vue';
 
-/**
- * Component data internal description interface.
- */
-interface ComponentState {
-
-    /**
-     * Controls the displaying of the modal element.
-     * @type {boolean}
-     */
-    render: boolean;
-}
+import anime from 'animejs';
 
 export default defineComponent({
 
-    // We emit a callback on the 'ready' event to signal to the parent component we can be opened
-    mounted() { this.$emit('ready', () => this.state.render = true); },
+    props: {
+        animate_enter: {
+            default: undefined,
+            required: false,
+            type: Function
+        },
 
-    data() {
+        animate_exit: {
+            default: undefined,
+            required: false,
+            type: Function
+        },
 
-        const state: ComponentState = { render: false };
-
-        return { state };
+        display: {
+            default: false,
+            required: true,
+            type: Boolean
+        }
     },
 
     methods: {
+        animate_modal_enter(el: Element, done: () => void) {
+            const default_animator = (element: Element, completed: () => void) => {
 
-        animate_enter(el: Element, done: () => void) {
-            return done();
+                const animation = anime({
+                    targets: element,
+                    easing: 'linear',
+                    autoplay: false,
+                    opacity: [0, 1],
+                    duration: 120
+                });
+
+                animation.complete = () => completed();
+
+                animation.play();
+            };
+
+            // Call either prop animator or default animator
+            (this.animate_enter || default_animator)(el, done);
         },
 
-        animate_exit(el: Element, done: () => void) {
-            return done();
-        },
+        animate_modal_exit(el: Element, done: () => void) {
+            const default_animator = (element: Element, completed: () => void) => {
 
-        emit_confirm() {
-            this.state.render = false;
-            this.$emit('confirm');
-        },
+                const animation = anime({
+                    targets: element,
+                    easing: 'linear',
+                    autoplay: false,
+                    opacity: [1, 0],
+                    duration: 120
+                });
 
-        emit_cancel() {
-            this.state.render = false;
-            this.$emit('cancel');
+                animation.complete = () => completed();
+
+                animation.play();
+            };
+
+            // Call either prop animator or default animator
+            (this.animate_exit || default_animator)(el, done);
         }
-    },
-
-    props: {
-        disable_confirm: {
-            type: Boolean,
-            default: false,
-            requried: false
-        }
-    },
-
-    emits: ['ready', 'confirm', 'cancel']
+    }
 });

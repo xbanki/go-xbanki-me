@@ -1,4 +1,4 @@
-const api_url = import.meta.env.DEV ? 'http://localhost:3000/api' : 'https://go.xbanki.me/api';
+const api_url = 'https://go.xbanki.me/api';
 
 const dev_mode = import.meta?.env?.DEV;
 

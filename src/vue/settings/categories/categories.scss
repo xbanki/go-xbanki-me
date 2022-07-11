@@ -1,0 +1,260 @@
+@use "sass:math";
+
+/**
+ * Controls the category "parent" title size, or a section title size.
+ */
+$section-title-size: 20px;
+
+/**
+ * Controls the category child title size.
+ */
+$category-title-size: 18px;
+
+/**
+ * Version display text size.
+ */
+$application-version-size: 14px;
+
+/**
+ * Component padding & margin size.
+ */
+$component-margin: 16px;
+
+/** 
+ * The "categories" component acts as a page navigation bar within the
+ * settings component, which transforms based on overall component state,
+ * and has a neat glass-morphic background.
+ */
+main.component-categories {
+  padding: $component-margin;
+  box-sizing: border-box;
+  flex-direction: column;
+  background: var(--bg);
+  display: flex;
+  width: 256px;
+
+  /**
+   * Close button upper bar, which also "extends" (visually) in to the 
+   */
+  div.categories-bar {
+    flex-direction: column;
+    height: fit-content;
+    display: flex;
+    width: 100%;
+
+    /**
+     * Upper section of the categories bar, consisting of the close button
+     * & panel name display. We use this to position everything correctly.
+     */
+    div.bar-upper {
+      margin-bottom: math.div($component-margin, 2);
+      justify-content: end;
+      align-items: center;
+      flex-direction: row;
+      display: flex;
+      width: 100%;
+
+      /**
+       * Close button display.
+       */
+      button.bar-close {
+        color: var(--color);
+        margin-right: auto;
+        text-align: center;
+        line-height: 24px;
+        background: unset;
+        cursor: pointer;
+        font-size: 16px;
+        border: unset;
+        height: 24px;
+        width: 24px;
+        padding: 0;
+
+        &:hover { background: var(--accent) }
+      }
+
+      /**
+       * Navigation buttons.
+       */
+      button.bar-forward, button.bar-back {
+        font-weight: bold;
+        height: 24px;
+        width: 24px;
+
+        &.bar-back { margin-right: 2px }
+      }
+    }
+
+    div.bar-lower {
+      margin-bottom: math.div($component-margin, 2);
+      height: fit-content;
+      position: relative;
+      height: 24px;
+      width: 100%;
+
+      input.bar-search {
+        box-sizing: border-box;
+        position: absolute;
+        display: block;
+        height: 24px;
+        width: 100%;
+      }
+
+      button.bar-clear {
+        background: transparent;
+        position: absolute;
+        color: lightgray;
+        line-height: 24px;
+        user-select: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: unset;
+        border: unset;
+        height: 24px;
+        width: 24px;
+        right: 0;
+        
+        &:hover { color: gray }
+      }
+    }
+  }
+
+  /**
+   * Category section stuff. Double nested for semantic reasons
+   * relating to Vue.
+   */
+  div.categories-parent div.parent-item {
+    padding-bottom: $component-margin;
+
+    &:last-of-type { padding-bottom: unset }
+
+    /**
+     * Section title stuff.
+     */
+    span.item-title {
+      margin-bottom: math.div($component-margin, 2);
+      line-height: $section-title-size;
+      font-size: $section-title-size;
+      height: $section-title-size;
+      font-weight: 600;
+      display: block;
+      width: 100%;
+    }
+
+    /**
+     * Section subsection, which is basically an anchor inside of a settings
+     * inner page, or a title to it.
+     */
+    div.item-child {
+      display: flex;
+      height: 36px;
+
+      &:last-of-type { margin-bottom: unset }
+
+      &.search-filtered { opacity: 25% }
+
+      /**
+       * Icon display section, which also displays connection lines between
+       * critical configuration anchors/ links during initialization.
+       */
+      div.child-icon {
+        flex-direction: column;
+        display: flex;
+        width: 32px;
+
+        /**
+         * Icon display element that doesn't have an `img` tag before render
+         * time, as we dynamically push icons in to the wrapper itself.
+         */
+        div.icon-display {
+          display: block;
+          height: 24px;
+          width: 100%;
+
+          img {
+            display: block;
+            margin: auto;
+          }
+        }
+
+        /**
+         * Icon line connector displays, which get turned off if we're not initializing.
+         */
+        div.icon-bottom, div.icon-top {
+          overflow: hidden;
+          width: 100%;
+          flex: 1;
+
+          &.icon-bottom { padding-top: 2px }
+          &.icon-top { padding-bottom: 2px }
+
+          /**
+           * Line display element itself.
+           */
+          hr.bottom-line, hr.top-line {
+            background: var(--color);
+            margin: 0 auto;
+            display: none;
+            border: none;
+            height: 100%;
+            width: 1px;
+          }
+        }
+      }
+
+      /**
+       * Section label wrapper responsible for the positioning of itself.
+       */
+       div.child-name {
+        padding: 10px 6px;
+        cursor: pointer;
+        flex: 1;
+
+        /**
+         * Actual anchor / link label display.
+         */
+        span.name-display {
+          line-height: $category-title-size;
+          font-size: $category-title-size;
+          height: $category-title-size;
+          user-select: none;
+          display: block;
+        }
+      }
+
+      /**
+       * Critical only state stylings, or stylings which we show on initialization & re-initialization.
+       */
+      &.critical-only {
+        &.state-initial span.name-display { opacity: 32% }
+
+        &.state-visited span.name-display { opacity: 72% }
+
+        div.child-icon div.icon-bottom hr.bottom-line, div.child-icon div.icon-top hr.top-line {
+          background: var(--color);
+          display: block;
+
+          &.faint { opacity: 32% }
+        }
+
+        &:last-of-type { div.child-icon div.icon-bottom hr.bottom-line { display: none } }
+        &:first-of-type { div.child-icon div.icon-top hr.top-line { display: none } }
+      }
+    }
+  }
+
+  /**
+   * Application last used version.
+   */
+  span.categories-version {
+    line-height: $application-version-size;
+    font-size: $application-version-size;
+    height: $application-version-size;
+    user-select: none;
+    margin-top: auto;
+    text-align: end;
+    display: block;
+    padding: 4px;
+    opacity: 24%;
+  }
+}

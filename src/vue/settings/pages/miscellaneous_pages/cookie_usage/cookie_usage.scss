@@ -1,0 +1,39 @@
+/**
+ * Rail label size.
+ */
+$label-size: 13px;
+
+/**
+ * The "Cookie Usage" component literally just displays somewhat legal jargon
+ * on how we use and store user data.
+ */
+main.component-cookie-usage {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Upper section of the cookie usage component, which displays the last revision
+   * date label, along with what version this statement is.
+   */
+  section.cookie-usage-rail {
+    flex-direction: row;
+    height: fit-content;
+    display: flex;
+    width: 100%;
+
+    /**
+     * Statement labels.
+     */
+    span.rail-version, span.rail-date {
+      line-height: $label-size;
+      font-size: $label-size;
+      height: $label-size;
+      display: block;
+
+      &.rail-date    { margin-left: auto }
+      &.rail-version { flex: 1 }
+    }
+  }
+}

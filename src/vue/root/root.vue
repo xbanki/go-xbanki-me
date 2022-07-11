@@ -1,6 +1,6 @@
 <template>
-    <init-component/>
     <background-component/>
+    <settings-component/>
 
     <!-- Content display master element //-->
     <main class="component-root">

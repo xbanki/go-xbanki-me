@@ -1,0 +1,167 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * Category option label display size.
+ */
+$label-size: 14px;
+
+/**
+ * Dropdown title bar size.
+ */
+$bar-size: 48px;
+
+/**
+ * The changelog component is responsible for displaying all update logs by rendering
+ * markdown based articles.
+ */
+main.component-changelog {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.changelog-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+
+  /**
+   * Changelog upper rail.
+   */
+  section.changelog-title {
+    padding-bottom: $title-size;
+    height: $title-size;
+    flex-direction: row;
+    display: flex;
+
+    /**
+     * Options upper rail title display.
+     */
+    span.title-label {
+      line-height: $title-size;
+      font-size: $title-size;
+      height: $title-size;
+      font-weight: 500;
+      display: block;
+      flex: 1;
+    }
+
+    /**
+     * Latest update release date label.
+     */
+     span.title-date {
+      line-height: $title-size;
+      font-size: $label-size;
+      height: $title-size;
+      margin-left: auto;
+      text-align: end;
+      display: block;
+      opacity: 60%;
+    }
+  }
+
+  /**
+   * Currently latest update change log.
+   */
+  section.changelog-latest {
+    margin-bottom: $title-size;
+    flex-direction: column;
+    display: block;
+  }
+
+  /**
+   * Wrapper for older update dropdowns.
+   */
+  section.changelog-history {
+    flex-direction: column;
+    display: flex;
+
+    /**
+     * Changelog history item that is a dropdown.
+     */
+    div.history-item {
+      height: fit-content;
+      margin-bottom: 8px;
+      width: 100%;
+
+      &:last-of-type { margin-bottom: unset }
+
+      /**
+       * Title bar itself.
+       */
+      div.item-title {
+        background: var(--accent);
+        flex-direction: row;
+        cursor: pointer;
+        display: flex;
+        height: 48px;
+
+        /**
+         * Title chevron display.
+         */
+        span.title-arrow {
+          padding-left: $title-size;
+          line-height: $bar-size;
+          width: fit-content;
+          height: $bar-size;
+          user-select: none;
+          display: block;
+          opacity: 60%;
+        }
+
+        /**
+         * Release date label.
+         */
+        span.title-date {
+          padding-right: $title-size;
+          font-size: $label-size;
+          line-height: $bar-size;
+          user-select: none;
+          height: $bar-size;
+          margin-left: auto;
+          opacity: 60%;
+        }
+
+        /**
+         * Version label.
+         */
+        span.title-version {
+          padding-left: $title-size;
+          line-height: $bar-size;
+          height: $bar-size;
+          user-select: none;
+          font-weight: 700;
+          flex: 1;
+        }
+      }
+
+      /**
+       * Rendered markdown content.
+       */
+      div.item-content {
+        overflow: hidden;
+        display: none;
+        height: 0;
+        width: 0;
+      }
+
+      &.active div.item-content {
+        padding: 0 $title-size;
+        height: fit-content;
+        overflow: auto;
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+}

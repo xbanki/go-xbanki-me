@@ -22,8 +22,8 @@ main.component-background {
 div.background-copyright {
   position: absolute;
   padding: 16px;
+  right: 48px;
   bottom: 0;
-  right: 0;
 
   span.copyright-description, span.copyright-holder {
     text-shadow: var(--color) 0px 0px 4px;

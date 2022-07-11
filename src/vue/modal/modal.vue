@@ -1,35 +1,13 @@
 <template>
-
-    <!-- Modal UI layer anchor //-->
+    
+    <!-- Always set modals on the UI layer above all else //-->
     <teleport to="main#go-xbanki-ui">
-
+        
         <!-- Animejs based enter/exit animation hooks //-->
-        <transition v-on:enter="animate_enter" v-on:leave="animate_exit">
+        <transition v-on:enter="animate_modal_enter" v-on:leave="animate_modal_exit">
 
-            <!-- Modal component positioning wrapper //-->
-            <main class="component-modal" v-if="state.render">
-
-                <!-- Modal display bounding box //-->
-                <div class="modal-parent">
-                    
-                    <!-- Modal heading close button //-->
-                    <div class="modal-header">
-
-                        <!-- Modal closing button //-->
-                        <button class="header-close" v-on:click="emit_cancel"> × </button>
-                    </div>
-
-                    <!-- Modal content slot //-->
-                    <slot name="default"/>
-
-                    <!-- Footer elements //-->
-                    <div class="modal-footer">
-
-                        <!-- Confirmation button //-->
-                        <button class="footer-confirm" v-on:click="emit_confirm" v-bind:disabled="disable_confirm"> Confirm </button>
-                    </div>
-                </div>
-            </main>
+            <!-- Modal base wrapper/ positioner //-->
+            <main class="component-modal" v-if="display"> <slot name="default"/> </main>
         </transition>
     </teleport>
 </template>

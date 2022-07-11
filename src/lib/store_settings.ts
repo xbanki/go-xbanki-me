@@ -1,4 +1,57 @@
-import { FormatToken } from '@/vue/init_clock/init_clock';
+/**
+ * Time/ Date format item.
+ */
+ export interface FormatToken {
+
+    /**
+     * Order index which determines the *starting* position in the format array(s).
+     * @type {number}
+     */
+    index: number;
+
+    /**
+     * Discriminates between a delimiter item and a format option item.
+     * @type {boolean}
+     */
+    delimiter: boolean;
+
+    /**
+     * Description of item which is shown when the hover event is active.
+     * @type {string}
+     */
+    description: string;
+
+    /**
+     * Enables or disables showing this token in format list.
+     */
+    disabled: boolean;
+
+    /**
+     * If item is format token, specifies wether this token should have a special display.
+     * @type {boolean}
+     */
+    dynamic?: boolean;
+
+    /**
+     * Luxon format token which is ignored in cases:
+     * 
+     * `<FormatToken>.dynamic: true`
+     * 
+     * `<FormatToken>.delimiter: true`
+     * @type {string}
+     */
+    token?: string;
+}
+
+/**
+ * Internal state for all sub-category items.
+ * @see {ModuleState}
+ */
+ export enum CategoryItemState {
+    INITIAL = 'STATE_INITIAL',
+    VISITED = 'STATE_VISITED',
+    ACTIVE = 'STATE_ACTIVE'
+}
 
 /**
  * Windows-like background image display format, to fit
@@ -78,6 +131,15 @@ export enum AvaillableThemes {
 export interface ModuleState {
 
     /**
+     * Category item state which controls display styles for
+     * all sub-categories, giving visual feedback for items that
+     * have been visited, are active and are yet to be visited in
+     * critical-only mode.
+     * @enum {CategoryItemState}
+     */
+    critical_only_categories_state: Record<string, CategoryItemState>;
+
+    /**
      * Background image fitting method.
      * @enum {BackgroundDisplayMethod}
      */
@@ -139,34 +201,34 @@ export interface ModuleState {
 
     /**
      * Date display construction format.
-     * @type {Array<Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    date_format_active: Array<FormatToken> | undefined;
+    date_format_active: Array<FormatToken>;
 
     /**
      * Time display construction format.
-     * @type {Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-     time_format_active: Array<FormatToken> | undefined;
+    time_format_active: Array<FormatToken>;
 
      /**
      * Unused date format tokens.
-     * @type {Array<Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-    date_format_inactive: Array<FormatToken> | undefined;
+    date_format_inactive: Array<FormatToken>;
 
     /**
      * Unused time format tokens.
-     * @type {Array<FormatToken> | undefined>}
+     * @type {Array<FormatToken>}
      */
-     time_format_inactive: Array<FormatToken> | undefined;
-
-    /**
-     * Indicates wether the user has completed first-time initialization.
-     * @type {boolean}
-     */
-    initialized: boolean;
+    time_format_inactive: Array<FormatToken>;
 }
+
+/**
+ * Delimiter token description.
+ * @type {string}
+ */
+export const DELIMITER_DESCRIPTION = 'Display format items separator/ delimiter';
 
 const store: { state: ModuleState, [name: string]: any } = {
 
@@ -183,11 +245,50 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
         time_display_format: 'HH:mm:ss',
-        date_format_inactive: undefined,
-        time_format_inactive: undefined,
-        date_format_active: undefined,
-        time_format_active: undefined,
-        initialized: false
+        date_format_inactive: [
+            { disabled: false, delimiter: false, index: 0, dynamic: false, token: 'dd', description: 'Day of the month padded to two digits' },
+            { disabled: false, delimiter: false, index: 1, dynamic: false, token: 'E', description: 'Day of the week in number form' },
+            { disabled: false, delimiter: false, index: 2, dynamic: false, token: 'EEE', description: 'Day of the week abbreviated' },
+            { disabled: false, delimiter: false, index: 3, dynamic: false, token: 'M', description: 'Month in number form with no padding' },
+            { disabled: false, delimiter: false, index: 4, dynamic: false, token: 'MM', description: 'Month in number form padded to two digits' },
+            { disabled: false, delimiter: false, index: 5, dynamic: false, token: 'MMM', description: 'Month abbreviated' },
+            { disabled: false, delimiter: false, index: 6, dynamic: false, token: 'yy', description: 'Year padded to two digits' },
+            { disabled: false, delimiter: false, index: 7, dynamic: false, token: 'yyyy', description: 'Year padded to four digits' },
+            { disabled: false, delimiter: false, index: 8, dynamic: false, token: 'G', description: 'Abbreviated era' },
+            { disabled: false, delimiter: false, index: 9, dynamic: false, token: 'GG', description: 'Full era' },
+            { disabled: false, delimiter: false, index: 10, dynamic: false, token: 'W', description: 'Week number with no padding' },
+            { disabled: false, delimiter: false, index: 11, dynamic: false, token: 'WW', description: 'Week number padded to two digits' },
+            { disabled: false, delimiter: false, index: 12, dynamic: false, token: 'o', description: 'Day of year with no padding' },
+            { disabled: false, delimiter: false, index: 13, dynamic: false, token: 'ooo', description: 'Day of year padded to three digits' },
+            { disabled: false, delimiter: false, index: 14, dynamic: false, token: 'q', description: 'Quarter of date' }
+        ],
+        time_format_inactive: [
+            { disabled: false, delimiter: false, index: 0, dynamic: false, token: 'SSS', description: 'Millisecond padded to three digits' },
+            { disabled: false, delimiter: false, index: 1, dynamic: false, token: 's', description: 'Second with no padding' },
+            { disabled: false, delimiter: false, index: 2, dynamic: false, token: 'm', description: 'Minute with no padding' },
+            { disabled: false, delimiter: false, index: 3, dynamic: true, token: 'HOUR_UNPADDED', description: 'Hour with no padding' },
+            { disabled: false, delimiter: false, index: 4, dynamic: false, token: 'Z', description: 'Narrow offset' },
+            { disabled: false, delimiter: false, index: 5, dynamic: false, token: 'ZZ', description: 'Short offset' },
+            { disabled: false, delimiter: false, index: 6, dynamic: false, token: 'ZZZZ', description: 'Abbreviated offset' },
+            { disabled: false, delimiter: false, index: 7, dynamic: false, token: 'ZZZZZ', description: 'Full named offset' }
+        ],
+        date_format_active: [
+            { disabled: false, delimiter: false, index: 0, dynamic: false, token: 'EEEE', description: 'Day of the week in full form' },
+            { disabled: false, delimiter: true, index: 1, description: DELIMITER_DESCRIPTION },
+            { disabled: false, delimiter: false, index: 2, dynamic: false, token: 'MMMM', description: 'Month in full form' },
+            { disabled: false, delimiter: false, index: 3, dynamic: false, token: 'd', description: 'Day of the month with no padding' },
+            { disabled: false, delimiter: true, index: 4, description: DELIMITER_DESCRIPTION },
+            { disabled: false, delimiter: false, index: 5, dynamic: false, token: 'y', description: 'Year with no padding' }
+        ],
+        time_format_active: [
+            { disabled: false, delimiter: false, index: 8, dynamic: true, token: 'HOUR_PADDED', description: 'Hour padded to two digits' },
+            { disabled: false, delimiter: true, index: 9, description: DELIMITER_DESCRIPTION },
+            { disabled: false, delimiter: false, index: 10, dynamic: false, token: 'mm', description: 'Minute padded to two digits' },
+            { disabled: false, delimiter: true, index: 11, description: DELIMITER_DESCRIPTION },
+            { disabled: false, delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' },
+            { disabled: true, delimiter: false, index: 13, dynamic: false, token: 'a', description: 'Meridem' }
+        ],
+        critical_only_categories_state: {}
     },
 
     mutations: {
@@ -200,8 +301,6 @@ const store: { state: ModuleState, [name: string]: any } = {
         UPDATE_DATE_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.date_delimiter = payload,
 
         UPDATE_TIME_FORMAT_DELIMITER: (state: any, payload: FormatDelimiter) => state.time_delimiter = payload,
-
-        UPDATE_USER_INITIALIZATION: (state: any, payload: boolean) => state.initialized = payload,
 
         UPDATE_DATE_DISPLAY_FORMAT: (state: any, payload: string) => state.date_display_format = payload,
 
@@ -219,7 +318,9 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_DATE_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_active = payload,
 
-        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload
+        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload,
+
+        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: any, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload
     },
 
     actions: {
@@ -231,13 +332,6 @@ const store: { state: ModuleState, [name: string]: any } = {
             context.commit('SET_BACKGROUND_DISPLAY_METHOD', payload);
         },
 
-        InitializeUser: (context: any) => {
-
-            if (context.state.initialized == true) return;
-
-            context.commit('UPDATE_USER_INITIALIZATION', true);
-        },
-
         SwitchTheme: (context: any, payload: BackgroundDisplayMethod) => {
 
             if (context.state.selected_theme == payload) return;
@@ -246,123 +340,86 @@ const store: { state: ModuleState, [name: string]: any } = {
         },
 
         SetDateFormat: (context: any, payload: [Array<FormatToken>, Array<FormatToken>]) => {
+
             const [active_format, inactive_format] = payload;
 
-            if (inactive_format != context.state.date_format_inactive) context.commit('UPDATE_DATE_FORMAT_INACTIVE', inactive_format);
+            context.commit('UPDATE_DATE_FORMAT_INACTIVE', inactive_format);
+            context.commit('UPDATE_DATE_FORMAT_ACTIVE', active_format);
 
-            if (active_format != context.state.date_format_active) {
-                context.commit('UPDATE_DATE_FORMAT_ACTIVE', active_format);
+            const assembled_active_format: string[] = [];
 
-                const assembled_active_format: string[] = [];
+            for (const item of active_format) {
 
-                for (const item of active_format) {
-                    const next_item = active_format.at(active_format.indexOf(item) + 1);
+                if (item.disabled) continue;
 
-                    if (!item.token && item.delimiter) {
-
-                        switch (context.state.date_delimiter) {
-                            case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
-                            case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
-                            case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
-                            case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
-                            case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
-                            case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
-                        }
-
-                        continue;
-                    }
-
-                    if (item.dynamic) {
-                        let token = '';
-
-                        if (item?.token == 'HOUR_UNPADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'h';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'H';
-                        }
-
-                        if (item?.token == 'HOUR_PADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
-                        }
-
-                        if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                        assembled_active_format.push(token);
-
-                        continue;
-                    }
-
-                    if (next_item != undefined && !next_item.delimiter) {
-                        assembled_active_format.push(`${item.token} `);
-
-                        continue;
-                    }
-
-                    if (item?.token) assembled_active_format.push(item.token);
+                if (!item.token && item.delimiter) switch (context.state.date_delimiter) {
+                    case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
+                    case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
+                    case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
+                    case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
+                    case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
+                    case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
                 }
 
-                context.commit('UPDATE_DATE_DISPLAY_FORMAT', assembled_active_format.join(''));
+                if (item.token && !item.delimiter) assembled_active_format.push(item.token);
             }
+
+            context.commit('UPDATE_DATE_DISPLAY_FORMAT', assembled_active_format.join(''));
         },
 
         SetTimeFormat: (context: any, payload: [Array<FormatToken>, Array<FormatToken>]) => {
             const [active_format, inactive_format] = payload;
 
-            if (inactive_format != context.state.time_format_inactive) context.commit('UPDATE_TIME_FORMAT_INACTIVE', inactive_format);
+            context.commit('UPDATE_TIME_FORMAT_INACTIVE', inactive_format);
 
-            if (active_format != context.state.time_format_active) {
-                context.commit('UPDATE_TIME_FORMAT_ACTIVE', active_format);
+            context.commit('UPDATE_TIME_FORMAT_ACTIVE', active_format);
 
-                const assembled_active_format: string[] = [];
+            const assembled_active_format: string[] = [];
 
-                for (const item of active_format) {
-                    const next_item = active_format.at(active_format.indexOf(item) + 1);
+            for (const item of active_format) {
+                if (item.disabled) continue;
 
-                    if (!item.token && item.delimiter) {
+                if (!item.token && item.delimiter) {
 
-                        switch (context.state.time_delimiter) {
-                            case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
-                            case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
-                            case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
-                            case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
-                            case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
-                            case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
-                        }
-
-                        continue;
+                    switch (context.state.time_delimiter) {
+                        case FormatDelimiter.COMMA : assembled_active_format.push(', '); break;
+                        case FormatDelimiter.COLON : assembled_active_format.push(':');  break;
+                        case FormatDelimiter.SLASH : assembled_active_format.push('/');  break;
+                        case FormatDelimiter.SPACE : assembled_active_format.push(' ');  break;
+                        case FormatDelimiter.DASH  : assembled_active_format.push('-');  break;
+                        case FormatDelimiter.DOT   : assembled_active_format.push('.');  break;
                     }
 
-                    if (item.dynamic) {
-                        let token = '';
-
-                        if (item?.token == 'HOUR_UNPADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'h';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'H';
-                        }
-
-                        if (item?.token == 'HOUR_PADDED') {
-                            if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
-                            if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
-                        }
-
-                        if (next_item != undefined && !next_item.delimiter) token = `${token} `;
-
-                        assembled_active_format.push(token);
-
-                        continue;
-                    }
-
-                    if (next_item != undefined && !next_item.delimiter) {
-                        assembled_active_format.push(`${item.token} `);
-
-                        continue;
-                    }
-
-                    if (item?.token) assembled_active_format.push(item.token);
+                    continue;
                 }
 
-                context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
+                if (item.dynamic) {
+                    let token = '';
+
+                if (item?.token == 'HOUR_UNPADDED') {
+                    if (context.state.time_convention == ClockConvention.AMERICAN) token = 'h';
+                    if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'H';
+                }
+
+                if (item?.token == 'HOUR_PADDED') {
+                    if (context.state.time_convention == ClockConvention.AMERICAN) token = 'hh';
+                    if (context.state.time_convention == ClockConvention.EUROPEAN) token = 'HH';
+                }
+                    assembled_active_format.push(token);
+
+                    continue;
+                }
+
+                if (item?.token) assembled_active_format.push(item.token);
             }
+
+            context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
+        },
+
+        UpdateCriticalCategoriesState: (context: any, payload: { target: string, state: CategoryItemState }) => {
+            if (!payload.target || !payload.state) return;
+
+            context.commit('UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', Object.assign(context.state.critical_only_categories_state, { [payload.target]: payload.state }));
         }
     }
 };

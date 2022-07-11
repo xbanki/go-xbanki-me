@@ -12,15 +12,19 @@ html, body {
   &.theme-dark {
     transition: background 0.12s, color 0.24s;
     transition-timing-function: ease;
-    --color: #fff;
-    --bg:    #000;
+    --accent-faded: rgba(82, 82, 82, 60%);
+    --accent: #525252;
+    --color:  #FFFFFF;
+    --bg:     #000;
   }
 
   &.theme-light {
     transition: background 0.12s, color 0.24s;
     transition-timing-function: ease;
-    --color: #000;
-    --bg:    #fff;
+    --accent-faded: rgba(230, 230, 230, 60%);
+    --accent: #E6E6E6;
+    --color:  #000000;
+    --bg:     #FFFFFF;
   }
 
   #go-xbanki-ui, #go-xbanki-application {

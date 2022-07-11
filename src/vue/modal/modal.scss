@@ -1,37 +1,14 @@
-@import '~/src/scss';
-
+/**
+ * Modal centerer component. We don't actually have any of the typical modal stylings
+ * for content parent wrappers, because we let the inheriting component worry about
+ * that part for modulairty.
+ */
 main.component-modal {
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-  position: absolute;
+  position: fixed;
   display: flex;
-  z-index: 100;
   height: 100%;
   width: 100%;
-
-  div.modal-parent {
-    padding: $COMPONENT-SPACING;
-    background: var(--bg);
-    height: fit-content;
-    width: fit-content;
-
-    div.modal-header {
-      flex-direction: row;
-      margin-bottom: 16px;
-      display: flex;
-      width: 100%;
-
-      button.header-close { margin-left: auto }
-    }
-
-    div.modal-footer {
-      flex-direction: row;
-      margin-top: 16px;
-      display: block;
-      display: flex;
-      width: 100%;
-
-      button.footer-confirm { margin-left: auto }
-    }
-  }
 }

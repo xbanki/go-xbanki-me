@@ -1,0 +1,44 @@
+/**
+ * Whole component width.
+ */
+$component-width: 896px;
+
+/**
+ * Whole component height.
+ */
+$component-height: 512px;
+
+/**
+ * Main wrapper, which sandwiches the frosted category section with the main
+ * content display section together. We also use this to give the settings
+ * component a minimum and maximum view size, horizontally.
+ */
+main.component-settings {
+  max-width: $component-width;
+  min-width: $component-width;
+  height: $component-height;
+  flex-direction: row;
+  overflow: hidden;
+  display: flex;
+}
+
+/**
+ * Button, which opens the settings component.
+ */
+button.component-settings-open {
+  box-sizing: border-box;
+  background: var(--bg);
+  color: var(--color);
+  position: absolute;
+  line-height: 32px;
+  font-size: 24px;
+  height: 32px;
+  margin: 16px;
+  border: none;
+  width: 32px;
+  padding: 0;
+  bottom: 0;
+  right: 0;
+
+  &:hover { background: var(--accent) }
+}
