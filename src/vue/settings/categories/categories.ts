@@ -163,7 +163,7 @@ export default defineComponent({
             all_category_items: [],
             disable_forward: false,
             is_searching: false,
-            disable_back: true,
+            disable_back: false,
             icon_cache: []
         };
 
@@ -301,27 +301,42 @@ export default defineComponent({
         },
 
         populate_category_states() {
-            let first_iteration = true;
+
+            // State keys in order of appearance
+            const keys: string[] = [];
+
+            // Is true if we have found previously set state
+            let prexisting: string | undefined = undefined;
 
             for (const item of this.internal_state.all_category_items) {
 
-                if (!item.critical) continue;
+                if (!item.critical || keys.includes(item.id)) continue;
 
-                const target_item = this.settingsStore.critical_only_categories_state[item.id] as CategoryItemState;
+                const target: CategoryItemState | undefined = this.settingsStore.critical_only_categories_state[item.id];
 
-                if (!target_item) {
-                    if (first_iteration) {
-                        store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.ACTIVE });
+                if (target != undefined && target == CategoryItemState.ACTIVE)
+                    prexisting = item.id;
 
-                        first_iteration = false;
-
-                        continue;
-                    }
-
+                else
                     store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
 
-                    continue;
-                }
+                keys.push(item.id);
+            }
+
+            if (prexisting != undefined) {
+                const target = keys.indexOf(prexisting);
+
+                if (target == 0)
+                    this.internal_state.disable_back = true;
+
+                if (target == keys.length)
+                    this.internal_state.disable_forward = true;
+            }
+
+            else {
+                this.internal_state.disable_back = true;
+
+                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: keys[0], state: CategoryItemState.ACTIVE });
             }
         },
 
@@ -379,7 +394,7 @@ export default defineComponent({
 
             const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
 
-            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+            if (filtered_items) for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
 
                 const index = filtered_items.indexOf(item) - 1;
 
@@ -398,7 +413,7 @@ export default defineComponent({
 
             const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
 
-            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+            if (filtered_items) for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
 
                 const index = filtered_items.indexOf(item) + 1;
 
