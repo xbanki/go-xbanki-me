@@ -8,6 +8,7 @@ import miscellaneousPageComponent from '@/vue/settings/pages/miscellaneous_pages
 import dateAndTimePageComponent   from '@/vue/settings/pages/date_and_time_pages/date_and_time.vue';
 import appearancePageComponent    from '@/vue/settings/pages/appearance_pages/appearance.vue';
 import criticalPageComponent      from '@/vue/settings/pages/critical_pages/critical.vue';
+import defaultPageComponent       from '@/vue/settings/pages/default_pages/default.vue';
 
 /**
  * Component internal state.
@@ -34,7 +35,8 @@ export default defineComponent({
         'Miscellaneous' : miscellaneousPageComponent,
         'Date & Time'   : dateAndTimePageComponent,
         'Appearance'    : appearancePageComponent,
-        'Critical'      : criticalPageComponent
+        'Critical'      : criticalPageComponent,
+        'Default'       : defaultPageComponent
     },
 
     mounted() {
