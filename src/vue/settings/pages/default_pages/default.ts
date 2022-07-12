@@ -61,7 +61,7 @@ export default defineComponent({
     },
 
     mounted() {
-        const timer = TimerManager.AddTimerGroup(TIMER_GROUP, 6000);
+        const timer = TimerManager.AddTimerGroup(TIMER_GROUP, 15000);
 
         this.data.id = TimerManager.AddGroupFunction(TIMER_GROUP, () => this.switch_hint());
 
