@@ -39,6 +39,25 @@ export interface ModuleState {
      * @type {boolean}
      */
     is_user_initialized: boolean;
+
+    /**
+     * Category item state which controls display styles for
+     * all sub-categories, giving visual feedback for items that
+     * have been visited, are active and are yet to be visited in
+     * critical-only mode.
+     * @enum {CategoryItemState}
+     */
+    critical_only_categories_state: Record<string, CategoryItemState>;
+}
+
+/**
+ * Internal state for all sub-category items.
+ * @see {ModuleState}
+ */
+export enum CategoryItemState {
+    INITIAL = 'STATE_INITIAL',
+    VISITED = 'STATE_VISITED',
+    ACTIVE = 'STATE_ACTIVE'
 }
 
 const store: { state: ModuleState, [name: string]: any } = {
@@ -51,23 +70,36 @@ const store: { state: ModuleState, [name: string]: any } = {
         has_image_load_failed: false,
         supports_data_persistence: false,
         supports_system_theme_switch: true,
+        critical_only_categories_state: { },
         version_change_significant_update: false
     },
 
     mutations: {
-        UPDATE_IMAGE_LOADED_STATE: (state: any, payload: boolean) => state.has_image_loaded = payload,
-
-        UPDATE_IMAGE_LOAD_FAIL_STATE: (state: any, payload: boolean) => state.has_image_load_failed = payload,
+        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: any, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload,
 
         DISABLE_SYSTEM_THEME_SWITCH_SUPPORT: (state: any) => state.supports_system_theme_switch = false,
 
-        ENABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = true,
-
-        DISABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = false,
+        UPDATE_IMAGE_LOAD_FAIL_STATE: (state: any, payload: boolean) => state.has_image_load_failed = payload,
 
         SIGNAL_SIGNIFICANT_UPDATE: (state: any) => state.version_change_significant_update = true,
 
-        START_USER_INITIALIZATION: (state: any) => state.is_user_initialized = false
+        START_USER_INITIALIZATION: (state: any) => state.is_user_initialized = false,
+
+        UPDATE_IMAGE_LOADED_STATE: (state: any, payload: boolean) => state.has_image_loaded = payload,
+
+        DISABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = false,
+
+        ENABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = true
+    },
+
+    actions: {
+
+        UpdateCategoriesState: (context: any, payload: { target: string, state: CategoryItemState }) => {
+
+            if (!payload.target || !payload.state) return;
+
+            context.commit('UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', Object.assign(context.state.critical_only_categories_state, { [payload.target]: payload.state }));
+        }
     }
 };
 

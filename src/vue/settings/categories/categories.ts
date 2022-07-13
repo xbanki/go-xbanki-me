@@ -1,7 +1,7 @@
 import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
-import { CategoryItemState } from '@/lib/store_settings';
+import { CategoryItemState } from '@/lib/store_event_bus';
 
 import config from '@/lib/config';
 import Queue  from '@/lib/queue';
@@ -312,13 +312,13 @@ export default defineComponent({
 
                 if (!item.critical || keys.includes(item.id)) continue;
 
-                const target: CategoryItemState | undefined = this.settingsStore.critical_only_categories_state[item.id];
+                const target: CategoryItemState | undefined = this.eventBusStore.critical_only_categories_state[item.id];
 
                 if (target != undefined && target == CategoryItemState.ACTIVE)
                     prexisting = item.id;
 
                 else
-                    store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
+                    store.dispatch('eventBusStore/UpdateCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
 
                 keys.push(item.id);
             }
@@ -336,7 +336,7 @@ export default defineComponent({
             else {
                 this.internal_state.disable_back = true;
 
-                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: keys[0], state: CategoryItemState.ACTIVE });
+                store.dispatch('eventBusStore/UpdateCategoriesState', { target: keys[0], state: CategoryItemState.ACTIVE });
             }
         },
 
@@ -344,24 +344,24 @@ export default defineComponent({
 
             if (this.state.critical_only) {
 
-                const clicked_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => el ==item.id);
-                const clicked_category_state = this.settingsStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
+                const clicked_category_key   = Object.keys(this.eventBusStore.critical_only_categories_state).find((el) => el ==item.id);
+                const clicked_category_state = this.eventBusStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
 
-                const active_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => this.settingsStore.critical_only_categories_state[el] == CategoryItemState.ACTIVE);
-                const active_category_state = this.settingsStore.critical_only_categories_state[active_category_key as string] as CategoryItemState | undefined;
+                const active_category_key   = Object.keys(this.eventBusStore.critical_only_categories_state).find((el) => this.eventBusStore.critical_only_categories_state[el] == CategoryItemState.ACTIVE);
+                const active_category_state = this.eventBusStore.critical_only_categories_state[active_category_key as string] as CategoryItemState | undefined;
 
                 if (clicked_category_key == active_category_key || !clicked_category_state || !active_category_state) return;
 
                 if (clicked_category_state == CategoryItemState.INITIAL) {
-                    const clicked_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
-                    const active_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(active_category_key as string);
+                    const clicked_index = Object.keys(this.eventBusStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const active_index = Object.keys(this.eventBusStore.critical_only_categories_state).indexOf(active_category_key as string);
 
                     if (Math.abs(clicked_index - active_index) >= 2 || Math.abs(active_index - clicked_index) >= 2) return;
                 }
 
                 if (standalone) {
-                    const clicked_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
-                    const categories_length = Object.keys(this.settingsStore.critical_only_categories_state).length - 1;
+                    const clicked_index = Object.keys(this.eventBusStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const categories_length = Object.keys(this.eventBusStore.critical_only_categories_state).length - 1;
 
                     if (clicked_index >= categories_length) {
                         this.internal_state.disable_forward = true;
@@ -379,25 +379,25 @@ export default defineComponent({
                     }
                 }
 
-                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
-                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
+                store.dispatch('eventBusStore/UpdateCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
+                store.dispatch('eventBusStore/UpdateCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
             }
 
             this.$emit('clicked', item);
         },
 
         get_next_category_state(key: string): string | undefined {
-            const target_keys = Object.keys(this.settingsStore.critical_only_categories_state);
+            const target_keys = Object.keys(this.eventBusStore.critical_only_categories_state);
             const target_item_index = target_keys.indexOf(key);
 
             if (target_item_index != -1 && !(target_item_index >= target_keys.length)) {
-                return this.settingsStore.critical_only_categories_state[target_keys[target_item_index + 1]];
+                return this.eventBusStore.critical_only_categories_state[target_keys[target_item_index + 1]];
             }
 
             return undefined;
         },
 
-        get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; },
+        get_category_state(key: string) { return this.eventBusStore.critical_only_categories_state[key]; },
 
         clear_search_content() {
 
@@ -414,9 +414,7 @@ export default defineComponent({
 
             const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
 
-            if (filtered_items) for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
-
-                console.log(item);
+            if (filtered_items) for (const item of filtered_items) if (this.eventBusStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
 
                 const index = filtered_items.indexOf(item) - 1;
 
@@ -435,7 +433,7 @@ export default defineComponent({
 
             const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
 
-            if (filtered_items) for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+            if (filtered_items) for (const item of filtered_items) if (this.eventBusStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
 
                 const index = filtered_items.indexOf(item) + 1;
 
@@ -453,7 +451,7 @@ export default defineComponent({
         close_settings_component() {
 
             if (Object.keys(this.internal_state.all_category_items).length >= 1)
-                store.commit('settingsStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
+                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
 
             this.$emit('close', false);
         }
@@ -498,7 +496,7 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['settingsStore']),
+    computed: mapState(['settingsStore', 'eventBusStore']),
 
     emits: ['ready', 'clicked', 'close']
 });
