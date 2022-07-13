@@ -340,7 +340,7 @@ export default defineComponent({
             }
         },
 
-        handle_category_click(item: CategoryItem) {
+        handle_category_click(item: CategoryItem, standalone = true) {
 
             if (this.state.critical_only) {
 
@@ -357,6 +357,26 @@ export default defineComponent({
                     const active_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(active_category_key as string);
 
                     if (Math.abs(clicked_index - active_index) >= 2 || Math.abs(active_index - clicked_index) >= 2) return;
+                }
+
+                if (standalone) {
+                    const clicked_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const categories_length = Object.keys(this.settingsStore.critical_only_categories_state).length - 1;
+
+                    if (clicked_index >= categories_length) {
+                        this.internal_state.disable_forward = true;
+                        this.internal_state.disable_back = false;
+                    }
+
+                    else if (clicked_index <= 0) {
+                        this.internal_state.disable_forward = false;
+                        this.internal_state.disable_back = true;
+                    }
+
+                    else {
+                        this.internal_state.disable_forward = false;
+                        this.internal_state.disable_back = false;
+                    }
                 }
 
                 store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
@@ -396,9 +416,11 @@ export default defineComponent({
 
             if (filtered_items) for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
 
+                console.log(item);
+
                 const index = filtered_items.indexOf(item) - 1;
 
-                this.handle_category_click(filtered_items[index]);
+                this.handle_category_click(filtered_items[index], false);
 
                 if (index <= 0)
                     this.internal_state.disable_back = true;
@@ -417,7 +439,7 @@ export default defineComponent({
 
                 const index = filtered_items.indexOf(item) + 1;
 
-                this.handle_category_click(filtered_items[index]);
+                this.handle_category_click(filtered_items[index], false);
 
                 if (index >= filtered_items.length - 1)
                     this.internal_state.disable_forward = true;
