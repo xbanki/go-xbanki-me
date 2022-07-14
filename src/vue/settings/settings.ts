@@ -1,9 +1,9 @@
 import { mapState }                  from 'vuex';
 import { defineComponent, computed } from 'vue';
 
-import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem } from '@/vue/settings/categories/categories';
-import { ComponentState as PagesState }                                                     from '@/vue/settings/pages/pages';
-import { verify_localstorage_availlability }                                                from '@/lib/persistence';
+import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem, CategoryParent } from '@/vue/settings/categories/categories';
+import { ComponentState as PagesState }                                                                     from '@/vue/settings/pages/pages';
+import { verify_localstorage_availlability }                                                                from '@/lib/persistence';
 
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
 import pagesComponent      from '@/vue/settings/pages/pages.vue';
@@ -14,7 +14,7 @@ import { version } from '~/package.json';
 /**
  * Helper type to reduce code duplication.
  */
-export type CategoryTuple = [string, CategoryItem[]];
+export type CategoryTuple = [CategoryParent, CategoryItem[]];
 
 /**
  * Comonent internal state.
@@ -67,11 +67,14 @@ export default defineComponent({
         };
 
         const appearance_category: CategoryTuple = [
-            'Appearance',
+            {
+                filtered: false,
+                id: 'appearance-category',
+                name: 'Appearance'
+            },
             [
                 {
                     name: 'Theme',
-                    filtered: false,
                     critical: false,
                     id: 'theme-category',
                     keywords: [
@@ -82,7 +85,6 @@ export default defineComponent({
                 },
                 {
                     name: 'Background Fit',
-                    filtered: false,
                     critical: true,
                     id: 'background-fit-category',
                     keywords: [
@@ -98,11 +100,14 @@ export default defineComponent({
         ];
 
         const date_time_category: CategoryTuple = [
-            'Date & Time',
+            {
+                filtered: false,
+                id: 'date-and-time-category',
+                name: 'Date & Time'
+            },
             [
                 {
                     name: 'Time Convention',
-                    filtered: false,
                     critical: true,
                     id: 'time-convention-category',
                     keywords: [
@@ -112,7 +117,6 @@ export default defineComponent({
                 },
                 {
                     name: 'Time Display',
-                    filtered: false,
                     critical: true,
                     id: 'time-display-category',
                     keywords: [
@@ -123,7 +127,6 @@ export default defineComponent({
                 },
                 {
                     name: 'Date Display',
-                    filtered: false,
                     critical: true,
                     id: 'date-display-category',
                     keywords: [
@@ -136,11 +139,14 @@ export default defineComponent({
         ];
 
         const miscellaneous_category: CategoryTuple = [
-            'Miscellaneous',
+            {
+                filtered: false,
+                id: 'miscellaneous-category',
+                name: 'Miscellaneous'
+            },
             [
                 {
                     name: 'Changelog',
-                    filtered: false,
                     critical: false,
                     id: 'changelog-category',
                     keywords: [
@@ -150,7 +156,6 @@ export default defineComponent({
                 },
                 {
                     name: 'Privacy & Safety',
-                    filtered: false,
                     critical: true,
                     id: 'privacy-and-safety-category',
                     keywords: [
@@ -160,7 +165,6 @@ export default defineComponent({
                 },
                 {
                     name: 'Delete Data',
-                    filtered: false,
                     critical: false,
                     id: 'delete-data-category',
                     keywords: [
@@ -222,13 +226,13 @@ export default defineComponent({
         handle_category_clicked(source: CategoryItem) {
             let target_match_name: string | undefined = undefined;
 
-            for (const [name, contents] of this.state.categories_data.items) {
+            for (const [parent, contents] of this.state.categories_data.items) {
 
                 // Search through parent category children for a match
                 const target_search = contents.find((el) => el.id == source.id);
 
                 if (target_search != undefined) {
-                    target_match_name = name;
+                    target_match_name = parent.name;
 
                     break;
                 }

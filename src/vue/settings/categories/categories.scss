@@ -163,6 +163,9 @@ main.component-categories {
       display: flex;
       width: 100%;
 
+      // Search indicator
+      &.search-filtered { opacity: 25% }
+
       /**
        * Category icon display.
        */
@@ -194,8 +197,6 @@ main.component-categories {
       height: 36px;
 
       &:last-of-type { margin-bottom: unset }
-
-      &.search-filtered { opacity: 25% }
 
       /**
        * Icon display section, which also displays connection lines between

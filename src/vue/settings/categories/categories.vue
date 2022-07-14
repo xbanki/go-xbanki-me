@@ -40,13 +40,13 @@
                 <span class="item-title" v-if="state.critical_only"> {{ parent_category }} </span>
 
                 <!-- Clickable category display //-->
-                <div class="item-category" v-on:click="handle_parent_click(parent_category)" v-else> 
+                <div class="item-category" v-on:click="handle_parent_click(parent_category)" v-bind:class="{ 'search-filtered': parent_category.filtered }" v-else> 
 
                     <!-- Category display icon //-->
-                    <div class="category-icon" v-bind:id="parent_category"/>
+                    <div class="category-icon" v-bind:id="parent_category.id"/>
 
                     <!-- Category display label //-->
-                    <span class="category-label"> {{ parent_category }} </span>
+                    <span class="category-label"> {{ parent_category.name }} </span>
                 </div>
 
                 <!-- Category icon, name & selector display //-->
@@ -64,7 +64,6 @@
 
                     v-bind:class="[
                         {
-                            'search-filtered': item.filtered && internal_state.is_searching,
                             'state-initial'  : get_category_state(item.id) == 'STATE_INITIAL',
                             'state-visited'  : get_category_state(item.id) == 'STATE_VISITED',
                             'state-active'   : get_category_state(item.id) == 'STATE_ACTIVE',

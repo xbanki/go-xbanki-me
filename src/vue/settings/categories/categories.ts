@@ -53,16 +53,35 @@ export interface CategoryItem {
     id: string;
 
     /**
-     * Is set to true if it should not be shown if search mode is enabled.
+     * Search keywords which this category item is associated with.
+     * @type {Array<string>}
+     */
+    keywords: string[];
+}
+
+/**
+ * Category parent item.
+ * @public
+ */
+export interface CategoryParent {
+
+    /**
+     * Denotes this item being filtered out in search mode.
      * @type {boolean}
      */
     filtered: boolean;
 
     /**
-     * Search keywords which this category item is associated with.
-     * @type {Array<string>}
+     * Unique category name.
+     * @type {string}
      */
-    keywords: string[];
+    name: string;
+
+    /**
+     * Unique category ID.
+     * @type {string}
+     */
+    id: string;
 }
 
 /**
@@ -75,7 +94,7 @@ export interface ComponentData {
      * Component category items.
      * @type {Array<CategoryItem>}
      */
-    items: [string, CategoryItem[]][];
+    items: CategoryTuple[];
 
     /**
      * Valid semver representation of the application version.
@@ -181,37 +200,45 @@ export default defineComponent({
 
                 const value = target.value.toLowerCase().trim();
 
-                for (const item of this.internal_state.all_category_items) {
-                    if (!item.name.toLowerCase().trim().includes(value)) {
+                for (const item of this.data.items) {
 
-                        if (item.keywords.length >= 1) {
-                            let has_matching_keyword = false;
+                    const parent: CategoryParent = item[0];
+                    const items: CategoryItem[]  = item[1];
 
-                            for (const keyword of item.keywords) {
+                    let has_matching_keyword = false;
 
-                                if (keyword.toLowerCase().trim().includes(value)) {
-                                    has_matching_keyword = true;
+                    if (parent.name.toLowerCase().trim().includes(value))
+                        has_matching_keyword = true;
 
-                                    break;
-                                }
+                    else {
+
+                        has_matching_keyword = false;
+
+                        for (const item of items) {
+
+                            if (item.name.toLowerCase().trim().includes(value)) {
+
+                                has_matching_keyword = true;
+
+                                break;
                             }
 
-                            if (!has_matching_keyword)
-                                item.filtered = true;
+                            for (const keyword of item.keywords) if (keyword.toLocaleLowerCase().trim().includes(value)) {
+
+                                has_matching_keyword = true;
+
+                                break;
+                            }
                         }
-
-                        else
-                            item.filtered = true;
-
                     }
 
-                    else
-                        item.filtered = false;
+                    parent.filtered = !has_matching_keyword;
                 }
             }
 
             else {
-                for (const item of this.internal_state.all_category_items) item.filtered = false;
+                for (const [parent, items] of this.data.items)
+                    parent.filtered = false;
 
                 this.internal_state.is_searching = false;
             }
@@ -228,7 +255,7 @@ export default defineComponent({
             return items;
         },
 
-        async load_category_icons(items: [string, CategoryItem[]][]) {
+        async load_category_icons(items: CategoryTuple[]) {
 
             for await (const [parent, categories] of items) {
 
@@ -240,19 +267,19 @@ export default defineComponent({
                 parent_image_el.crossOrigin = 'Anonymous';
                 parent_image_el.src         = parent_image_url.href;
 
-                if (parent_image_el && !this.internal_state.icon_cache.find((el) => el == parent)) {
+                if (parent_image_el && !this.internal_state.icon_cache.find((el) => el == parent.id)) {
 
                     await new Promise<void>(
                         (Res: () => void, Rej: () => void) => {
 
                             // Cache image so we don't set it again
-                            this.internal_state.icon_cache.push(parent);
+                            this.internal_state.icon_cache.push(parent.id);
 
                             // Loaded image stuff
                             parent_image_el.onload = () => {
 
                                 if (parent_image_el.complete || parent_image_el.complete === undefined) {
-                                    this.internal_state.image_queue.Enqueue({ id: parent, el: parent_image_el });
+                                    this.internal_state.image_queue.Enqueue({ id: parent.id, el: parent_image_el });
 
                                     return Res();
                                 }
@@ -261,7 +288,7 @@ export default defineComponent({
                             // Failure stuff
                             parent_image_el.onerror = (err) => {
 
-                                this.internal_state.icon_cache.splice(this.internal_state.icon_cache.indexOf(parent, 1));
+                                this.internal_state.icon_cache.splice(this.internal_state.icon_cache.indexOf(parent.id, 1));
 
                                 if (config.dev_mode) console.error(`Failed loading category icon.\n\n${err}`);
 
@@ -424,9 +451,9 @@ export default defineComponent({
             this.$emit('clicked', item);
         },
 
-        handle_parent_click(category: string) {
+        handle_parent_click(category: CategoryParent) {
 
-            const target: CategoryTuple = this.data.items.find((el: CategoryTuple) => el[0] == category);
+            const target: CategoryTuple = this.data.items.find((el: CategoryTuple) => el[0].id == category.id);
 
             if (target) for (const category of target[1]) {
 
@@ -453,7 +480,8 @@ export default defineComponent({
 
             const element = this.$refs.search as HTMLInputElement;
 
-            for (const item of this.internal_state.all_category_items) item.filtered = false;
+            for (const [parent, items] of this.data.items)
+                parent.filtered = false;
 
             this.internal_state.is_searching = false;
             element.value = '';
@@ -515,7 +543,7 @@ export default defineComponent({
          * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
          */
         'data.items': {
-            handler(state: [[string, CategoryItem[]]]) { this.load_category_icons(state); },
+            handler(state: CategoryTuple[]) { this.load_category_icons(state); },
             immediate: true,
             deep: true
         },
