@@ -37,7 +37,7 @@
             <div class="parent-item" v-if="get_category_items(category_items).length >= 1">
 
                 <!-- Parent category title display //-->
-                <span class="item-title" v-if="state.critical_only"> {{ parent_category }} </span>
+                <span class="item-title" v-if="state.critical_only"> {{ parent_category.name }} </span>
 
                 <!-- Clickable category display //-->
                 <div class="item-category" v-on:click="handle_parent_click(parent_category)" v-bind:class="{ 'search-filtered': parent_category.filtered }" v-else> 
