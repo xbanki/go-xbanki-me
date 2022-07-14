@@ -37,13 +37,31 @@
             <div class="parent-item" v-if="get_category_items(category_items).length >= 1">
 
                 <!-- Parent category title display //-->
-                <span class="item-title"> {{ parent_category }} </span>
+                <span class="item-title" v-if="state.critical_only"> {{ parent_category }} </span>
+
+                <!-- Clickable category display //-->
+                <div class="item-category" v-on:click="handle_parent_click(parent_category)" v-else> 
+
+                    <!-- Category display icon //-->
+                    <div class="category-icon" v-bind:id="parent_category"/>
+
+                    <!-- Category display label //-->
+                    <span class="category-label"> {{ parent_category }} </span>
+                </div>
 
                 <!-- Category icon, name & selector display //-->
-                <div class="item-child"
+                <div
+
                     v-for="item of get_category_items(category_items)"
+
                     v-on:click="handle_category_click(item)"
+
+                    v-if="state.critical_only"
+
                     v-bind:key="item.id"
+
+                    class="item-child"
+
                     v-bind:class="[
                         {
                             'search-filtered': item.filtered && internal_state.is_searching,

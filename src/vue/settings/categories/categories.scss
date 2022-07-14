@@ -20,6 +20,16 @@ $application-version-size: 14px;
  */
 $component-margin: 16px;
 
+/**
+ * Settings category sizing.
+ */
+$category-size: 24px;
+
+/**
+ * Settings category item margins.
+ */
+$category-margins: 4px;
+
 /** 
  * The "categories" component acts as a page navigation bar within the
  * settings component, which transforms based on overall component state,
@@ -139,6 +149,40 @@ main.component-categories {
       font-weight: 600;
       display: block;
       width: 100%;
+    }
+
+    /**
+     * Category button which is rendered when initialization is complete.
+     */
+    div.item-category {
+      margin-bottom: $category-margins;
+      padding: $category-margins;
+      height: $category-size;
+      flex-direction: row;
+      cursor: pointer;
+      display: flex;
+      width: 100%;
+
+      /**
+       * Category icon display.
+       */
+      div.category-icon {
+        margin-right: $category-margins * 2;
+        height: $category-size;
+        width: $category-size;
+      }
+
+      /**
+       * Category label display.
+       */
+      span.category-label {
+        font-size: $category-title-size;
+        line-height: $category-size;
+        height: $category-size;
+        user-select: none;
+        display: block;
+        flex: 1;
+      }
     }
 
     /**

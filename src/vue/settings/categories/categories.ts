@@ -1,6 +1,7 @@
 import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
+import { CategoryTuple }      from '@/vue/settings/settings';
 import { CategoryItemState } from '@/lib/store_event_bus';
 
 import config from '@/lib/config';
@@ -229,9 +230,46 @@ export default defineComponent({
 
         async load_category_icons(items: [string, CategoryItem[]][]) {
 
-            for (const [parent, categories] of items) {
+            for await (const [parent, categories] of items) {
 
                 if (config.dev_mode) console.log(`Loading icons for category: ${parent}`);
+
+                const parent_image_url = new URL('/img/placeholder.png', import.meta.url);
+                const parent_image_el  = new Image();
+
+                parent_image_el.crossOrigin = 'Anonymous';
+                parent_image_el.src         = parent_image_url.href;
+
+                if (parent_image_el && !this.internal_state.icon_cache.find((el) => el == parent)) {
+
+                    await new Promise<void>(
+                        (Res: () => void, Rej: () => void) => {
+
+                            // Cache image so we don't set it again
+                            this.internal_state.icon_cache.push(parent);
+
+                            // Loaded image stuff
+                            parent_image_el.onload = () => {
+
+                                if (parent_image_el.complete || parent_image_el.complete === undefined) {
+                                    this.internal_state.image_queue.Enqueue({ id: parent, el: parent_image_el });
+
+                                    return Res();
+                                }
+                            };
+
+                            // Failure stuff
+                            parent_image_el.onerror = (err) => {
+
+                                this.internal_state.icon_cache.splice(this.internal_state.icon_cache.indexOf(parent, 1));
+
+                                if (config.dev_mode) console.error(`Failed loading category icon.\n\n${err}`);
+
+                                return Rej();
+                            };
+                        }
+                    );
+                }
 
                 for await (const category of categories) {
 
@@ -384,6 +422,18 @@ export default defineComponent({
             }
 
             this.$emit('clicked', item);
+        },
+
+        handle_parent_click(category: string) {
+
+            const target: CategoryTuple = this.data.items.find((el: CategoryTuple) => el[0] == category);
+
+            if (target) for (const category of target[1]) {
+
+                this.$emit('clicked', category);
+
+                break;
+            }
         },
 
         get_next_category_state(key: string): string | undefined {
