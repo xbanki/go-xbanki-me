@@ -10,7 +10,7 @@
         </section>
 
         <!-- Date & Time pages content wrapper //-->
-        <section class="date-and-time-content">
+        <section class="date-and-time-content" ref="parent">
 
             <!-- Example clock for easier configuration //-->
             <div class="content-example">

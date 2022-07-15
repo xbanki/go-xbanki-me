@@ -50,12 +50,18 @@ interface ComponentState {
     /**
      * Last clicked category item.
      */
-    last_clicked_category?: string;
+    last_clicked_category?: { name: string, search?: boolean };
 
     /**
      * Array containing critical only mode IDs.
      */
     critical_categories: string[];
+
+    /**
+     * Only true if the categories bar is searching.
+     * @type {boolean}
+     */
+    is_searching: boolean;
 }
 
 export default defineComponent({
@@ -69,7 +75,7 @@ export default defineComponent({
         const appearance_category: CategoryTuple = [
             {
                 filtered: false,
-                id: 'appearance-category',
+                id: 'page-appearance',
                 name: 'Appearance'
             },
             [
@@ -102,7 +108,7 @@ export default defineComponent({
         const date_time_category: CategoryTuple = [
             {
                 filtered: false,
-                id: 'date-and-time-category',
+                id: 'page-date-and-time',
                 name: 'Date & Time'
             },
             [
@@ -132,6 +138,7 @@ export default defineComponent({
                     keywords: [
                         'day',
                         'day format',
+                        'date format',
                         'critical'
                     ]
                 }
@@ -141,7 +148,7 @@ export default defineComponent({
         const miscellaneous_category: CategoryTuple = [
             {
                 filtered: false,
-                id: 'miscellaneous-category',
+                id: 'page-miscellaneous',
                 name: 'Miscellaneous'
             },
             [
@@ -150,8 +157,7 @@ export default defineComponent({
                     critical: false,
                     id: 'changelog-category',
                     keywords: [
-                        'changes',
-                        'updates'
+                        'changes'
                     ]
                 },
                 {
@@ -189,6 +195,7 @@ export default defineComponent({
 
         const state: ComponentState = {
             component_display_state: 'STATE_INIT',
+            is_searching: false,
             render_state: false,
             critical_categories,
             categories_state,
@@ -223,27 +230,77 @@ export default defineComponent({
             }
         },
 
-        handle_category_clicked(source: CategoryItem) {
-            let target_match_name: string | undefined = undefined;
+        handle_category_clicked(source: CategoryItem, search?: boolean) {
 
             for (const [parent, contents] of this.state.categories_data.items) {
 
                 // Search through parent category children for a match
-                const target_search = contents.find((el) => el.id == source.id);
+                const target_search = contents.includes(source);
 
-                if (target_search != undefined) {
-                    target_match_name = parent.name;
+                if (this.state.pages_state.active_category != parent.id && target_search) {
+
+                    this.state.last_clicked_category = { name: source.id, search };
+
+                    if (this.state.component_display_state != 'STATE_INIT')
+                        this.state.pages_state.active_category = parent.id;
+
+                    break;
+                }
+
+                else if (this.state.pages_state.active_category == parent.id && target_search) {
+
+                    this.state.last_clicked_category = { name: source.id, search };
 
                     break;
                 }
             }
+        },
 
-            if (typeof target_match_name == 'string') {
+        handle_parent_clicked(source: { category: CategoryParent, search?: string }) {
 
-                if (this.state.pages_state.active_category != target_match_name && this.state.component_display_state != 'STATE_INIT')
-                    this.state.pages_state.active_category = target_match_name;
+            for (const [parent, items] of this.state.categories_data.items) {
 
-                this.state.last_clicked_category = source.id;
+                if (parent.id.toLocaleLowerCase().trim().includes(source.category.id.trim().toLocaleLowerCase())) {
+
+                    if (source.search) {
+
+                        const predicate = (el: CategoryItem): boolean => {
+
+                            const target = el.name.trim().toLowerCase();
+                            const search = source.search?.trim().toLowerCase() ?? '';
+
+                            let found = false;
+
+                            if (source.search) if (target.includes(search))
+                                found = true;
+
+                            for (const keyword of el.keywords) {
+
+                                if (target.includes(keyword.trim().toLowerCase())) {
+
+                                    found = true;
+
+                                    break;
+                                }
+                            }
+
+                            return found;
+                        };
+
+                        const target = items.find(predicate);
+
+                        if (target)
+                            this.handle_category_clicked(target, true);
+
+                        else
+                            this.state.pages_state.active_category = parent.id;
+                    }
+
+                    else
+                        this.state.pages_state.active_category = source.category.id;
+
+                    break;
+                }
             }
         },
 
@@ -253,7 +310,18 @@ export default defineComponent({
             this.$nextTick(() => this.state.render_state = true);
         },
 
-        handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }
+        handle_render_state_change(state: boolean) {
+
+            console.log(this.state.render_state, state);
+
+            if (state != this.state.render_state) {
+
+                this.state.render_state = state;
+
+                if (!state)
+                    this.state.last_clicked_category = undefined;
+            }
+        }
     },
 
     provide() {

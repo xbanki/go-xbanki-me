@@ -172,6 +172,12 @@ interface InternalComponentState {
      * @type {boolean}
      */
     disable_back: boolean;
+
+    /**
+     * Current search content.
+     * @type {string}
+     */
+    search?: string;
 }
 
 export default defineComponent({
@@ -196,9 +202,11 @@ export default defineComponent({
             const target = input.target as HTMLInputElement;
 
             if (target.value.length >= 1) {
-                this.internal_state.is_searching = true;
 
                 const value = target.value.toLowerCase().trim();
+
+                this.internal_state.is_searching = true;
+                this.internal_state.search = value;
 
                 for (const item of this.data.items) {
 
@@ -241,6 +249,7 @@ export default defineComponent({
                     parent.filtered = false;
 
                 this.internal_state.is_searching = false;
+                this.internal_state.search = undefined;
             }
     },
 
@@ -448,19 +457,22 @@ export default defineComponent({
                 store.dispatch('eventBusStore/UpdateCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
             }
 
-            this.$emit('clicked', item);
+            this.$emit('category-clicked', item);
         },
 
         handle_parent_click(category: CategoryParent) {
 
-            const target: CategoryTuple = this.data.items.find((el: CategoryTuple) => el[0].id == category.id);
+            const target = this.data.items.find((el: CategoryTuple) => el[0].id == category.id);
 
-            if (target) for (const category of target[1]) {
+            if (target && this.internal_state.is_searching) {
 
-                this.$emit('clicked', category);
+                this.$emit('parent-clicked', { search: this.internal_state.search, category });
 
-                break;
+                this.clear_search_content();
             }
+
+            else if (target)
+                this.$emit('parent-clicked', { category });
         },
 
         get_next_category_state(key: string): string | undefined {
@@ -531,6 +543,8 @@ export default defineComponent({
             if (Object.keys(this.internal_state.all_category_items).length >= 1)
                 store.commit('eventBusStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
 
+            this.clear_search_content();
+
             this.$emit('close', false);
         }
     },
@@ -576,5 +590,5 @@ export default defineComponent({
 
     computed: mapState(['settingsStore', 'eventBusStore']),
 
-    emits: ['ready', 'clicked', 'close']
+    emits: ['ready', 'parent-clicked', 'category-clicked', 'close']
 });

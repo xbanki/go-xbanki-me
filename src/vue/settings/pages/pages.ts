@@ -32,11 +32,11 @@ export interface ComponentState {
 export default defineComponent({
 
     components: {
-        'Miscellaneous' : miscellaneousPageComponent,
-        'Date & Time'   : dateAndTimePageComponent,
-        'Appearance'    : appearancePageComponent,
-        'Critical'      : criticalPageComponent,
-        'Default'       : defaultPageComponent
+        'page-miscellaneous' : miscellaneousPageComponent,
+        'page-date-and-time' : dateAndTimePageComponent,
+        'page-appearance'    : appearancePageComponent,
+        'page-critical'      : criticalPageComponent,
+        'page-default'       : defaultPageComponent
     },
 
     mounted() {
@@ -44,10 +44,10 @@ export default defineComponent({
         const localstorage_availlable = verify_localstorage_availlability();
 
         if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`))
-            this.state.active_category = 'Critical';
+            this.state.active_category = 'page-critical';
 
         else
-            this.state.active_category = 'Default';
+            this.state.active_category = 'page-default';
     },
 
     methods: {

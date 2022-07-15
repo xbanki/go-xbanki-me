@@ -9,7 +9,21 @@
 
         <!-- Settings component parent wrapper //-->
         <main class="component-settings">
-            <categories-component v-bind:state="state.categories_state" v-bind:data="state.categories_data" v-on:clicked="handle_category_clicked" v-on:close="handle_render_state_change"/>
+
+            <categories-component
+                
+                v-on:category-clicked="handle_category_clicked"
+                
+                v-on:parent-clicked="handle_parent_clicked"
+
+                v-on:close="handle_render_state_change"
+
+                v-bind:state="state.categories_state"
+
+                v-bind:data="state.categories_data"
+
+            />
+
             <pages-component v-bind:state="state.pages_state" v-on:close="handle_render_state_change($event)"/>
         </main>
     </modal-component>

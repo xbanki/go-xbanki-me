@@ -17,7 +17,7 @@
         </section>
 
         <!-- Miscellaneous pages content wrapper //-->
-        <section class="miscellaneous-content" v-if="state.active == 'MISC_TAB_DEFAULT'">
+        <section class="miscellaneous-content" v-if="state.active == 'MISC_TAB_DEFAULT'"  ref="parent">
 
             <!-- Application changelog option section //-->
             <div class="content-item" v-if="handle_critical_category('changelog-category')" ref="changelog-category">

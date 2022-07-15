@@ -71,11 +71,11 @@ export default defineComponent({
     },
 
     watch: {
-        last_clicked_category(state: string) {
+        last_clicked_category(state: { name: string, searching: boolean }) {
 
-            if (this.state.active.id != state) {
+            if (this.state.active.id != state.name) {
 
-                const target = this.state.items.find(el => el.id == state);
+                const target = this.state.items.find(el => el.id == state.name);
 
                 if (target)
                     this.state.active = target;
