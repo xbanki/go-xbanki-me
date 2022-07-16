@@ -175,7 +175,15 @@ export default defineComponent({
         pagesComponent
     },
 
-    mounted() { this.$nextTick(() => this.discriminate_component_state()); },
+    mounted() {
+        this.$nextTick(
+            () => {
+
+                if (!this.discriminate_component_state())
+                    store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true);
+            }
+        );
+    },
 
     methods: {
 
