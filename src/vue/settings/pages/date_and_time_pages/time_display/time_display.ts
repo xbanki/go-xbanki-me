@@ -211,7 +211,7 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => this.set_up_timer_refreshing()); },
+    mounted() { this.$nextTick(() => { this.set_up_timer_refreshing(); this.update_convention(this.settingsStore.time_convention); }); },
 
     methods: {
 
