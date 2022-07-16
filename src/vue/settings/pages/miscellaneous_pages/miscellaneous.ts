@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
+import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
 import anime from 'animejs';
@@ -77,10 +76,7 @@ export default defineComponent({
 
         discriminate_component_state() {
 
-            // @ts-ignore
-            const critical: boolean = this.critical_only;
-
-            if (critical) {
+            if (this.eventBusStore.critical_only) {
                 this.state.active = CurrentTab.COOKIES;
                 this.state.disable = true;
             }
@@ -93,17 +89,14 @@ export default defineComponent({
             this.state.active = CurrentTab.DEFAULT;
         },
 
-        handle_category_click() {
-
-            // @ts-ignore
-            const state: { name: string, search?: boolean } = this.last_clicked_category;
+        handle_category_click(name?: string) {
 
             const categories = ['changelog-category', 'privacy-and-safety-category', 'delete-data-category'];
 
-            if (state && categories.includes(state.name)) {
+            if (name && categories.includes(name)) {
 
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[state.name]                         as HTMLElement;
+                const target = this.$refs[name]                               as HTMLElement;
                 const parent = this.$refs.parent                              as HTMLElement;
 
                 let overhead = 0;
@@ -149,32 +142,14 @@ export default defineComponent({
 
                 this.$nextTick(() => scroll_animation.play());
             }
-        },
-
-        handle_critical_category(name :string): boolean {
-
-            // @ts-ignore
-            const critical: boolean = this.critical_only;
-
-            if (critical)
-
-                // @ts-ignore
-                return this.critical_categories.includes(name);
-
-            else
-                return true;
-        },
-
-        pass_close() { this.$emit('close'); }
+        }
     },
 
     watch: {
-        last_clicked_category() { this.handle_category_click(); }
+        'eventBusStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    inject: ['critical_only', 'critical_categories', 'last_clicked_category'],
-
-    emits: ['close'],
+    computed: mapState(['eventBusStore']),
 
     components: {
 

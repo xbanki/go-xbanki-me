@@ -1,3 +1,4 @@
+import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
 import { CategoryItem }  from '@/vue/settings/categories/categories';
@@ -62,20 +63,16 @@ export default defineComponent({
         return { state };
     },
 
-    emits: ['close'],
-
-    inject: ['last_clicked_category'],
-
     methods: {
         pass_close() { this.$emit('close', false); }
     },
 
     watch: {
-        last_clicked_category(state: { name: string, searching: boolean }) {
+        last_clicked_category(state?: string) {
 
-            if (this.state.active.id != state.name) {
+            if (this.state.active.id != state) {
 
-                const target = this.state.items.find(el => el.id == state.name);
+                const target = this.state.items.find(el => el.id == state);
 
                 if (target)
                     this.state.active = target;
@@ -98,5 +95,7 @@ export default defineComponent({
             default: {},
             validator: (value: any) => (value != undefined && typeof value == 'object')
         }
-    }
+    },
+
+    computed: mapState(['eventBusStore'])
 });

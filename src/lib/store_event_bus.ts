@@ -48,6 +48,25 @@ export interface ModuleState {
      * @enum {CategoryItemState}
      */
     critical_only_categories_state: Record<string, CategoryItemState>;
+
+    /**
+     * Denotes wether or not we are in critical-only (initialization)
+     * mode.
+     * @type {boolean}
+     */
+    critical_only: boolean;
+
+    /**
+     * The last clicked category.
+     * @type {string}
+     */
+    last_clicked_category?: string;
+
+    /**
+     * Settings component render state.
+     * @type {boolean}
+     */
+    render_settings: boolean;
 }
 
 /**
@@ -65,6 +84,8 @@ const store: { state: ModuleState, [name: string]: any } = {
     namespaced: true,
 
     state: {
+        critical_only: false,
+        render_settings: false,
         has_image_loaded: false,
         is_user_initialized: true,
         has_image_load_failed: false,
@@ -75,21 +96,27 @@ const store: { state: ModuleState, [name: string]: any } = {
     },
 
     mutations: {
-        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: any, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload,
+        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: ModuleState, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload,
 
-        DISABLE_SYSTEM_THEME_SWITCH_SUPPORT: (state: any) => state.supports_system_theme_switch = false,
+        DISABLE_SYSTEM_THEME_SWITCH_SUPPORT: (state: ModuleState) => state.supports_system_theme_switch = false,
 
-        UPDATE_IMAGE_LOAD_FAIL_STATE: (state: any, payload: boolean) => state.has_image_load_failed = payload,
+        UPDATE_LAST_CLICKED_CATEGORY: (state: ModuleState, payload?: string) => state.last_clicked_category = payload,
 
-        SIGNAL_SIGNIFICANT_UPDATE: (state: any) => state.version_change_significant_update = true,
+        UPDATE_SETTINGS_RENDER_STATE: (state: ModuleState, payload: boolean) => state.render_settings = payload,
 
-        START_USER_INITIALIZATION: (state: any) => state.is_user_initialized = false,
+        UPDATE_IMAGE_LOAD_FAIL_STATE: (state: ModuleState, payload: boolean) => state.has_image_load_failed = payload,
 
-        UPDATE_IMAGE_LOADED_STATE: (state: any, payload: boolean) => state.has_image_loaded = payload,
+        SIGNAL_SIGNIFICANT_UPDATE: (state: ModuleState) => state.version_change_significant_update = true,
 
-        DISABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = false,
+        START_USER_INITIALIZATION: (state: ModuleState) => state.is_user_initialized = false,
 
-        ENABLE_DATA_PERSISTENCE: (state: any) => state.supports_data_persistence = true
+        UPDATE_IMAGE_LOADED_STATE: (state: ModuleState, payload: boolean) => state.has_image_loaded = payload,
+
+        DISABLE_DATA_PERSISTENCE: (state: ModuleState) => state.supports_data_persistence = false,
+
+        ENABLE_DATA_PERSISTENCE: (state: ModuleState) => state.supports_data_persistence = true,
+
+        UPDATE_CRITICAL_ONLY: (state: ModuleState, payload: boolean) => state.critical_only = payload
     },
 
     actions: {

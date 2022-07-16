@@ -31,17 +31,17 @@
             </div>
 
             <!-- Clock time convention display option section //-->
-            <div class="content-item" v-if="handle_critical_category('time-convention-category')" ref="time-convention-category">
+            <div class="content-item" ref="time-convention-category">
                 <time-convention-page-component/>
             </div>
 
             <!-- Time display format option section //-->
-            <div class="content-item" v-if="handle_critical_category('time-display-category')" ref="time-display-category">
+            <div class="content-item" ref="time-display-category">
                 <time-display-page-component/>
             </div>
 
             <!-- Date display format option section //-->
-            <div class="content-item" v-if="handle_critical_category('date-display-category')" ref="date-display-category">
+            <div class="content-item" ref="date-display-category">
                 <date-display-page-component/>
             </div>
         </section>

@@ -26,11 +26,11 @@ main.component-settings {
  * Button, which opens the settings component.
  */
 button.component-settings-open {
+  background: transparent;
   box-sizing: border-box;
-  background: var(--bg);
-  color: var(--color);
   position: absolute;
   line-height: 32px;
+  color: var(--bg);
   font-size: 24px;
   height: 32px;
   margin: 16px;
@@ -40,5 +40,8 @@ button.component-settings-open {
   bottom: 0;
   right: 0;
 
-  &:hover { background: var(--accent) }
+  &:hover {
+    background: var(--accent);
+    color: var(--color);
+  }
 }

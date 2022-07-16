@@ -5,6 +5,7 @@ import { defineComponent } from 'vue';
 
 import article from './cookie_usage.md';
 import store   from '@/lib/store';
+import { mapState } from 'vuex';
 
 /**
  * Comonent internal state.
@@ -28,12 +29,6 @@ interface ComponentState {
      * @type {string}
      */
     version: string;
-
-    /**
-     * Disables accepting cookie usage button.
-     * @type {boolean}
-     */
-    disable: boolean;
 }
 
 export default defineComponent({
@@ -46,16 +41,12 @@ export default defineComponent({
 
         const content: string = article.html;
 
-        // @ts-ignore
-        const disable: boolean = this.critical_only;
-
         // Assembled state object
 
         const state: ComponentState = {
             revision,
             version,
-            content,
-            disable
+            content
         };
 
         return { state };
@@ -63,10 +54,8 @@ export default defineComponent({
 
     methods: {
         accept_cookie_usage() {
-
+            store.commit('eventBusStore/UPDATE_SETTINGS_RENDER_STATE', false);
             store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
-
-            this.$emit('close');
         },
 
         get_revision_timestamp: (date: DateTime) => `Last revision: ${ date.toLocaleString(DateTime.DATETIME_FULL) }`,
@@ -74,9 +63,7 @@ export default defineComponent({
         get_current_version: (version: string) => `Version: ${version}`
     },
 
-    emits: ['close'],
-
-    inject: ['critical_only'],
+    computed: mapState(['eventBusStore']),
 
     props: {
         standalone: {

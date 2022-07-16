@@ -17,7 +17,7 @@
         </section>
 
         <!-- Automatically rendered critical setting component //-->
-        <component v-bind:is="state.active.id" v-bind:standalone="true" v-on:close="pass_close"/>
+        <component v-bind:is="state.active.id" v-bind:standalone="true"/>
     </main>
 </template>
 

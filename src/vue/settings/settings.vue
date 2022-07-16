@@ -2,10 +2,10 @@
     <teleport to="main#go-xbanki-ui">
 
         <!-- Open settings button //-->
-        <button class="component-settings-open" v-on:click="handle_settings_open" v-if="!state.render_state"> ⚙ </button>
+        <button class="component-settings-open" v-on:click="handle_settings_open" v-if="!eventBusStore.render_settings"> ⚙ </button>
     </teleport>
 
-    <modal-component v-bind:display="state.render_state">
+    <modal-component v-bind:display="eventBusStore.render_settings">
 
         <!-- Settings component parent wrapper //-->
         <main class="component-settings">
@@ -16,15 +16,11 @@
                 
                 v-on:parent-clicked="handle_parent_clicked"
 
-                v-on:close="handle_render_state_change"
-
-                v-bind:state="state.categories_state"
-
                 v-bind:data="state.categories_data"
 
             />
 
-            <pages-component v-bind:state="state.pages_state" v-on:close="handle_render_state_change($event)"/>
+            <pages-component v-bind:state="state.pages_state"/>
         </main>
     </modal-component>
 </template>

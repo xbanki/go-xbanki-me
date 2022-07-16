@@ -65,17 +65,14 @@ export default defineComponent({
 
     methods: {
 
-        handle_category_click() {
-
-            // @ts-ignore
-            const state: { name: string, search?: boolean } = this.last_clicked_category;
+        handle_category_click(name?: string) {
 
             const categories = ['date-display-category', 'time-convention-category', 'time-display-category'];
 
-            if (state && categories.includes(state.name)) {
+            if (name && categories.includes(name)) {
 
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[state.name]                         as HTMLElement;
+                const target = this.$refs[name]                               as HTMLElement;
                 const parent = this.$refs.parent                              as HTMLElement;
 
                 let overhead = 0;
@@ -121,20 +118,6 @@ export default defineComponent({
 
                 this.$nextTick(() => scroll_animation.play());
             }
-        },
-
-        handle_critical_category(name :string): boolean {
-
-            // @ts-ignore
-            const critical: boolean = this.critical_only;
-
-            if (critical)
-
-                // @ts-ignore
-                return this.critical_categories.includes(name);
-
-            else
-                return true;
         }
     },
 
@@ -155,10 +138,8 @@ export default defineComponent({
             deep: true
         },
 
-        last_clicked_category() { this.handle_category_click(); }
+        'eventBusStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    inject: ['critical_only', 'critical_categories', 'last_clicked_category'],
-
-    computed: mapState(['settingsStore'])
+    computed: mapState(['settingsStore', 'eventBusStore'])
 });

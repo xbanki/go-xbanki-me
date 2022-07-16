@@ -1,13 +1,14 @@
 import { mapState }                  from 'vuex';
 import { defineComponent, computed } from 'vue';
 
-import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem, CategoryParent } from '@/vue/settings/categories/categories';
-import { ComponentState as PagesState }                                                                     from '@/vue/settings/pages/pages';
-import { verify_localstorage_availlability }                                                                from '@/lib/persistence';
+import { ComponentData as CategoriesData, CategoryItem, CategoryParent } from '@/vue/settings/categories/categories';
+import { ComponentState as PagesState }                                  from '@/vue/settings/pages/pages';
+import { verify_localstorage_availlability }                             from '@/lib/persistence';
 
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
 import pagesComponent      from '@/vue/settings/pages/pages.vue';
 import modalComponent      from '@/vue/modal/modal.vue';
+import store               from '@/lib/store';
 
 import { version } from '~/package.json';
 
@@ -22,40 +23,15 @@ export type CategoryTuple = [CategoryParent, CategoryItem[]];
 interface ComponentState {
 
     /**
-     * Changes display state between initialization & full settings.
-     * @enum {STATE_INIT | STATE_SETTINGS}
-     */
-    component_display_state: 'STATE_INIT' | 'STATE_SETTINGS';
-
-    /**
-     * Categories sub-component state.
-     */
-    categories_state: CategoriesState;
-
-    /**
      * Categories sub-component data.
      */
     categories_data: CategoriesData;
 
     /**
      * Pages sub-component state.
+     * @type {PagesState}
      */
     pages_state: PagesState;
-
-    /**
-     * Displays or hides the settings component.
-     */
-    render_state: boolean;
-
-    /**
-     * Last clicked category item.
-     */
-    last_clicked_category?: { name: string, search?: boolean };
-
-    /**
-     * Array containing critical only mode IDs.
-     */
-    critical_categories: string[];
 
     /**
      * Only true if the categories bar is searching.
@@ -67,10 +43,6 @@ interface ComponentState {
 export default defineComponent({
 
     data() {
-
-        const categories_state: CategoriesState = {
-            critical_only: false
-        };
 
         const appearance_category: CategoryTuple = [
             {
@@ -188,17 +160,8 @@ export default defineComponent({
 
         const pages_state: PagesState = { active_category: undefined, categories: items };
 
-        const critical_categories: string[] = [];
-
-        // Populate IDs
-        [...appearance_category[1], ...date_time_category[1], ...miscellaneous_category[1]].forEach(el => el.critical ? critical_categories.push(el.id) : false);
-
         const state: ComponentState = {
-            component_display_state: 'STATE_INIT',
             is_searching: false,
-            render_state: false,
-            critical_categories,
-            categories_state,
             categories_data,
             pages_state
         };
@@ -215,18 +178,27 @@ export default defineComponent({
     mounted() { this.$nextTick(() => this.discriminate_component_state()); },
 
     methods: {
-        discriminate_component_state() {
+
+        /**
+         * Discriminates wether or not this app has been launched before, which
+         * we use for launching the settings component automatically.
+         */
+        discriminate_component_state(): boolean {
+
             const localstorage_availlable = verify_localstorage_availlability();
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`)) {
-                this.state.component_display_state = 'STATE_INIT';
-                this.state.categories_state.critical_only = true;
-                this.state.render_state = true;
+
+                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY', true);
+
+                return false;
             }
 
             else {
-                this.state.component_display_state = 'STATE_SETTINGS';
-                this.state.categories_state.critical_only = false;
+
+                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY', false);
+
+                return true;
             }
         },
 
@@ -239,9 +211,9 @@ export default defineComponent({
 
                 if (this.state.pages_state.active_category != parent.id && target_search) {
 
-                    this.state.last_clicked_category = { name: source.id, search };
+                    store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
 
-                    if (this.state.component_display_state != 'STATE_INIT')
+                    if (this.eventBusStore.critical_only)
                         this.state.pages_state.active_category = parent.id;
 
                     break;
@@ -249,7 +221,7 @@ export default defineComponent({
 
                 else if (this.state.pages_state.active_category == parent.id && target_search) {
 
-                    this.state.last_clicked_category = { name: source.id, search };
+                    store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
 
                     break;
                 }
@@ -305,31 +277,16 @@ export default defineComponent({
         },
 
         handle_settings_open() {
+
+            // We discriminate to set critical only flags
             this.discriminate_component_state();
 
-            this.$nextTick(() => this.state.render_state = true);
-        },
-
-        handle_render_state_change(state: boolean) {
-
-            console.log(this.state.render_state, state);
-
-            if (state != this.state.render_state) {
-
-                this.state.render_state = state;
-
-                if (!state)
-                    this.state.last_clicked_category = undefined;
-            }
+            this.$nextTick(() => store.commit('eventBusStore/UPDATE_SETTINGS_RENDER_STATE', true));
         }
     },
 
-    provide() {
-        return {
-            last_clicked_category: computed(() => this.state.last_clicked_category),
-            critical_categories: computed(() => this.state.critical_categories),
-            critical_only: computed(() => this.state.categories_state.critical_only)
-        };
+    watch: {
+        'eventBusStore'(state: boolean) { if (!state) store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', undefined); }
     },
 
     computed: mapState(['eventBusStore', '__metaData'])

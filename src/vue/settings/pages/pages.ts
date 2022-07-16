@@ -50,12 +50,6 @@ export default defineComponent({
             this.state.active_category = 'page-default';
     },
 
-    methods: {
-        pass_close() { this.$emit('close', false); }
-    },
-
-    emits: ['close'],
-
     computed: mapState(['__metaData']),
 
     props: {

@@ -9,20 +9,6 @@ import Queue  from '@/lib/queue';
 import store  from '@/lib/store';
 
 /**
- * Component internal state.
- * @public
- */
-export interface ComponentState {
-
-    /**
-     * Displays "critical" category options, which will only be active
-     * if we are in initialization mode.
-     * @type {boolean}
-     */
-    critical_only: boolean;
-}
-
-/**
  * Individual category display item.
  * @public
  */
@@ -260,7 +246,7 @@ export default defineComponent({
                 (el) => { if (!this.internal_state.all_category_items.includes(el)) this.internal_state.all_category_items.push(el); }
             );
 
-            if (this.state.critical_only) return items.filter(el => el.critical);
+            if (this.eventBusStore.critical_only) return items.filter(el => el.critical);
             return items;
         },
 
@@ -416,7 +402,7 @@ export default defineComponent({
 
         handle_category_click(item: CategoryItem, standalone = true) {
 
-            if (this.state.critical_only) {
+            if (this.eventBusStore.critical_only) {
 
                 const clicked_category_key   = Object.keys(this.eventBusStore.critical_only_categories_state).find((el) => el ==item.id);
                 const clicked_category_state = this.eventBusStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
@@ -492,6 +478,8 @@ export default defineComponent({
 
             const element = this.$refs.search as HTMLInputElement;
 
+            if (!element) return;
+
             for (const [parent, items] of this.data.items)
                 parent.filtered = false;
 
@@ -545,41 +533,39 @@ export default defineComponent({
 
             this.clear_search_content();
 
-            this.$emit('close', false);
+            store.commit('eventBusStore/UPDATE_SETTINGS_RENDER_STATE', false);
         }
     },
 
-    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); if (this.state.critical_only) this.populate_category_states(); }); },
+    mounted() {
+        this.$nextTick(
+            () => {
+
+            const data = this.data as ComponentData;
+
+            if (data?.items && data.items.length >= 1)
+                this.load_category_icons(data.items);
+
+            if (this.eventBusStore.critical_only)
+                this.populate_category_states();
+            }
+        );
+    },
 
     watch: {
 
         /**
          * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
          */
-        'data.items': {
-            handler(state: CategoryTuple[]) { this.load_category_icons(state); },
-            immediate: true,
-            deep: true
-        },
+        'data.items'(state: CategoryTuple[]) { this.load_category_icons(state); },
 
         /**
          * Loads all critical-only progress state.
          */
-        'state.critical_only': {
-            handler(state: boolean) { if (state) this.populate_category_states(); },
-            immediate: true,
-            deep: true
-        }
+        'eventBusStore.critical_only'(state: boolean) { if (state) this.populate_category_states(); }
     },
 
     props: {
-        state: {
-            required: true,
-            type: Object,
-            default: {},
-            validator: (value: any) => (value != undefined && typeof value == 'object')
-        },
-
         data: {
             required: true,
             type: Object,
