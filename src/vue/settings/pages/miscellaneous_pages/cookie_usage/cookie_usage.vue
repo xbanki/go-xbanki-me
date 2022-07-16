@@ -17,7 +17,7 @@
         <section class="cookie-usage-article" v-html="state.content"/>
 
         <!-- Accept cookie usage button //-->
-        <button class="cookie-usage-consent" v-if="eventBusStore.critical_only" v-on:click="accept_cookie_usage"> Accept & Continue </button>
+        <button class="cookie-usage-consent" v-if="componentSettingsStore.is_critical_only" v-on:click="accept_cookie_usage"> Accept & Continue </button>
     </main>
 </template>
 

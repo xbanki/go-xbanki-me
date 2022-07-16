@@ -4,10 +4,10 @@ import { defineComponent } from 'vue';
 import anime from 'animejs';
 
 import privacyAndSafetyPageComponent from '@/vue/settings/pages/miscellaneous_pages/privacy_and_safety/privacy_and_safety.vue';
-import deleteDataPageComponent from '@/vue/settings/pages/miscellaneous_pages/delete_data/delete_data.vue';
-import changelogPageComponent from '@/vue/settings/pages/miscellaneous_pages/changelog/changelog.vue';
-import cookieUsageComponent from '@/vue/settings/pages/miscellaneous_pages/cookie_usage/cookie_usage.vue';
-import licensesComponent from '@/vue/settings/pages/miscellaneous_pages/licenses/licenses.vue';
+import deleteDataPageComponent       from '@/vue/settings/pages/miscellaneous_pages/delete_data/delete_data.vue';
+import changelogPageComponent        from '@/vue/settings/pages/miscellaneous_pages/changelog/changelog.vue';
+import cookieUsageComponent          from '@/vue/settings/pages/miscellaneous_pages/cookie_usage/cookie_usage.vue';
+import licensesComponent             from '@/vue/settings/pages/miscellaneous_pages/licenses/licenses.vue';
 
 import { CurrentTab } from '@/vue/settings/pages/miscellaneous_pages/privacy_and_safety/privacy_and_safety';
 
@@ -56,7 +56,7 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => { this.handle_category_click(); this.discriminate_component_state(); }); },
+    mounted() { this.$nextTick(() => this.handle_category_click(this.componentSettingsStore.last_clicked_category)); },
 
     methods: {
         handle_click_event(event: CurrentTab) {
@@ -74,14 +74,6 @@ export default defineComponent({
             }
         },
 
-        discriminate_component_state() {
-
-            if (this.eventBusStore.critical_only) {
-                this.state.active = CurrentTab.COOKIES;
-                this.state.disable = true;
-            }
-        },
-
         handle_return_click() {
 
             if (this.state.active == CurrentTab.DEFAULT || this.state.disable) return;
@@ -93,7 +85,7 @@ export default defineComponent({
 
             const categories = ['changelog-category', 'privacy-and-safety-category', 'delete-data-category'];
 
-            if (name && categories.includes(name)) {
+            if (name && this.componentSettingsStore.is_searching && categories.includes(name)) {
 
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
                 const target = this.$refs[name]                               as HTMLElement;
@@ -146,15 +138,15 @@ export default defineComponent({
     },
 
     watch: {
-        'eventBusStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
+        'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    computed: mapState(['eventBusStore']),
+    computed: mapState(['componentSettingsStore']),
 
     components: {
 
         // Dynamic component things
-        MISC_TAB_COOKIE_USAGE: cookieUsageComponent,
+        MISC_TAB_COOKIE_USAGE:  cookieUsageComponent,
         MISC_TAB_FOSS_LICENSES: licensesComponent,
 
         privacyAndSafetyPageComponent,

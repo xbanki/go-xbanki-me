@@ -66,9 +66,11 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_LAST_CLICKED_CATEGORY: (state: ModuleState, payload?: string) => state.last_clicked_category = payload,
 
-        UPDATE_RENDER_STATE: (state: ModuleState, payload: boolean) => state.is_rendering = payload,
+        UPDATE_SEARCHING_STATE: (state: ModuleState, payload: boolean) => state.is_searching = payload,
 
-        UPDATE_CRITICAL_ONLY: (state: ModuleState, payload: boolean) => state.is_critical_only = payload
+        UPDATE_CRITICAL_ONLY: (state: ModuleState, payload: boolean) => state.is_critical_only = payload,
+
+        UPDATE_RENDER_STATE: (state: ModuleState, payload: boolean) => state.is_rendering = payload
     },
 
     actions: {

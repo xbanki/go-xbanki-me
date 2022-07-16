@@ -13,7 +13,7 @@ export default defineComponent({
         themePageComponent
     },
 
-    mounted() { this.$nextTick(() => this.handle_category_click(this.eventBusStore.last_clicked_category)); },
+    mounted() { this.$nextTick(() => this.handle_category_click(this.componentSettingsStore.last_clicked_category)); },
 
     methods: {
 
@@ -21,10 +21,10 @@ export default defineComponent({
 
             const categories = ['theme-category', 'background-fit-category'];
 
-            if (name && categories.includes(name)) {
+            if (name && this.componentSettingsStore.is_searching && categories.includes(name)) {
 
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[name]                         as HTMLElement;
+                const target = this.$refs[name]                               as HTMLElement;
                 const parent = this.$refs.parent                              as HTMLElement;
 
                 let overhead = 0;
@@ -74,8 +74,8 @@ export default defineComponent({
     },
 
     watch: {
-        'eventBusStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
+        'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    computed: mapState(['eventBusStore'])
+    computed: mapState(['componentSettingsStore'])
 });

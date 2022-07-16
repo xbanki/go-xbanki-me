@@ -61,7 +61,7 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => this.handle_category_click()); },
+    mounted() { this.$nextTick(() => this.handle_category_click(this.componentSettingsStore.last_clicked_category)); },
 
     methods: {
 
@@ -69,7 +69,7 @@ export default defineComponent({
 
             const categories = ['date-display-category', 'time-convention-category', 'time-display-category'];
 
-            if (name && categories.includes(name)) {
+            if (name && this.componentSettingsStore.is_searching &&categories.includes(name)) {
 
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
                 const target = this.$refs[name]                               as HTMLElement;
@@ -138,8 +138,8 @@ export default defineComponent({
             deep: true
         },
 
-        'eventBusStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
+        'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    computed: mapState(['settingsStore', 'eventBusStore'])
+    computed: mapState(['settingsStore', 'componentSettingsStore'])
 });

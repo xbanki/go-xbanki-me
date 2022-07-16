@@ -234,7 +234,7 @@ export default defineComponent({
 
                 if (parent.id.toLocaleLowerCase().trim().includes(source.category.id.trim().toLocaleLowerCase())) {
 
-                    if (source.search) {
+                    if (source.search && this.componentSettingsStore.is_searching) {
 
                         const predicate = (el: CategoryItem): boolean => {
 

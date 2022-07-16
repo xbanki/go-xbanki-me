@@ -23,10 +23,10 @@
             <div class="bar-lower" v-if="!componentSettingsStore.is_critical_only">
 
                 <!-- Categories search bar //-->
-                <input class="bar-search" placeholder="Search..." ref="search" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
+                <input class="bar-search" placeholder="Search..." ref="search" v-on:input="handle_search_input" v-bind:class="{ searching: componentSettingsStore.is_searching }"/>
 
                 <!-- Clear search button //-->
-                <button class="bar-clear" v-on:click="clear_search_content" v-if="internal_state.is_searching"> × </button>
+                <button class="bar-clear" v-on:click="clear_search_content" v-if="componentSettingsStore.is_searching"> × </button>
             </div>
         </div>
 

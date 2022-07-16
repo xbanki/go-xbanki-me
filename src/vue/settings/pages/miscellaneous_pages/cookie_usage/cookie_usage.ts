@@ -63,7 +63,7 @@ export default defineComponent({
         get_current_version: (version: string) => `Version: ${version}`
     },
 
-    computed: mapState(['eventBusStore']),
+    computed: mapState(['componentSettingsStore']),
 
     props: {
         standalone: {

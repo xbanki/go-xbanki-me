@@ -142,12 +142,6 @@ interface InternalComponentState {
     all_category_items: Array<CategoryItem>;
 
     /**
-     * Denotes wether or not we are in search mode.
-     * @type {boolean}
-     */
-    is_searching: boolean;
-
-    /**
      * Disables forward navigation.
      * @type {boolean}
      */
@@ -174,7 +168,6 @@ export default defineComponent({
             preloaded_icons: false,
             all_category_items: [],
             disable_forward: false,
-            is_searching: false,
             disable_back: false,
             icon_cache: []
         };
@@ -189,9 +182,10 @@ export default defineComponent({
 
             if (target.value.length >= 1) {
 
+                store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', true);
+
                 const value = target.value.toLowerCase().trim();
 
-                this.internal_state.is_searching = true;
                 this.internal_state.search = value;
 
                 for (const item of this.data.items) {
@@ -231,10 +225,12 @@ export default defineComponent({
             }
 
             else {
+
+                store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', false);
+
                 for (const [parent, items] of this.data.items)
                     parent.filtered = false;
 
-                this.internal_state.is_searching = false;
                 this.internal_state.search = undefined;
             }
     },
@@ -450,11 +446,11 @@ export default defineComponent({
 
             const target = this.data.items.find((el: CategoryTuple) => el[0].id == category.id);
 
-            if (target && this.internal_state.is_searching) {
+            if (target && this.componentSettingsStore.is_searching) {
 
                 this.$emit('parent-clicked', { search: this.internal_state.search, category });
 
-                this.clear_search_content();
+                this.$nextTick(() => this.clear_search_content());
             }
 
             else if (target)
@@ -483,7 +479,8 @@ export default defineComponent({
             for (const [parent, items] of this.data.items)
                 parent.filtered = false;
 
-            this.internal_state.is_searching = false;
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', false));
+
             element.value = '';
 
         },
