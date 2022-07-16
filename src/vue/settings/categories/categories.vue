@@ -13,14 +13,14 @@
                 <button class="bar-close" v-on:click="close_settings_component"> &#215; </button>
 
                 <!-- Navigation button back //-->
-                <button class="bar-back" v-on:click="handle_navigation_previous" v-if="eventBusStore.critical_only" v-bind:disabled="internal_state.disable_back"> &#5176; </button>
+                <button class="bar-back" v-on:click="handle_navigation_previous" v-if="componentSettingsStore.is_critical_only" v-bind:disabled="internal_state.disable_back"> &#5176; </button>
 
                 <!-- Navigation button forward //-->
-                <button class="bar-forward" v-on:click="handle_navigation_next" v-if="eventBusStore.critical_only" v-bind:disabled="internal_state.disable_forward"> &#5171; </button>
+                <button class="bar-forward" v-on:click="handle_navigation_next" v-if="componentSettingsStore.is_critical_only" v-bind:disabled="internal_state.disable_forward"> &#5171; </button>
             </div>
 
             <!--  Lower bar, for search sizing & positioning //-->
-            <div class="bar-lower" v-if="!eventBusStore.critical_only">
+            <div class="bar-lower" v-if="!componentSettingsStore.is_critical_only">
 
                 <!-- Categories search bar //-->
                 <input class="bar-search" placeholder="Search..." ref="search" v-on:input="handle_search_input" v-bind:class="{ searching: internal_state.is_searching }"/>
@@ -37,7 +37,7 @@
             <div class="parent-item" v-if="get_category_items(category_items).length >= 1">
 
                 <!-- Parent category title display //-->
-                <span class="item-title" v-if="eventBusStore.critical_only"> {{ parent_category.name }} </span>
+                <span class="item-title" v-if="componentSettingsStore.is_critical_only"> {{ parent_category.name }} </span>
 
                 <!-- Clickable category display //-->
                 <div class="item-category" v-on:click="handle_parent_click(parent_category)" v-bind:class="{ 'search-filtered': parent_category.filtered }" v-else> 
@@ -56,7 +56,7 @@
 
                     v-on:click="handle_category_click(item)"
 
-                    v-if="eventBusStore.critical_only"
+                    v-if="componentSettingsStore.is_critical_only"
 
                     v-bind:key="item.id"
 
@@ -67,7 +67,7 @@
                             'state-initial'  : get_category_state(item.id) == 'STATE_INITIAL',
                             'state-visited'  : get_category_state(item.id) == 'STATE_VISITED',
                             'state-active'   : get_category_state(item.id) == 'STATE_ACTIVE',
-                            'critical-only'  : eventBusStore.critical_only,
+                            'critical-only'  : componentSettingsStore.is_critical_only,
                         },
 
                         item.id

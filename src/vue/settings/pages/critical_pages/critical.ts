@@ -68,7 +68,7 @@ export default defineComponent({
     },
 
     watch: {
-        last_clicked_category(state?: string) {
+        'componentSettingsStore.last_clicked_category'(state?: string) {
 
             if (this.state.active.id != state) {
 
@@ -97,5 +97,5 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['eventBusStore'])
+    computed: mapState(['componentSettingsStore'])
 });

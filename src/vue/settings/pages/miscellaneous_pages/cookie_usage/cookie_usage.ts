@@ -54,7 +54,7 @@ export default defineComponent({
 
     methods: {
         accept_cookie_usage() {
-            store.commit('eventBusStore/UPDATE_SETTINGS_RENDER_STATE', false);
+            store.commit('componentSettingsStore/UPDATE_RENDER_STATE', false);
             store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
         },
 

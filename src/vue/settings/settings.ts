@@ -28,16 +28,16 @@ interface ComponentState {
     categories_data: CategoriesData;
 
     /**
-     * Pages sub-component state.
-     * @type {PagesState}
-     */
-    pages_state: PagesState;
-
-    /**
      * Only true if the categories bar is searching.
      * @type {boolean}
      */
     is_searching: boolean;
+
+    /**
+     * Pages sub-component state.
+     * @type {PagesState}
+     */
+    pages_state: PagesState;
 }
 
 export default defineComponent({
@@ -189,20 +189,20 @@ export default defineComponent({
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`)) {
 
-                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY', true);
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY', true);
 
                 return false;
             }
 
             else {
 
-                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY', false);
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY', false);
 
                 return true;
             }
         },
 
-        handle_category_clicked(source: CategoryItem, search?: boolean) {
+        handle_category_clicked(source: CategoryItem) {
 
             for (const [parent, contents] of this.state.categories_data.items) {
 
@@ -211,9 +211,9 @@ export default defineComponent({
 
                 if (this.state.pages_state.active_category != parent.id && target_search) {
 
-                    store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
+                    store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
 
-                    if (this.eventBusStore.critical_only)
+                    if (!this.componentSettingsStore.is_critical_only)
                         this.state.pages_state.active_category = parent.id;
 
                     break;
@@ -221,7 +221,7 @@ export default defineComponent({
 
                 else if (this.state.pages_state.active_category == parent.id && target_search) {
 
-                    store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
+                    store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
 
                     break;
                 }
@@ -262,7 +262,7 @@ export default defineComponent({
                         const target = items.find(predicate);
 
                         if (target)
-                            this.handle_category_clicked(target, true);
+                            this.handle_category_clicked(target);
 
                         else
                             this.state.pages_state.active_category = parent.id;
@@ -281,13 +281,13 @@ export default defineComponent({
             // We discriminate to set critical only flags
             this.discriminate_component_state();
 
-            this.$nextTick(() => store.commit('eventBusStore/UPDATE_SETTINGS_RENDER_STATE', true));
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true));
         }
     },
 
     watch: {
-        'eventBusStore'(state: boolean) { if (!state) store.commit('eventBusStore/UPDATE_LAST_CLICKED_CATEGORY', undefined); }
+        'componentSettingsStore.is_rendering'(state: boolean) { if (!state) store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', undefined); }
     },
 
-    computed: mapState(['eventBusStore', '__metaData'])
+    computed: mapState(['componentSettingsStore', '__metaData'])
 });

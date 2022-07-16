@@ -164,7 +164,7 @@ export default defineComponent({
 
                 this.state.display.remove = DeleteButtonLabel.INITIAL;
 
-                store.commit('eventBusStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
                 store.commit('eventBusStore/DISABLE_DATA_PERSISTENCE');
             }
         },
