@@ -14,24 +14,28 @@ interface ComponentState {
      * Currently active application theme.
      * @enum {AvaillableThemes}
      */
-    selected_application_theme: AvaillableThemes;
+    theme: AvaillableThemes;
 }
 
 export default defineComponent({
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
-        const selected_application_theme = typed_store.state.settingsStore.selected_theme;
+        const theme = typed_store.state.settingsStore.selected_theme;
 
-        const state: ComponentState = { selected_application_theme };
+        const state: ComponentState = { theme };
 
         return { state };
     },
 
     methods: {
+
+        /**
+         * Updates selected theme with internal state.
+         */
         update() {
-            if (this.settingsStore.selected_theme != this.state.selected_application_theme) {
-                store.dispatch('settingsStore/SwitchTheme', this.state.selected_application_theme);
+            if (this.settingsStore.selected_theme != this.state.theme) {
+                store.dispatch('settingsStore/SwitchTheme', this.state.theme);
             }
         }
     },
