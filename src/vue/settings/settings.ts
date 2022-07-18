@@ -307,8 +307,10 @@ export default defineComponent({
          */
         handle_settings_open() {
 
-            // We discriminate to set critical only flags and reverse return value
-            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', !(this.discriminate_component_state())));
+            // We discriminate to set critical only flags
+            this.discriminate_component_state();
+
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true));
         }
     },
 
