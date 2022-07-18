@@ -6,13 +6,14 @@
         <!-- Auto-generated license items //-->
         <section
         
-            class="licenses-item"
-            
-            v-for="item of state.licenses"
+            v-bind:key="state.licenses.indexOf(item)"
             
             v-bind:class="{ active: item.active }"
 
-            v-bind:key="state.licenses.indexOf(item)"
+            v-for="item of state.licenses"
+
+            class="licenses-item"
+
         >
             
             <!-- License item titlebar //-->

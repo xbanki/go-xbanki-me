@@ -1,7 +1,6 @@
 import { marked }          from 'marked';
 import { defineComponent } from 'vue';
 
-
 import dependency_licenses from 'virtual:licenses';
 
 /**
@@ -16,10 +15,10 @@ interface ComponentStateLicense {
     active: boolean;
 
     /**
-     * Name of the package this item is for.
+     * Package author.
      * @type {string}
      */
-    name: string;
+    author?: string;
 
     /**
      * Un-rendered license data.
@@ -28,28 +27,28 @@ interface ComponentStateLicense {
     content: string;
 
     /**
+     * Author contact email.
+     * @type {string}
+     */
+    email?: string;
+
+    /**
      * License object's home URL.
      * @type {string}
      */
     home?: string;
 
     /**
-     * Package author.
+     * Name of the package this item is for.
      * @type {string}
      */
-    author?: string;
+    name: string;
 
     /**
      * Repository URL for the source code.
      * @type {string}
      */
     repo?: string;
-
-    /**
-     * Author contact email.
-     * @type {string}
-     */
-    email?: string;
 }
 
 /**
@@ -107,10 +106,20 @@ export default defineComponent({
     },
 
     methods: {
+
+        /**
+         * Toggles given target dropdown state.
+         */
         toggle_dropdown_state: (target: ComponentStateLicense) => target.active ? target.active = false : target.active = true,
 
+        /**
+         * Renders string into valid markdown HTML.
+         */
         render_content: (content: string) => marked(content),
 
+        /**
+         * Appens author to string `By: `.
+         */
         get_styled_author: (author: string) => `By: ${author}`
     }
 });
