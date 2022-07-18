@@ -14,7 +14,7 @@ import store from '@/lib/store';
      * Active background display method.
      * @enum {BackgroundDisplayMethod}
      */
-    selected_background_display_method: BackgroundDisplayMethod;
+    method: BackgroundDisplayMethod;
 }
 
 export default defineComponent({
@@ -22,18 +22,22 @@ export default defineComponent({
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
-        const selected_background_display_method = typed_store.state.settingsStore.background_display_method;
+        const method = typed_store.state.settingsStore.background_display_method;
 
-        const state: ComponentState = { selected_background_display_method };
+        const state: ComponentState = { method };
 
         return { state };
     },
 
     methods: {
+
+        /**
+         * Updates selected background fit with internal state.
+         */
         update() {
-            if (this.settingsStore.background_display_method != this.state.selected_background_display_method) {
-                store.dispatch('settingsStore/UpdateDisplayMethod', this.state.selected_background_display_method);
-            }
+            if (this.settingsStore.background_display_method != this.state.method)
+                store.dispatch('settingsStore/UpdateDisplayMethod', this.state.method);
+
         }
     },
 
