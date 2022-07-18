@@ -20,7 +20,7 @@ export interface ComponentState {
      * Currently active category.
      * @type {string}
      */
-    active_category: string | undefined;
+    active?: string;
 
     /**
      * All settings categories.

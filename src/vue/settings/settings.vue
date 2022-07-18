@@ -2,7 +2,16 @@
     <teleport to="main#go-xbanki-ui">
 
         <!-- Open settings button //-->
-        <button class="component-settings-open" v-on:click="handle_settings_open" v-if="!componentSettingsStore.is_rendering"> ⚙ </button>
+        <button
+
+            v-if="!componentSettingsStore.is_rendering"
+
+            v-on:click="handle_settings_open"
+
+            class="component-settings-open"
+            
+        > &#9881; </button>
+        
     </teleport>
 
     <modal-component v-bind:display="componentSettingsStore.is_rendering">
