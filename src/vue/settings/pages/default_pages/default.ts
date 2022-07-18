@@ -39,13 +39,14 @@ const TIMER_GROUP = 'TIMER_GROUP_HINTS';
 export default defineComponent({
 
     data() {
+
         const hints: string[] = [
-            'The `Fill` background fit method fills the entire background space while maintaining the image\'s original aspect ratio.',
-            'The `Automatic` theme mode will automatically match your device\'s display theme.',
-            'The date & time components\' formats can be composed with individual tokens to suit your needs.',
+            'The `Fill` fit method fills the entire background space while maintaining the image\'s original aspect ratio.',
+            'The `Automatic` mode will automatically match your device\'s display theme.',
+            'The date & time components\' formats can be composed to suit your needs.',
             'The background changes daily with a new high-quality image each day.',
             'You can search for any setting by typing in the search bar atop the categories section.',
-            'The `Stretch` Background fit method stretches the image to fit the space without maintaining aspect ratio.',
+            'The `Stretch` fit method stretches the image to fit the background space without maintaining aspect ratio.',
             'This app is fully open source!'
         ];
 
@@ -72,10 +73,17 @@ export default defineComponent({
     unmounted() { TimerManager.RemoveGroupFunction(TIMER_GROUP, this.data.id as symbol); },
 
     methods: {
+
+        /**
+         * Scrolls through hints in sequential only.
+         */
         switch_hint() {
 
+            // Index of current hint
             const index = this.data.hints.indexOf(this.state.hint);
-            const el    = this.$refs.hint as HTMLElement;
+
+            // Hint parent element
+            const el = this.$refs.hint as HTMLElement;
 
             const fade_in = anime({
                 easing: 'linear',
@@ -101,6 +109,9 @@ export default defineComponent({
             fade_out.play();
         },
 
+        /**
+         * Parses string into rendered markdown.
+         */
         parse_hint: (hint: string) => marked.parseInline(hint)
     }
 });
