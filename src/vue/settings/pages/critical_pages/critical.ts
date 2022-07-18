@@ -25,7 +25,7 @@ interface ComponentState {
      * Filtered (critical only) array of category items.
      * @type {CategoryItem}
      */
-     items: CategoryItem[];
+    items: CategoryItem[];
 }
 
 /**
@@ -41,6 +41,14 @@ export interface ComponentData {
 }
 
 export default defineComponent({
+
+    components: {
+        'privacy-and-safety-category' : privacyAndSafetyComponent,
+        'time-convention-category'    : timeConventionComponent,
+        'background-fit-category'     : backgroundFitComponent,
+        'date-display-category'       : dateDisplayComponent,
+        'time-display-category'       : timeDisplayComponent
+    },
 
     data() {
 
@@ -63,14 +71,10 @@ export default defineComponent({
         return { state };
     },
 
-    methods: {
-        pass_close() { this.$emit('close', false); }
-    },
-
     watch: {
         'componentSettingsStore.last_clicked_category'(state?: string) {
 
-            if (this.state.active.id != state) {
+            if (state && this.state.active.id != state) {
 
                 const target = this.state.items.find(el => el.id == state);
 
@@ -80,13 +84,7 @@ export default defineComponent({
         }
     },
 
-    components: {
-        'privacy-and-safety-category' : privacyAndSafetyComponent,
-        'time-convention-category'    : timeConventionComponent,
-        'background-fit-category'     : backgroundFitComponent,
-        'date-display-category'       : dateDisplayComponent,
-        'time-display-category'       : timeDisplayComponent
-    },
+    computed: mapState(['componentSettingsStore']),
 
     props: {
         data: {
@@ -95,7 +93,5 @@ export default defineComponent({
             default: {},
             validator: (value: any) => (value != undefined && typeof value == 'object')
         }
-    },
-
-    computed: mapState(['componentSettingsStore'])
+    }
 });
