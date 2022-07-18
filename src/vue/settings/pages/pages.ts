@@ -40,14 +40,17 @@ export default defineComponent({
     },
 
     mounted() {
+        this.$nextTick(
+            () => {
+                const localstorage_availlable = verify_localstorage_availlability();
 
-        const localstorage_availlable = verify_localstorage_availlability();
+            if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`))
+                this.state.active_category = 'page-critical';
 
-        if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`))
-            this.state.active_category = 'page-critical';
-
-        else
-            this.state.active_category = 'page-default';
+            else
+                this.state.active_category = 'page-default';
+            }
+        );
     },
 
     computed: mapState(['__metaData']),
