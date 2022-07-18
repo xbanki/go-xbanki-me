@@ -17,15 +17,24 @@ export default defineComponent({
 
     methods: {
 
+        /**
+         * In search mode, scrolls to the matching component on the page.
+         */
         handle_category_click(name?: string) {
 
+            // All categories that can be found on this page
             const categories = ['theme-category', 'background-fit-category'];
 
             if (name && this.componentSettingsStore.is_searching && categories.includes(name)) {
 
+                // Parent wrapper that is actually scrolled
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[name]                               as HTMLElement;
-                const parent = this.$refs.parent                              as HTMLElement;
+
+                // Target element parent which we use to calculate above scroll amount
+                const parent = this.$refs.parent as HTMLElement;
+
+                // Target category element, which is used to figure out scroll target
+                const target = this.$refs[name] as HTMLElement;
 
                 let overhead = 0;
 
