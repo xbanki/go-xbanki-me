@@ -38,12 +38,17 @@ interface ComponentState {
 
 export default defineComponent({
 
+    components: {
+        timeConventionPageComponent,
+        dateDisplayPageComponent,
+        timeDisplayPageComponent
+    },
+
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
         // State constants
 
-        // @ts-ignore
         const build = LAST_BUILD_TIME;
 
         const time = DateTime.fromRFC2822(build).toFormat(typed_store.state.settingsStore.time_display_format);
@@ -65,15 +70,24 @@ export default defineComponent({
 
     methods: {
 
+        /**
+         * In search mode, scrolls to the matching component on the page.
+         */
         handle_category_click(name?: string) {
 
+            // All categories that can be found on this page
             const categories = ['date-display-category', 'time-convention-category', 'time-display-category'];
 
             if (name && this.componentSettingsStore.is_searching &&categories.includes(name)) {
 
+                // Parent wrapper that is actually scrolled
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[name]                               as HTMLElement;
-                const parent = this.$refs.parent                              as HTMLElement;
+
+                // Target element parent which we use to calculate above scroll amount
+                const parent = this.$refs.parent as HTMLElement;
+
+                // Target category element, which is used to figure out scroll target
+                const target = this.$refs[name] as HTMLElement;
 
                 let overhead = 0;
 
@@ -121,22 +135,10 @@ export default defineComponent({
         }
     },
 
-    components: {
-        timeConventionPageComponent,
-        dateDisplayPageComponent,
-        timeDisplayPageComponent
-    },
-
     watch: {
-        'settingsStore.time_display_format': {
-            handler(state) { this.state.time = DateTime.fromRFC2822(this.state.build).toFormat(state); },
-            deep: true
-        },
+        'settingsStore.time_display_format'(state) { this.state.time = DateTime.fromRFC2822(this.state.build).toFormat(state); },
 
-        'settingsStore.date_display_format': {
-            handler(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
-            deep: true
-        },
+        'settingsStore.date_display_format'(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
 
         'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
