@@ -23,19 +23,30 @@ interface ComponentState {
     active: CurrentTab;
 
     /**
-     * Active tab label.
-     * @type {string}
-     */
-    label: string;
-
-    /**
      * Disables moving between tabs on critical only mode.
      * @type {boolean}
      */
     disable: boolean;
+
+    /**
+     * Active tab label.
+     * @type {string}
+     */
+    label: string;
 }
 
 export default defineComponent({
+
+    components: {
+
+        // Tab page components
+        MISC_TAB_COOKIE_USAGE:  cookieUsageComponent,
+        MISC_TAB_FOSS_LICENSES: licensesComponent,
+
+        privacyAndSafetyPageComponent,
+        deleteDataPageComponent,
+        changelogPageComponent
+    },
 
     data() {
 
@@ -59,6 +70,11 @@ export default defineComponent({
     mounted() { this.$nextTick(() => this.handle_category_click(this.componentSettingsStore.last_clicked_category)); },
 
     methods: {
+
+        /**
+         * Switches the current displayed miscellaneous tab if current active tab is
+         * default.
+         */
         handle_click_event(event: CurrentTab) {
 
             if (this.state.active == CurrentTab.DEFAULT) {
@@ -74,6 +90,9 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Returns to the default miscellaneus page on click.
+         */
         handle_return_click() {
 
             if (this.state.active == CurrentTab.DEFAULT || this.state.disable) return;
@@ -81,15 +100,24 @@ export default defineComponent({
             this.state.active = CurrentTab.DEFAULT;
         },
 
+        /**
+         * In search mode, scrolls to the matching component on the page.
+         */
         handle_category_click(name?: string) {
 
+            // All categories that can be found on this page
             const categories = ['changelog-category', 'privacy-and-safety-category', 'delete-data-category'];
 
             if (name && this.componentSettingsStore.is_searching && categories.includes(name)) {
 
+                // Parent wrapper that is actually scrolled
                 const scroll = document.querySelector('main.component-pages') as HTMLElement;
-                const target = this.$refs[name]                               as HTMLElement;
-                const parent = this.$refs.parent                              as HTMLElement;
+
+                // Target element parent which we use to calculate above scroll amount
+                const parent = this.$refs.parent as HTMLElement;
+
+                // Target category element, which is used to figure out scroll target
+                const target = this.$refs[name] as HTMLElement;
 
                 let overhead = 0;
 
@@ -141,16 +169,5 @@ export default defineComponent({
         'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    computed: mapState(['componentSettingsStore']),
-
-    components: {
-
-        // Dynamic component things
-        MISC_TAB_COOKIE_USAGE:  cookieUsageComponent,
-        MISC_TAB_FOSS_LICENSES: licensesComponent,
-
-        privacyAndSafetyPageComponent,
-        deleteDataPageComponent,
-        changelogPageComponent
-    }
+    computed: mapState(['componentSettingsStore'])
 });

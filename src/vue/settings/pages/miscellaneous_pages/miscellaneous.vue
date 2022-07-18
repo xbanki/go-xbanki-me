@@ -7,7 +7,17 @@
         <section class="miscellaneous-bar">
 
             <!-- Miscellaneous title display itself //-->
-            <span v-bind:class="{ interactable: state.active != 'MISC_TAB_DEFAULT' && !state.disable }" class="bar-title" v-on:click="handle_return_click"> Miscellaneous </span>
+            <span
+            
+                v-bind:class="{
+                    interactable: state.active != 'MISC_TAB_DEFAULT' && !state.disable
+                }"
+
+                v-on:click="handle_return_click"
+                
+                class="bar-title" 
+                
+                > Miscellaneous </span>
 
             <!-- Bar slash separator, that is only visible outside of the default view //-->
             <span class="bar-separator" v-if="state.active != 'MISC_TAB_DEFAULT' && !state.disable"> / </span>
