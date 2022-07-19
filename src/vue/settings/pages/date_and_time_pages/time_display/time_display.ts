@@ -289,8 +289,12 @@ export default defineComponent({
 
             const now = DateTime.now();
 
-            setTimeout(() => UPDATE_GROUP_LAZY?.(), 1000 - now.millisecond);
-            setTimeout(() => UPDATE_GROUP_LATE?.(), 60000 - ((now.second * 1000) - now.millisecond));
+            this.$nextTick(
+                () => {
+                    setTimeout(() => UPDATE_GROUP_LAZY?.(), 1000 - now.millisecond);
+                    setTimeout(() => UPDATE_GROUP_LATE?.(), 60000 - ((now.second * 1000) - now.millisecond));
+                }
+            );
         },
 
         /**
