@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
+import { mapState }        from 'vuex';
 import { DateTime }        from 'luxon';
 import { defineComponent } from 'vue';
 
 import article from './cookie_usage.md';
 import store   from '@/lib/store';
-import { mapState } from 'vuex';
 
 /**
  * Comonent internal state.
@@ -53,13 +51,24 @@ export default defineComponent({
     },
 
     methods: {
+
+        /**
+         * Critical only method. Enables data persistence & closes the settings panel,
+         * which is effectively consent from the user.
+         */
         accept_cookie_usage() {
             store.commit('componentSettingsStore/UPDATE_RENDER_STATE', false);
             store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
         },
 
+        /**
+         * Returns a formatted date sting of the last revision.
+         */
         get_revision_timestamp: (date: DateTime) => `Last revision: ${ date.toLocaleString(DateTime.DATETIME_FULL) }`,
 
+        /**
+         * Returns a formatted version string.
+         */
         get_current_version: (version: string) => `Version: ${version}`
     },
 
