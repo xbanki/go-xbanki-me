@@ -35,16 +35,16 @@ enum BackupButtonLabel {
 interface ComponentStateDisplay {
 
     /**
-     * Delete data button label.
-     * @enum {DeleteButtonLabel}
-     */
-    remove: DeleteButtonLabel;
-
-    /**
      * Backup saved data button label.
      * @enum {BackupButtonLabel}
      */
     backup: BackupButtonLabel;
+
+    /**
+     * Delete data button label.
+     * @enum {DeleteButtonLabel}
+     */
+    remove: DeleteButtonLabel;
 
     /**
      * Restore backed up data button label.
@@ -59,16 +59,16 @@ interface ComponentStateDisplay {
 interface ComponentStateDisabled {
 
     /**
-     * Delete button disable state.
-     * @type {boolean}
-     */
-    disable_remove: boolean;
-
-    /**
      * Disabled back up button.
      * @type {boolean}
      */
     disable_backup: boolean;
+
+    /**
+     * Delete button disable state.
+     * @type {boolean}
+     */
+    disable_remove: boolean;
 
     /**
      * Disables restore button.
@@ -83,16 +83,16 @@ interface ComponentStateDisabled {
 interface ComponentState {
 
     /**
-     * Button label state.
-     * @type {ComponentStateDisplay}
-     */
-    display: ComponentStateDisplay;
-
-    /**
      * Button disabled states.
      * @type {ComponentStateDisabled}
      */
     disabled: ComponentStateDisabled;
+
+    /**
+     * Button label state.
+     * @type {ComponentStateDisplay}
+     */
+     display: ComponentStateDisplay;
 }
 
 export default defineComponent({
@@ -260,16 +260,16 @@ export default defineComponent({
             input.click();
         },
 
+        /**
+         * Returns the kilobyte amount of data we have persisted in a stylized string.
+         */
         get_size_data: () => `Cache Size: ${(new Blob(Object.values(localStorage)).size / 1000).toString().slice(0, -1)}Kb`
     },
 
     watch: {
-        'eventBusStore.supports_data_persistence': {
-            handler(state) {
-                this.state.disabled.disable_backup = !(state);
-                this.state.disabled.disable_remove = !(state);
-            },
-            deep: true
+        'eventBusStore.supports_data_persistence'(state) {
+            this.state.disabled.disable_backup = !(state);
+            this.state.disabled.disable_remove = !(state);
         }
     },
 
