@@ -45,10 +45,10 @@ export default defineComponent({
                 const localstorage_availlable = verify_localstorage_availlability();
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`))
-                this.state.active_category = 'page-critical';
+                this.state.active = 'page-critical';
 
             else
-                this.state.active_category = 'page-default';
+                this.state.active = 'page-default';
             }
         );
     },
