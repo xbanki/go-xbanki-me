@@ -13,7 +13,21 @@
             <div class="selections-item">
 
                 <!-- Theme selection icon //-->
-                <input type="radio" name="theme-light" id="settings-theme-light" value="THEME_LIGHT" v-on:change="update" v-model="state.selected_application_theme">
+                <input
+
+                    id="settings-theme-light"
+
+                    v-model="state.theme"
+
+                    v-on:change="update"
+
+                    value="THEME_LIGHT"
+
+                    name="theme-light"
+
+                    type="radio"
+
+                >
                 
                 <!-- Theme name descriptor //-->
                 <label for="theme-light"> Light </label>
@@ -21,9 +35,24 @@
 
             <!-- Dark theme item container //-->
             <div class="selections-item">
+
                 <!-- Theme selection icon //-->
-                <input type="radio" name="theme-dark" id="settings-theme-dark" value="THEME_DARK" v-on:change="update" v-model="state.selected_application_theme">
-                
+                <input
+
+                    id="settings-theme-dark"
+
+                    v-model="state.theme"
+
+                    v-on:change="update"
+
+                    value="THEME_DARK"
+
+                    name="theme-dark"
+
+                    type="radio"
+
+                >
+
                 <!-- Theme name descriptor //-->
                 <label for="theme-dark"> Dark </label>
             </div>
@@ -32,7 +61,21 @@
             <div class="selections-item">
                 
                 <!-- Theme selection icon //-->
-                <input type="radio" name="theme-system" id="settings-theme-system" value="THEME_SYSTEM" v-on:change="update" v-model="state.selected_application_theme">
+                <input
+
+                    id="settings-theme-system"
+
+                    v-model="state.theme"
+
+                    v-on:change="update"
+
+                    value="THEME_SYSTEM"
+
+                    name="theme-system"
+
+                    type="radio"
+
+                >
                 
                 <!-- Theme name descriptor //-->
                 <label for="theme-system"> Automatic </label>
