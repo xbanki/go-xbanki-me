@@ -13,7 +13,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-space" id="time-delimiter-space" value="DELIMITER_SPACE" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-space"
+
+                    id="time-delimiter-space"
+
+                    value="DELIMITER_SPACE"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-space"> Blank </label>
@@ -23,7 +37,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-comma" id="time-delimiter-comma" value="DELIMITER_COMMA" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-comma"
+
+                    id="time-delimiter-comma"
+
+                    value="DELIMITER_COMMA"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-comma"> Comma </label>
@@ -33,7 +61,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-slash" id="time-delimiter-slash" value="DELIMITER_SLASH" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-slash"
+
+                    id="time-delimiter-slash"
+
+                    value="DELIMITER_SLASH"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-slash"> Slash </label>
@@ -43,7 +85,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-dash" id="time-delimiter-dash" value="DELIMITER_DASH" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-dash"
+
+                    id="time-delimiter-dash"
+
+                    value="DELIMITER_DASH"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-dash"> Dash </label>
@@ -53,7 +109,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-dot" id="time-delimiter-dot" value="DELIMITER_DOT" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-dot"
+
+                    id="time-delimiter-dot"
+
+                    value="DELIMITER_DOT"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-dot"> Period </label>
@@ -63,7 +133,21 @@
             <div class="selections-item">
 
                 <!-- Radio input element //-->
-                <input type="radio" name="time-delimiter-colon" id="time-delimiter-colon" value="DELIMITER_COLON" v-on:change="update_delimiter" v-model="state.format.delimiter">
+                <input
+
+                    v-model="state.format.delimiter"
+
+                    v-on:change="update_delimiter"
+
+                    name="time-delimiter-colon"
+
+                    id="time-delimiter-colon"
+
+                    value="DELIMITER_COLON"
+
+                    type="radio"
+
+                >
 
                 <!-- Radio label element //-->
                 <label for="time-delimiter-colon"> Colon </label>

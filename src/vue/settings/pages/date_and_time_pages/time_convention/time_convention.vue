@@ -13,7 +13,21 @@
             <div class="selections-item">
 
                 <!-- Time Convention selection icon //-->
-                <input type="radio" name="item-european" id="time-convention-european" value="CONVENTION_24H" v-on:change="update" v-model="state.selected_clock_convention">
+                <input
+
+                    id="time-convention-european"
+
+                    v-model="state.convention"
+
+                    value="CONVENTION_24H"
+
+                    v-on:change="update"
+
+                    name="item-european"
+                
+                    type="radio"
+                    
+                >
 
                 <!-- Time Convention name descriptor //-->
                 <label for="item-european"> 24 Hour Clock </label>
@@ -23,7 +37,21 @@
             <div class="selections-item">
 
                 <!-- Time Convention selection icon //-->
-                <input type="radio" name="item-american" id="time-convention-american" value="CONVENTION_AM_PM" v-on:change="update" v-model="state.selected_clock_convention">
+                <input
+
+                    id="time-convention-american"
+
+                    v-model="state.convention"
+
+                    value="CONVENTION_AM_PM"
+
+                    v-on:change="update"
+
+                    name="item-american"
+
+                    type="radio"
+
+                >
 
                 <!-- Time Convention name descriptor //-->
                 <label for="item-american"> 12 Hour Clock (AM/PM) </label>
