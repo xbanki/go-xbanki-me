@@ -44,16 +44,6 @@
 }
 
 /**
- * Internal state for all sub-category items.
- * @see {ModuleState}
- */
- export enum CategoryItemState {
-    INITIAL = 'STATE_INITIAL',
-    VISITED = 'STATE_VISITED',
-    ACTIVE = 'STATE_ACTIVE'
-}
-
-/**
  * Windows-like background image display format, to fit
  * the viewport how the user wants.
  * @see {ModuleState}
@@ -129,15 +119,6 @@ export enum AvaillableThemes {
  * @see {VueX}
  */
 export interface ModuleState {
-
-    /**
-     * Category item state which controls display styles for
-     * all sub-categories, giving visual feedback for items that
-     * have been visited, are active and are yet to be visited in
-     * critical-only mode.
-     * @enum {CategoryItemState}
-     */
-    critical_only_categories_state: Record<string, CategoryItemState>;
 
     /**
      * Background image fitting method.
@@ -287,8 +268,7 @@ const store: { state: ModuleState, [name: string]: any } = {
             { disabled: false, delimiter: true, index: 11, description: DELIMITER_DESCRIPTION },
             { disabled: false, delimiter: false, index: 12, dynamic: false, token: 'ss', description: 'Second padded to two digits' },
             { disabled: true, delimiter: false, index: 13, dynamic: false, token: 'a', description: 'Meridem' }
-        ],
-        critical_only_categories_state: {}
+        ]
     },
 
     mutations: {
@@ -318,9 +298,7 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_DATE_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_active = payload,
 
-        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload,
-
-        UPDATE_CRITICAL_ONLY_CATEGORIES_STATE: (state: any, payload: Record<string, CategoryItemState>) => state.critical_only_categories_state = payload
+        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload
     },
 
     actions: {
@@ -414,12 +392,6 @@ const store: { state: ModuleState, [name: string]: any } = {
             }
 
             context.commit('UPDATE_TIME_DISPLAY_FORMAT', assembled_active_format.join(''));
-        },
-
-        UpdateCriticalCategoriesState: (context: any, payload: { target: string, state: CategoryItemState }) => {
-            if (!payload.target || !payload.state) return;
-
-            context.commit('UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', Object.assign(context.state.critical_only_categories_state, { [payload.target]: payload.state }));
         }
     }
 };

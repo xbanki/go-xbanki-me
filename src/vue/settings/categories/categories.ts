@@ -1,25 +1,12 @@
 import { mapState }        from 'vuex';
 import { defineComponent } from 'vue';
 
-import { CategoryItemState } from '@/lib/store_settings';
+import { CategoryItemState } from '@/lib/store_component_settings';
+import { CategoryTuple }     from '@/vue/settings/settings';
 
 import config from '@/lib/config';
 import Queue  from '@/lib/queue';
 import store  from '@/lib/store';
-
-/**
- * Component internal state.
- * @public
- */
-export interface ComponentState {
-
-    /**
-     * Displays "critical" category options, which will only be active
-     * if we are in initialization mode.
-     * @type {boolean}
-     */
-    critical_only: boolean;
-}
 
 /**
  * Individual category display item.
@@ -34,12 +21,6 @@ export interface CategoryItem {
     critical: boolean;
 
     /**
-     * Category item display name.
-     * @type {string}
-     */
-    name: string;
-
-    /**
      * Category display icon element or URL.
      * @type {string}
      */
@@ -52,16 +33,41 @@ export interface CategoryItem {
     id: string;
 
     /**
-     * Is set to true if it should not be shown if search mode is enabled.
+     * Search keywords which this category item is associated with.
+     * @type {Array<string>}
+     */
+    keywords: string[];
+
+    /**
+     * Category item display name.
+     * @type {string}
+     */
+    name: string;
+}
+
+/**
+ * Category parent item.
+ * @public
+ */
+export interface CategoryParent {
+
+    /**
+     * Denotes this item being filtered out in search mode.
      * @type {boolean}
      */
     filtered: boolean;
 
     /**
-     * Search keywords which this category item is associated with.
-     * @type {Array<string>}
+     * Unique category ID.
+     * @type {string}
      */
-    keywords: string[];
+    id: string;
+
+    /**
+     * Unique category name.
+     * @type {string}
+     */
+    name: string;
 }
 
 /**
@@ -74,7 +80,7 @@ export interface ComponentData {
      * Component category items.
      * @type {Array<CategoryItem>}
      */
-    items: [string, CategoryItem[]][];
+    items: CategoryTuple[];
 
     /**
      * Valid semver representation of the application version.
@@ -90,16 +96,16 @@ export interface ComponentData {
 interface QueueIcon {
 
     /**
-     * Target element ID which to plug this icon into.
-     * @type {string}
-     */
-    id: string;
-
-    /**
      * Loaded & assembled `Image` element.
      * @type {Image}
      */
     el: HTMLImageElement;
+
+    /**
+     * Target element ID which to plug this icon into.
+     * @type {string}
+     */
+    id: string;
 }
 
 /**
@@ -109,134 +115,416 @@ interface QueueIcon {
 interface InternalComponentState {
 
     /**
-     * Describes wether or not we have succesfully pre-loaded icons by calling
-     * `get_category_items`.
+     * Disables back navigation.
      * @type {boolean}
      */
-    preloaded_icons: boolean;
-
-    /**
-     * Image queue populated by `Image` elements which all get plugged in to the
-     * DOM after everything has finished loading.
-     * @type {Queue<QueueIcon>}
-     */
-    image_queue: Queue<QueueIcon>;
+    back: boolean;
 
     /**
      * Cache of all already loaded icons to avoid loading pre-existing icons multiple
      * times.
      * @type {Map<string, HTMLImageElement>}
      */
-    icon_cache: Array<string>;
-
-    /**
-     * Cache of all available category items so we can work with critical state correctly.
-     * @type {Array<CategoryItem>}
-     */
-    all_category_items: Array<CategoryItem>;
-
-    /**
-     * Denotes wether or not we are in search mode.
-     * @type {boolean}
-     */
-    is_searching: boolean;
+    cache: Array<string>;
 
     /**
      * Disables forward navigation.
      * @type {boolean}
      */
-    disable_forward: boolean;
+    forward: boolean;
 
     /**
-     * Disables back navigation.
+     * Cache of all available category items so we can work with critical state correctly.
+     * @type {Array<CategoryItem>}
+     */
+    items: Array<CategoryItem>;
+
+    /**
+     * Describes wether or not we have succesfully pre-loaded icons by calling
+     * `get_category_items`.
      * @type {boolean}
      */
-    disable_back: boolean;
+    preloaded: boolean;
+
+    /**
+     * Image queue populated by `Image` elements which all get plugged in to the
+     * DOM after everything has finished loading.
+     * @type {Queue<QueueIcon>}
+     */
+    queue: Queue<QueueIcon>;
+
+    /**
+     * Current search content.
+     * @type {string}
+     */
+    search?: string;
 }
 
 export default defineComponent({
 
     data() {
-        const internal_state: InternalComponentState = {
-            image_queue: new Queue<QueueIcon>(),
-            preloaded_icons: false,
-            all_category_items: [],
-            disable_forward: false,
-            is_searching: false,
-            disable_back: true,
-            icon_cache: []
+
+        // Individual state constants
+
+        const preloaded = false;
+
+        const forward = false;
+
+        const items: CategoryItem[] = [];
+
+        const cache: string[] = [];
+
+        const queue = new Queue<QueueIcon>();
+
+        const back = false;
+
+        // Assembled state object
+
+        const state: InternalComponentState = {
+            preloaded,
+            forward,
+            items,
+            cache,
+            queue,
+            back
         };
 
-        return { internal_state };
+        return { state };
+    },
+
+    mounted() {
+        this.$nextTick(
+            () => {
+
+            const data = this.data as ComponentData;
+
+            if (data?.items && data.items.length >= 1)
+                this.load_category_icons(data.items);
+
+            if (this.componentSettingsStore.is_critical_only)
+                this.populate_category_states();
+            }
+        );
     },
 
     methods: {
+
+        /**
+         * Critical only method. Populates all subcategory highlight states for critical
+         * only mode.
+         */
+        populate_category_states() {
+
+            // State keys in order of appearance
+            const keys: string[] = [];
+
+            // Is true if we have found previously set state
+            let prexisting: string | undefined = undefined;
+
+            for (const item of this.state.items) {
+
+                if (!item.critical || keys.includes(item.id)) continue;
+
+                const target: CategoryItemState | undefined = this.componentSettingsStore.critical_only_categories_state[item.id];
+
+                if (target != undefined && target == CategoryItemState.ACTIVE)
+                    prexisting = item.id;
+
+                else
+                    store.dispatch('componentSettingsStore/UpdateCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
+
+                keys.push(item.id);
+            }
+
+            if (prexisting != undefined) {
+
+                // Index of previously set state item
+                const target = keys.indexOf(prexisting);
+
+                if (target == 0)
+                    this.state.back = true;
+
+                if (target == keys.length)
+                    this.state.forward = true;
+            }
+
+            else {
+                this.state.back = true;
+
+                store.dispatch('componentSettingsStore/UpdateCategoriesState', { target: keys[0], state: CategoryItemState.ACTIVE });
+            }
+        },
+
+        /**
+         * Cticial only method. Returns highlight state for subcategory with matching
+         * `key` parameter.
+         */
+        get_category_state(key: string) { return this.componentSettingsStore.critical_only_categories_state[key]; },
+
+        /**
+         * Critical only method. Returns the highlight state of the next available
+         * subcategory item.
+         */
+        get_next_category_state(key: string): string | undefined {
+
+            const target_keys       = Object.keys(this.componentSettingsStore.critical_only_categories_state);
+            const target_item_index = target_keys.indexOf(key);
+
+            if (target_item_index != -1 && !(target_item_index >= target_keys.length))
+                return this.componentSettingsStore.critical_only_categories_state[target_keys[target_item_index + 1]];
+
+            return undefined;
+        },
+
+        /**
+         * Returns category items, either all of them or only critical ones.
+         */
+        get_category_items(items: CategoryItem[]) {
+
+            // Compare cache size to determine wether we need to populate it or not
+            if (items.length != this.state.items.length)
+
+                items.forEach(
+                    el => {
+
+                        if (!this.state.items.includes(el))
+                            this.state.items.push(el);
+                    }
+                );
+
+            if (this.componentSettingsStore.is_critical_only) return items.filter(el => el.critical);
+                return items;
+        },
+
+        /**
+         * Critical only method. Handles subcategory click & handles their highlight
+         * state.
+         */
+        handle_category_click(item: CategoryItem, standalone = true) {
+
+            if (this.componentSettingsStore.is_critical_only) {
+
+                const clicked_category_key   = Object.keys(this.componentSettingsStore.critical_only_categories_state).find(el => el ==item.id);
+                const clicked_category_state = this.componentSettingsStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
+
+                const active_category_key   = Object.keys(this.componentSettingsStore.critical_only_categories_state).find(el => this.componentSettingsStore.critical_only_categories_state[el] == CategoryItemState.ACTIVE);
+                const active_category_state = this.componentSettingsStore.critical_only_categories_state[active_category_key as string] as CategoryItemState | undefined;
+
+                if (clicked_category_key == active_category_key || !clicked_category_state || !active_category_state) return;
+
+                if (clicked_category_state == CategoryItemState.INITIAL) {
+                    const clicked_index = Object.keys(this.componentSettingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const active_index = Object.keys(this.componentSettingsStore.critical_only_categories_state).indexOf(active_category_key as string);
+
+                    if (Math.abs(clicked_index - active_index) >= 2 || Math.abs(active_index - clicked_index) >= 2) return;
+                }
+
+                if (standalone) {
+                    const clicked_index = Object.keys(this.componentSettingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
+                    const categories_length = Object.keys(this.componentSettingsStore.critical_only_categories_state).length - 1;
+
+                    if (clicked_index >= categories_length) {
+                        this.state.forward = true;
+                        this.state.back = false;
+                    }
+
+                    else if (clicked_index <= 0) {
+                        this.state.forward = false;
+                        this.state.back = true;
+                    }
+
+                    else {
+                        this.state.forward = false;
+                        this.state.back = false;
+                    }
+                }
+
+                store.dispatch('componentSettingsStore/UpdateCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
+                store.dispatch('componentSettingsStore/UpdateCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
+            }
+
+            this.$emit('category-clicked', item);
+        },
+
+        /**
+         * Critical only method. Navigates to previous available subcategory, along
+         * with setting navigation button enable/ disable states.
+         */
+        handle_navigation_previous() {
+
+            // Filtered items to include only critical ones
+            const filtered_items = this.state.items.filter(el => el.critical);
+
+            if (filtered_items) for (const item of filtered_items) if (this.componentSettingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+
+                // Previous (next?) item accessed by index
+                const index = filtered_items.indexOf(item) - 1;
+
+                this.handle_category_click(filtered_items[index], false);
+
+                if (index <= 0)
+                    this.state.back = true;
+
+                break;
+            }
+
+            this.state.forward = false;
+        },
+
+        /**
+         * Critical only method. Navigates to mext available subcategory, along with
+         * setting navigation button enable/ disable states.
+         */
+        handle_navigation_next() {
+
+            const filtered_items = this.state.items.filter(el => el.critical);
+
+            if (filtered_items) for (const item of filtered_items) if (this.componentSettingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
+
+                const index = filtered_items.indexOf(item) + 1;
+
+                this.handle_category_click(filtered_items[index], false);
+
+                if (index >= filtered_items.length - 1)
+                    this.state.forward = true;
+
+                break;
+            }
+
+            this.state.back = false;
+        },
+
+        /**
+         * Settings only method. Search algorithm.
+         */
         handle_search_input(input: Event) {
 
             const target = input.target as HTMLInputElement;
 
             if (target.value.length >= 1) {
-                this.internal_state.is_searching = true;
+
+                store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', true);
 
                 const value = target.value.toLowerCase().trim();
 
-                for (const item of this.internal_state.all_category_items) {
-                    if (!item.name.toLowerCase().trim().includes(value)) {
+                this.state.search = value;
 
-                        if (item.keywords.length >= 1) {
-                            let has_matching_keyword = false;
+                for (const item of this.data.items) {
 
-                            for (const keyword of item.keywords) {
+                    const parent: CategoryParent = item[0];
+                    const items: CategoryItem[]  = item[1];
 
-                                if (keyword.toLowerCase().trim().includes(value)) {
-                                    has_matching_keyword = true;
+                    let has_matching_keyword = false;
 
-                                    break;
-                                }
+                    if (parent.name.toLowerCase().trim().includes(value))
+                        has_matching_keyword = true;
+
+                    else {
+
+                        has_matching_keyword = false;
+
+                        for (const item of items) {
+
+                            if (item.name.toLowerCase().trim().includes(value)) {
+
+                                has_matching_keyword = true;
+
+                                break;
                             }
 
-                            if (!has_matching_keyword)
-                                item.filtered = true;
+                            for (const keyword of item.keywords) if (keyword.toLocaleLowerCase().trim().includes(value)) {
+
+                                has_matching_keyword = true;
+
+                                break;
+                            }
                         }
-
-                        else
-                            item.filtered = true;
-
                     }
 
-                    else
-                        item.filtered = false;
+                    parent.filtered = !has_matching_keyword;
                 }
             }
 
             else {
-                for (const item of this.internal_state.all_category_items) item.filtered = false;
 
-                this.internal_state.is_searching = false;
+                store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', false);
+
+                for (const [parent, items] of this.data.items)
+                    parent.filtered = false;
+
+                this.state.search = undefined;
             }
-    },
-
-        get_category_items(items: CategoryItem[]) {
-
-            // Compare cache size to determine wether we need to populate it or not
-            if (items.length != this.internal_state.all_category_items.length) items.forEach(
-                (el) => { if (!this.internal_state.all_category_items.includes(el)) this.internal_state.all_category_items.push(el); }
-            );
-
-            if (this.state.critical_only) return items.filter(el => el.critical);
-            return items;
         },
 
-        async load_category_icons(items: [string, CategoryItem[]][]) {
+        /**
+         * Settings only method. Clears search content & disables search mode.
+         */
+        clear_search_content() {
 
-            for (const [parent, categories] of items) {
+            // Search box element reference
+            const element = this.$refs.search as HTMLInputElement;
+
+            if (!element) return;
+
+            for (const [parent, items] of this.data.items)
+                parent.filtered = false;
+
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_SEARCHING_STATE', false));
+
+            element.value = '';
+        },
+
+        /**
+         * Loads mock icons for all categories and subcategories.
+         * @note This will get replaced later by glob svg loader.
+         */
+        async load_category_icons(items: CategoryTuple[]) {
+
+            for await (const [parent, categories] of items) {
 
                 if (config.dev_mode) console.log(`Loading icons for category: ${parent}`);
+
+                const parent_image_url = new URL('/img/placeholder.png', import.meta.url);
+                const parent_image_el  = new Image();
+
+                parent_image_el.crossOrigin = 'Anonymous';
+                parent_image_el.src         = parent_image_url.href;
+
+                if (parent_image_el && !this.state.cache.find(el => el == parent.id)) {
+
+                    await new Promise<void>(
+                        (Res: () => void, Rej: () => void) => {
+
+                            // Cache image so we don't set it again
+                            this.state.cache.push(parent.id);
+
+                            // Loaded image stuff
+                            parent_image_el.onload = () => {
+
+                                if (parent_image_el.complete || parent_image_el.complete === undefined) {
+                                    this.state.queue.Enqueue({ id: parent.id, el: parent_image_el });
+
+                                    return Res();
+                                }
+                            };
+
+                            // Failure stuff
+                            parent_image_el.onerror = err => {
+
+                                this.state.cache.splice(this.state.cache.indexOf(parent.id, 1));
+
+                                if (config.dev_mode) console.error(`Failed loading category icon.\n\n${err}`);
+
+                                return Rej();
+                            };
+                        }
+                    );
+                }
 
                 for await (const category of categories) {
 
                     // Skip cached image
-                    if (this.internal_state.icon_cache.find((el) => el == category.id)) continue;
+                    if (this.state.cache.find(el => el == category.id)) continue;
 
                     const target_element = document.getElementById(category.id) as HTMLImageElement;
 
@@ -255,20 +543,20 @@ export default defineComponent({
                         (Res: () => void, Rej: () => void) => {
 
                             // Cache image so we don't set it again
-                            this.internal_state.icon_cache.push(category.id);
+                            this.state.cache.push(category.id);
 
                             // Loaded image stuff
                             image_el.onload = () => {
                                 if (image_el.complete || image_el.complete === undefined) {
-                                    this.internal_state.image_queue.Enqueue({ id: category.id, el: image_el });
+                                    this.state.queue.Enqueue({ id: category.id, el: image_el });
 
                                     return Res();
                                 }
                             };
 
                             // Failure stuff
-                            image_el.onerror = (err) => {
-                                this.internal_state.icon_cache.splice(this.internal_state.icon_cache.indexOf(category.id, 1));
+                            image_el.onerror = err => {
+                                this.state.cache.splice(this.state.cache.indexOf(category.id, 1));
 
                                 if (config.dev_mode) console.error(`Failed loading category icon.\n\n${err}`);
 
@@ -280,9 +568,9 @@ export default defineComponent({
             }
 
             // Handle queued items and signal preload completion
-            if (this.internal_state.image_queue.length >= 1) while (this.internal_state.image_queue.length >= 0) {
+            if (this.state.queue.length >= 1) while (this.state.queue.length >= 0) {
 
-                const target_icon = this.internal_state.image_queue.Dequeue();
+                const target_icon = this.state.queue.Dequeue();
 
                 if (!target_icon) break;
 
@@ -294,174 +582,70 @@ export default defineComponent({
             }
 
             // Emit state change
-            if (!this.internal_state.preloaded_icons) {
-                this.internal_state.preloaded_icons = true;
+            if (!this.state.preloaded) {
+                this.state.preloaded = true;
                 this.$emit('ready');
             }
         },
 
-        populate_category_states() {
-            let first_iteration = true;
+        /**
+         * Settings only method. Navigates between displayed pages. If search mode
+         * is `true`, we also emit current search data.
+         */
+        handle_parent_click(category: CategoryParent) {
 
-            for (const item of this.internal_state.all_category_items) {
+            // Target category that we have clicked
+            const target = this.data.items.find((el: CategoryTuple) => el[0].id == category.id);
 
-                if (!item.critical) continue;
+            if (target && this.componentSettingsStore.is_searching) {
 
-                const target_item = this.settingsStore.critical_only_categories_state[item.id] as CategoryItemState;
+                this.$emit('parent-clicked', { search: this.state.search, category });
 
-                if (!target_item) {
-                    if (first_iteration) {
-                        store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.ACTIVE });
-
-                        first_iteration = false;
-
-                        continue;
-                    }
-
-                    store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: item.id, state: CategoryItemState.INITIAL });
-
-                    continue;
-                }
-            }
-        },
-
-        handle_category_click(item: CategoryItem) {
-
-            if (this.state.critical_only) {
-
-                const clicked_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => el ==item.id);
-                const clicked_category_state = this.settingsStore.critical_only_categories_state[clicked_category_key as string] as CategoryItemState | undefined;
-
-                const active_category_key   = Object.keys(this.settingsStore.critical_only_categories_state).find((el) => this.settingsStore.critical_only_categories_state[el] == CategoryItemState.ACTIVE);
-                const active_category_state = this.settingsStore.critical_only_categories_state[active_category_key as string] as CategoryItemState | undefined;
-
-                if (clicked_category_key == active_category_key || !clicked_category_state || !active_category_state) return;
-
-                if (clicked_category_state == CategoryItemState.INITIAL) {
-                    const clicked_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(clicked_category_key as string);
-                    const active_index = Object.keys(this.settingsStore.critical_only_categories_state).indexOf(active_category_key as string);
-
-                    if (Math.abs(clicked_index - active_index) >= 2 || Math.abs(active_index - clicked_index) >= 2) return;
-                }
-
-                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: clicked_category_key, state: CategoryItemState.ACTIVE });
-                store.dispatch('settingsStore/UpdateCriticalCategoriesState', { target: active_category_key, state: CategoryItemState.VISITED });
+                this.$nextTick(() => this.clear_search_content());
             }
 
-            this.$emit('clicked', item);
+            else if (target)
+                this.$emit('parent-clicked', { category });
         },
 
-        get_next_category_state(key: string): string | undefined {
-            const target_keys = Object.keys(this.settingsStore.critical_only_categories_state);
-            const target_item_index = target_keys.indexOf(key);
-
-            if (target_item_index != -1 && !(target_item_index >= target_keys.length)) {
-                return this.settingsStore.critical_only_categories_state[target_keys[target_item_index + 1]];
-            }
-
-            return undefined;
-        },
-
-        get_category_state(key: string) { return this.settingsStore.critical_only_categories_state[key]; },
-
-        clear_search_content() {
-
-            const element = this.$refs.search as HTMLInputElement;
-
-            for (const item of this.internal_state.all_category_items) item.filtered = false;
-
-            this.internal_state.is_searching = false;
-            element.value = '';
-
-        },
-
-        handle_navigation_previous() {
-
-            const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
-
-            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
-
-                const index = filtered_items.indexOf(item) - 1;
-
-                this.handle_category_click(filtered_items[index]);
-
-                if (index <= 0)
-                    this.internal_state.disable_back = true;
-
-                break;
-            }
-
-            this.internal_state.disable_forward = false;
-        },
-
-        handle_navigation_next() {
-
-            const filtered_items = this.internal_state.all_category_items.filter((el) => el.critical);
-
-            for (const item of filtered_items) if (this.settingsStore.critical_only_categories_state[item.id] == CategoryItemState.ACTIVE) {
-
-                const index = filtered_items.indexOf(item) + 1;
-
-                this.handle_category_click(filtered_items[index]);
-
-                if (index >= filtered_items.length - 1)
-                    this.internal_state.disable_forward = true;
-
-                break;
-            }
-
-            this.internal_state.disable_back = false;
-        },
-
+        /**
+         * Closes the settings component, clearing search content & resetting critical
+         * only highlight state.
+         */
         close_settings_component() {
 
-            if (Object.keys(this.internal_state.all_category_items).length >= 1)
-                store.commit('settingsStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
+            if (Object.keys(this.state.items).length >= 1)
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY_CATEGORIES_STATE', { });
 
-            this.$emit('close', false);
+            this.clear_search_content();
+
+            store.commit('componentSettingsStore/UPDATE_RENDER_STATE', false);
         }
     },
-
-    mounted() { this.$nextTick(() => { if (this.data?.items && this.data.items.length >= 1) this.load_category_icons(this.data.items); if (this.state.critical_only) this.populate_category_states(); }); },
 
     watch: {
 
         /**
          * Loads all category icons ahead of time, emitting the ready event once we have loaded all of them.
          */
-        'data.items': {
-            handler(state: [[string, CategoryItem[]]]) { this.load_category_icons(state); },
-            immediate: true,
-            deep: true
-        },
+        'data.items'(state: CategoryTuple[]) { this.load_category_icons(state); },
 
         /**
          * Loads all critical-only progress state.
          */
-        'state.critical_only': {
-            handler(state: boolean) { if (state) this.populate_category_states(); },
-            immediate: true,
-            deep: true
-        }
+        'componentSettingsStore.is_critical_only'(state: boolean) { if (state) this.populate_category_states(); }
     },
 
-    props: {
-        state: {
-            required: true,
-            type: Object,
-            default: {},
-            validator: (value: any) => (value != undefined && typeof value == 'object')
-        },
+    computed: mapState(['settingsStore', 'componentSettingsStore']),
 
+    emits: ['ready', 'parent-clicked', 'category-clicked', 'close'],
+
+    props: {
         data: {
             required: true,
             type: Object,
-            default: {},
+            default: { },
             validator: (value: any) => (value != undefined && typeof value == 'object')
         }
-    },
-
-    computed: mapState(['settingsStore']),
-
-    emits: ['ready', 'clicked', 'close']
+    }
 });

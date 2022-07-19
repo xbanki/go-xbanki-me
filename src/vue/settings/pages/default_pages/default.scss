@@ -1,0 +1,77 @@
+@use "sass:math";
+
+/**
+ * Overall component padding.
+ */
+$component-padding: 32px;
+
+/**
+ * Label size.
+ */
+$label-size: 14px;
+
+/**
+ * Text element spacings.
+ */
+$component-spacing: 8px;
+
+@mixin label {
+  line-height: $label-size;
+  font-size: $label-size;
+  color: var(--accent);
+  height: $label-size;
+  text-align: center;
+  display: block;
+}
+
+/**
+ * The 'default' component facilitates small hints that are scrolled every 4 seconds as
+ * A placeholder for the user not having any category active.
+ */
+main.component-default {
+  padding: $component-padding - 4px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  /**
+   * Hint display wrapper.
+   */
+  section.default-content {
+    justify-content: center;
+    flex-direction: column;
+    height: fit-content;
+    display: flex;
+    width: 80%;
+    flex: 1;
+
+    /**
+     * Static component label.
+     */
+    span.content-title {
+      @include label;
+
+      margin-bottom: $component-spacing;
+    }
+
+    /**
+     * Actual hint display.
+     */
+    h1.content-display {
+      margin-bottom: $component-spacing;
+      text-align: center;
+      color: darkgray;
+      margin-top: unset;
+      font-size: 20px;
+      height: 70px;
+    }
+  }
+
+  /**
+   * Footer label.
+   */
+  span.default-label { @include label }
+}

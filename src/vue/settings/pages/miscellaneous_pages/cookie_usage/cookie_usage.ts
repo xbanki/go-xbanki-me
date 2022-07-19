@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
+import { mapState }        from 'vuex';
 import { DateTime }        from 'luxon';
 import { defineComponent } from 'vue';
 
@@ -28,12 +27,6 @@ interface ComponentState {
      * @type {string}
      */
     version: string;
-
-    /**
-     * Disables accepting cookie usage button.
-     * @type {boolean}
-     */
-    disable: boolean;
 }
 
 export default defineComponent({
@@ -46,35 +39,46 @@ export default defineComponent({
 
         const content: string = article.html;
 
-        // @ts-ignore
-        const disable: boolean = this.critical_only;
-
         // Assembled state object
 
         const state: ComponentState = {
             revision,
             version,
-            content,
-            disable
+            content
         };
 
         return { state };
     },
 
     methods: {
+
+        /**
+         * Critical only method. Enables data persistence & closes the settings panel,
+         * which is effectively consent from the user.
+         */
         accept_cookie_usage() {
-
+            store.commit('componentSettingsStore/UPDATE_RENDER_STATE', false);
             store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
-
-            this.$emit('close');
         },
 
+        /**
+         * Returns a formatted date sting of the last revision.
+         */
         get_revision_timestamp: (date: DateTime) => `Last revision: ${ date.toLocaleString(DateTime.DATETIME_FULL) }`,
 
+        /**
+         * Returns a formatted version string.
+         */
         get_current_version: (version: string) => `Version: ${version}`
     },
 
-    emits: ['close'],
+    computed: mapState(['componentSettingsStore']),
 
-    inject: ['critical_only']
+    props: {
+        standalone: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    }
 });

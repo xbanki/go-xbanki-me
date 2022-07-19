@@ -38,12 +38,17 @@ interface ComponentState {
 
 export default defineComponent({
 
+    components: {
+        timeConventionPageComponent,
+        dateDisplayPageComponent,
+        timeDisplayPageComponent
+    },
+
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
         // State constants
 
-        // @ts-ignore
         const build = LAST_BUILD_TIME;
 
         const time = DateTime.fromRFC2822(build).toFormat(typed_store.state.settingsStore.time_display_format);
@@ -61,47 +66,82 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => this.handle_category_click()); },
+    mounted() { this.$nextTick(() => this.handle_category_click(this.componentSettingsStore.last_clicked_category)); },
 
     methods: {
-        handle_category_click() { this; },
 
-        handle_critical_category(name :string): boolean {
+        /**
+         * In search mode, scrolls to the matching component on the page.
+         */
+        handle_category_click(name?: string) {
 
-            // @ts-ignore
-            const critical: boolean = this.critical_only;
+            // All categories that can be found on this page
+            const categories = ['date-display-category', 'time-convention-category', 'time-display-category'];
 
-            if (critical)
+            if (name && this.componentSettingsStore.is_searching &&categories.includes(name)) {
 
-                // @ts-ignore
-                return this.critical_categories.includes(name);
+                // Parent wrapper that is actually scrolled
+                const scroll = document.querySelector('main.component-pages') as HTMLElement;
 
-            else
-                return true;
+                // Target element parent which we use to calculate above scroll amount
+                const parent = this.$refs.parent as HTMLElement;
+
+                // Target category element, which is used to figure out scroll target
+                const target = this.$refs[name] as HTMLElement;
+
+                let overhead = 0;
+
+                if (
+                    scroll != (null || undefined) &&
+                    parent != (null || undefined) &&
+                    target != (null || undefined)
+                )
+
+                for (let i = 0; i < parent.children.length; i++) {
+
+                    const item = parent.children.item(i) as HTMLElement;
+
+                    if (item == target)
+                        break;
+
+                    overhead += item.clientHeight;
+                }
+
+                else return;
+
+                // Reset scroll position
+                if (scroll.scrollTop != 0)
+                    scroll.scrollTop = 0;
+
+                const scroll_animation = anime({
+                    easing: 'easeInOutQuart',
+                    scrollTop: overhead,
+                    autoplay: false,
+                    targets: scroll,
+                    duration: 360
+                });
+
+                const highlight_animation = anime({
+                    autoplay: false,
+                    duration: 960
+                });
+
+                highlight_animation.complete = () => target.classList.remove('scroll-highlighted');
+                highlight_animation.begin    = () => target.classList.add('scroll-highlighted');
+                scroll_animation.complete    = () => highlight_animation.play();
+
+                this.$nextTick(() => scroll_animation.play());
+            }
         }
     },
 
-    components: {
-        timeConventionPageComponent,
-        dateDisplayPageComponent,
-        timeDisplayPageComponent
-    },
-
     watch: {
-        'settingsStore.time_display_format': {
-            handler(state) { this.state.time = DateTime.fromRFC2822(this.state.build).toFormat(state); },
-            deep: true
-        },
+        'settingsStore.time_display_format'(state) { this.state.time = DateTime.fromRFC2822(this.state.build).toFormat(state); },
 
-        'settingsStore.date_display_format': {
-            handler(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
-            deep: true
-        },
+        'settingsStore.date_display_format'(state) { this.state.date = DateTime.fromRFC2822(this.state.build).toFormat(state); },
 
-        last_clicked_category() { this.handle_category_click(); }
+        'componentSettingsStore.last_clicked_category'(state?: string) { this.handle_category_click(state); }
     },
 
-    inject: ['critical_only', 'critical_categories', 'last_clicked_category'],
-
-    computed: mapState(['settingsStore'])
+    computed: mapState(['settingsStore', 'componentSettingsStore'])
 });

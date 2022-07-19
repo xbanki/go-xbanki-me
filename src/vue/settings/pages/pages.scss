@@ -7,7 +7,7 @@ main.component-pages {
   box-sizing: border-box;
   flex-direction: column;
   background: var(--bg);
-  overflow: scroll;
+  overflow-x: hidden;
   display: flex;
   padding: 4px;
   height: 100%;

@@ -245,12 +245,6 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
     return function(store: Store<State>) {
 
         /**
-         * Flag to stop exceeding maximum callstack errors.
-         * @type {boolean}
-         */
-        let discriminated_successfully = false;
-
-        /**
          * Detects wether or not we are allowed to save state to disk.
          * @return {boolean}
          */
@@ -288,18 +282,30 @@ export default function<State>(options?: PersistenceOptions): (store: Store<Stat
             if (metadata.known_namespaces.length <= 0 && config.dev_mode) console.warn('Global object persistence is not currently supported.');
 
             // Keep on top of data persistence permission
-            if (!discriminated_successfully && discriminate_persistence()) {
-                discriminated_successfully = true;
-
+            if (!allowed_to_persist(store) && discriminate_persistence())
                 store.commit('eventBusStore/ENABLE_DATA_PERSISTENCE');
-            }
 
-            if (allowed_to_persist(store)) while (task_queue.length > 0) {
-                const task = task_queue.Dequeue();
+            if (allowed_to_persist(store)) {
 
-                if (!task) break;
+                // Re-set metadata if it doesn't exist
+                if (!discriminate_persistence() && mutation.type == 'eventBusStore/ENABLE_DATA_PERSISTENCE') {
+                    const last_used_version = application_data.version;
+                    const application_name = storage_options.application_name;
+                    const known_namespaces: string[] = [...storage_options.namespaces ?? []];
 
-                task();
+                    metadata = { last_used_version, known_namespaces, application_name  };
+
+                    task_queue.Enqueue(() => localStorage.setItem(`metadata-${storage_options.application_name}`, JSON.stringify(metadata)));
+                }
+
+                // Dequeue stuff
+                while (task_queue.length > 0) {
+                    const task = task_queue.Dequeue();
+
+                    if (!task) break;
+
+                    task();
+                }
             }
         };
 

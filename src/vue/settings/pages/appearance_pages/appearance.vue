@@ -11,15 +11,15 @@
         </section>
 
         <!-- Appearance pages content wrapper //-->
-        <section class="appearance-content">
+        <section class="appearance-content" ref="parent">
 
             <!-- Application theme option section //-->
-            <div class="content-item" v-if="handle_critical_category('theme-category')" ref="theme-category">
+            <div class="content-item" ref="theme-category">
                 <theme-page-component/>
             </div>
 
             <!-- Application background fit style //-->
-            <div class="content-item" v-if="handle_critical_category('background-fit-category')" ref="background-fit-category">
+            <div class="content-item" ref="background-fit-category">
                 <background-fit-page-component/>
             </div>
         </section>

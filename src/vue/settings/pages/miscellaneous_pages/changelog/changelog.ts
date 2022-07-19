@@ -1,8 +1,9 @@
 import { DateTime }        from 'luxon';
 import { defineComponent } from 'vue';
 
-import JanTenth from './articles/jan-10_0-2-0.md';
-import JanFifth from './articles/jan-5_0-1-0.md';
+import JulyNineteenth from './articles/july-19_0-3-0.md';
+import JanTenth       from './articles/jan-10_0-2-0.md';
+import JanFifth       from './articles/jan-5_0-1-0.md';
 
 /**
  * Single changelog Markdown article.
@@ -57,9 +58,10 @@ const GIT_COMMIT_FORMAT = 'EEE MMM d HH:mm:ss yyyy ZZZ';
 export default defineComponent({
     data() {
 
-        const latest: ChangelogArticle = { version: JanTenth.metadata.version, date: DateTime.fromFormat(JanTenth.metadata.date, GIT_COMMIT_FORMAT), html: JanTenth.html };
+        const latest: ChangelogArticle = { version: JulyNineteenth.metadata.version, date: DateTime.fromFormat(JulyNineteenth.metadata.date, GIT_COMMIT_FORMAT), html: JulyNineteenth.html };
 
         const legacy: ChangelogArticle[] = [
+            { version: JanTenth.metadata.version, date: DateTime.fromFormat(JanTenth.metadata.date, GIT_COMMIT_FORMAT), html: JanTenth.html, active: false },
             { version: JanFifth.metadata.version, date: DateTime.fromFormat(JanFifth.metadata.date, GIT_COMMIT_FORMAT), html: JanFifth.html, active: false }
         ];
 

@@ -1,36 +1,26 @@
-import { mapState }                  from 'vuex';
-import { defineComponent, computed } from 'vue';
+import { mapState }        from 'vuex';
+import { defineComponent } from 'vue';
 
-import { ComponentState as CategoriesState, ComponentData as CategoriesData, CategoryItem } from '@/vue/settings/categories/categories';
-import { ComponentState as PagesState }                                                     from '@/vue/settings/pages/pages';
-import { verify_localstorage_availlability }                                                from '@/lib/persistence';
+import { ComponentData as CategoriesData, CategoryItem, CategoryParent } from '@/vue/settings/categories/categories';
+import { ComponentState as PagesState }                                  from '@/vue/settings/pages/pages';
+import { verify_localstorage_availlability }                             from '@/lib/persistence';
 
 import categoriesComponent from '@/vue/settings/categories/categories.vue';
 import pagesComponent      from '@/vue/settings/pages/pages.vue';
 import modalComponent      from '@/vue/modal/modal.vue';
+import store               from '@/lib/store';
 
 import { version } from '~/package.json';
 
 /**
  * Helper type to reduce code duplication.
  */
-type CategoryTuple = [string, CategoryItem[]];
+export type CategoryTuple = [CategoryParent, CategoryItem[]];
 
 /**
  * Comonent internal state.
  */
 interface ComponentState {
-
-    /**
-     * Changes display state between initialization & full settings.
-     * @enum {STATE_INIT | STATE_SETTINGS}
-     */
-    component_display_state: 'STATE_INIT' | 'STATE_SETTINGS';
-
-    /**
-     * Categories sub-component state.
-     */
-    categories_state: CategoriesState;
 
     /**
      * Categories sub-component data.
@@ -39,161 +29,12 @@ interface ComponentState {
 
     /**
      * Pages sub-component state.
+     * @type {PagesState}
      */
     pages_state: PagesState;
-
-    /**
-     * Displays or hides the settings component.
-     */
-    render_state: boolean;
-
-    /**
-     * Last clicked category item.
-     */
-    last_clicked_category?: string;
-
-    /**
-     * Array containing critical only mode IDs.
-     */
-    critical_categories: string[];
 }
 
 export default defineComponent({
-
-    data() {
-
-        const categories_state: CategoriesState = {
-            critical_only: false
-        };
-
-        const appearance_category: CategoryTuple = [
-            'Appearance',
-            [
-                {
-                    name: 'Theme',
-                    filtered: false,
-                    critical: false,
-                    id: 'theme-category',
-                    keywords: [
-                        'automatic',
-                        'darkmode',
-                        'lightmode'
-                    ]
-                },
-                {
-                    name: 'Background Fit',
-                    filtered: false,
-                    critical: true,
-                    id: 'background-fit-category',
-                    keywords: [
-                        'bg',
-                        'critical',
-                        'fill',
-                        'fit',
-                        'stretch',
-                        'image'
-                    ]
-                }
-            ]
-        ];
-
-        const date_time_category: CategoryTuple = [
-            'Date & Time',
-            [
-                {
-                    name: 'Time Convention',
-                    filtered: false,
-                    critical: true,
-                    id: 'time-convention-category',
-                    keywords: [
-                        'clock',
-                        'critical'
-                    ]
-                },
-                {
-                    name: 'Time Display',
-                    filtered: false,
-                    critical: true,
-                    id: 'time-display-category',
-                    keywords: [
-                        'clock format',
-                        'critical',
-                        'time format'
-                    ]
-                },
-                {
-                    name: 'Date Display',
-                    filtered: false,
-                    critical: true,
-                    id: 'date-display-category',
-                    keywords: [
-                        'day',
-                        'day format',
-                        'critical'
-                    ]
-                }
-            ]
-        ];
-
-        const miscellaneous_category: CategoryTuple = [
-            'Miscellaneous',
-            [
-                {
-                    name: 'Changelog',
-                    filtered: false,
-                    critical: false,
-                    id: 'changelog-category',
-                    keywords: [
-                        'changes',
-                        'updates'
-                    ]
-                },
-                {
-                    name: 'Privacy & Safety',
-                    filtered: false,
-                    critical: true,
-                    id: 'privacy-and-safety-category',
-                    keywords: [
-                        'eula',
-                        'licenses'
-                    ]
-                },
-                {
-                    name: 'Delete Data',
-                    filtered: false,
-                    critical: false,
-                    id: 'delete-data-category',
-                    keywords: [
-                        'remove',
-                        'rm',
-                        'save'
-                    ]
-                }
-            ]
-        ];
-
-        const items: CategoryTuple[] = [appearance_category, date_time_category, miscellaneous_category];
-
-        const categories_data: CategoriesData = { version,  items };
-
-        const pages_state: PagesState = { active_category: undefined };
-
-        const critical_categories: string[] = [];
-
-        // Populate IDs
-        [...appearance_category[1], ...date_time_category[1], ...miscellaneous_category[1]].forEach(el => el.critical ? critical_categories.push(el.id) : false);
-
-        const state: ComponentState = {
-            component_display_state: 'STATE_INIT',
-            render_state: false,
-            critical_categories,
-            categories_state,
-            categories_data,
-            pages_state
-        };
-
-        return { state };
-    },
 
     components: {
         categoriesComponent,
@@ -201,63 +42,281 @@ export default defineComponent({
         pagesComponent
     },
 
-    mounted() { this.$nextTick(() => this.discriminate_component_state()); },
+    data() {
+
+        // Appearance categories
+
+        const appearance_parent: CategoryParent = {
+            filtered: false,
+            id: 'page-appearance',
+            name: 'Appearance'
+        };
+
+        const appearance_category_theme: CategoryItem = {
+            name: 'Theme',
+            critical: false,
+            id: 'theme-category',
+            keywords: [
+                'automatic',
+                'darkmode',
+                'lightmode'
+            ]
+        };
+
+        const appearance_category_background_fit: CategoryItem = {
+            name: 'Background Fit',
+            critical: true,
+            id: 'background-fit-category',
+            keywords: [
+                'bg',
+                'critical',
+                'fill',
+                'fit',
+                'stretch',
+                'image'
+            ]
+        };
+
+        // Date & Time categories
+
+        const date_time_parent: CategoryParent = {
+            filtered: false,
+            id: 'page-date-and-time',
+            name: 'Date & Time'
+        };
+
+        const date_time_category_time_convention: CategoryItem = {
+            name: 'Time Convention',
+            critical: true,
+            id: 'time-convention-category',
+            keywords: [
+                'clock',
+                'critical'
+            ]
+        };
+
+        const date_time_category_time_display: CategoryItem = {
+            name: 'Time Display',
+            critical: true,
+            id: 'time-display-category',
+            keywords: [
+                'clock format',
+                'critical',
+                'time format'
+            ]
+        };
+
+        const date_time_category_date_display: CategoryItem = {
+            name: 'Date Display',
+            critical: true,
+            id: 'date-display-category',
+            keywords: [
+                'day',
+                'day format',
+                'date format',
+                'critical'
+            ]
+        };
+
+        // Miscellaneous categories
+
+        const miscellaneous_parent: CategoryParent = {
+            filtered: false,
+            id: 'page-miscellaneous',
+            name: 'Miscellaneous'
+        };
+
+        const miscellaneous_category_changelog: CategoryItem = {
+            name: 'Changelog',
+            critical: false,
+            id: 'changelog-category',
+            keywords: [
+                'changes'
+            ]
+        };
+
+        const miscellaneous_category_privacy_safety: CategoryItem = {
+            name: 'Privacy & Safety',
+            critical: true,
+            id: 'privacy-and-safety-category',
+            keywords: [
+                'eula',
+                'licenses'
+            ]
+        };
+
+        const miscellaneous_category_delete_data: CategoryItem = {
+            name: 'Delete Data',
+            critical: false,
+            id: 'delete-data-category',
+            keywords: [
+                'remove',
+                'rm',
+                'save'
+            ]
+        };
+
+        // Final categories constants
+
+        const appearance_category: CategoryTuple = [appearance_parent, [appearance_category_theme, appearance_category_background_fit]];
+
+        const date_time_category: CategoryTuple = [date_time_parent, [date_time_category_time_convention, date_time_category_time_display, date_time_category_date_display]];
+
+        const miscellaneous_category: CategoryTuple = [miscellaneous_parent, [miscellaneous_category_changelog, miscellaneous_category_privacy_safety, miscellaneous_category_delete_data]];
+
+        const items: CategoryTuple[] = [appearance_category, date_time_category, miscellaneous_category];
+
+        // Final state & data objects
+
+        const categories_data: CategoriesData = { version,  items };
+
+        const pages_state: PagesState = { categories: items };
+
+        const state: ComponentState = {
+            categories_data,
+            pages_state
+        };
+
+        return { state };
+    },
+
+    mounted() {
+        this.$nextTick(
+            () => {
+
+                if (!this.discriminate_component_state())
+                    store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true);
+            }
+        );
+    },
 
     methods: {
-        discriminate_component_state() {
+
+        /**
+         * Discriminates wether or not this app has been launched before, which
+         * we use for launching the settings component automatically.
+         */
+        discriminate_component_state(): boolean {
+
             const localstorage_availlable = verify_localstorage_availlability();
 
             if (localstorage_availlable && !localStorage.getItem(`metadata-${this.__metaData.application_name}`)) {
-                this.state.component_display_state = 'STATE_INIT';
-                this.state.categories_state.critical_only = true;
-                this.state.render_state = true;
+
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY', true);
+
+                return false;
             }
 
             else {
-                this.state.component_display_state = 'STATE_SETTINGS';
-                this.state.categories_state.critical_only = false;
+
+                store.commit('componentSettingsStore/UPDATE_CRITICAL_ONLY', false);
+
+                return true;
             }
         },
 
+        /**
+         * Handles subcategory click, which changes the active page state & updates
+         * the last clicked category global.
+         */
         handle_category_clicked(source: CategoryItem) {
-            let target_match_name: string | undefined = undefined;
 
-            for (const [name, contents] of this.state.categories_data.items) {
+            for (const [parent, contents] of this.state.categories_data.items) {
 
                 // Search through parent category children for a match
-                const target_search = contents.find((el) => el.id == source.id);
+                const target_search = contents.includes(source);
 
-                if (target_search != undefined) {
-                    target_match_name = name;
+                if (this.state.pages_state.active != parent.id && target_search) {
+
+                    store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
+
+                    if (!this.componentSettingsStore.is_critical_only)
+                        this.state.pages_state.active = parent.id;
+
+                    break;
+                }
+
+                else if (this.state.pages_state.active == parent.id && target_search) {
+
+                    store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', source.id);
 
                     break;
                 }
             }
+        },
 
-            if (typeof target_match_name == 'string') {
+        /**
+         * Handles parent category click, which also emits search signals to subcategories
+         * if the user has clicked with search mode active.
+         */
+        handle_parent_clicked(source: { category: CategoryParent, search?: string }) {
 
-                if (this.state.pages_state.active_category != target_match_name)
-                    this.state.pages_state.active_category = target_match_name;
+            for (const [parent, items] of this.state.categories_data.items) {
 
-                this.state.last_clicked_category = source.id;
+                if (parent.id.toLocaleLowerCase().trim().includes(source.category.id.trim().toLocaleLowerCase())) {
+
+                    if (source.search && this.componentSettingsStore.is_searching) {
+
+                        const predicate = (el: CategoryItem): boolean => {
+
+                            // Target category name in a normalized form
+                            const target = el.name.trim().toLowerCase();
+
+                            // User input search string that is also normalized
+                            const search = source.search?.trim().toLowerCase() ?? '';
+
+                            // Flag that denotes wether or not the name or any of the keywords match
+                            let found = false;
+
+                            if (source.search) if (target.includes(search))
+                                found = true;
+
+                            for (const keyword of el.keywords) {
+
+                                if (target.includes(keyword.trim().toLowerCase())) {
+
+                                    found = true;
+
+                                    break;
+                                }
+                            }
+
+                            return found;
+                        };
+
+                        // Target category
+                        const target = items.find(predicate);
+
+                        if (target)
+                            this.handle_category_clicked(target);
+
+                        else
+                            this.state.pages_state.active = parent.id;
+                    }
+
+                    else
+                        this.state.pages_state.active = source.category.id;
+
+                    break;
+                }
             }
         },
 
+        /**
+         * Settings open button callback that also sets all required critical flags.
+         */
         handle_settings_open() {
+
+            // We discriminate to set critical only flags
             this.discriminate_component_state();
 
-            this.$nextTick(() => this.state.render_state = true);
-        },
-
-        handle_render_state_change(state: boolean) { if (state != this.state.render_state) this.state.render_state = state; }
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true));
+        }
     },
 
-    provide() {
-        return {
-            last_clicked_category: computed(() => this.state.last_clicked_category),
-            critical_categories: computed(() => this.state.critical_categories),
-            critical_only: computed(() => this.state.categories_state.critical_only)
-        }; },
+    watch: {
+        'componentSettingsStore.is_rendering'(state: boolean) { if (!state) store.commit('componentSettingsStore/UPDATE_LAST_CLICKED_CATEGORY', undefined); }
+    },
 
-    computed: mapState(['eventBusStore', '__metaData'])
+    computed: mapState(['componentSettingsStore', '__metaData'])
 });

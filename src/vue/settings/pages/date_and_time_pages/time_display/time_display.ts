@@ -147,6 +147,8 @@ const MAXIMUM_DELIMITERS_OVERALL = 10;
 
 export default defineComponent({
 
+    components: { draggable },
+
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
@@ -211,7 +213,7 @@ export default defineComponent({
         return { state };
     },
 
-    mounted() { this.$nextTick(() => this.set_up_timer_refreshing()); },
+    mounted() { this.$nextTick(() => { this.set_up_timer_refreshing(); this.update_convention(this.settingsStore.time_convention); }); },
 
     methods: {
 
@@ -287,8 +289,12 @@ export default defineComponent({
 
             const now = DateTime.now();
 
-            setTimeout(() => UPDATE_GROUP_LAZY?.(), 1000 - now.millisecond);
-            setTimeout(() => UPDATE_GROUP_LATE?.(), 60000 - ((now.second * 1000) - now.millisecond));
+            this.$nextTick(
+                () => {
+                    setTimeout(() => UPDATE_GROUP_LAZY?.(), 1000 - now.millisecond);
+                    setTimeout(() => UPDATE_GROUP_LATE?.(), 60000 - ((now.second * 1000) - now.millisecond));
+                }
+            );
         },
 
         /**
@@ -407,6 +413,9 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Updates the currently used date display delimiter.
+         */
         update_delimiter() {
 
             if (this.state.format.delimiter != this.settingsStore.time_delimiter) {
@@ -417,6 +426,9 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Updates dynamic tokens with given clock convention automatically.
+         */
         update_convention(state: ClockConvention) {
 
             this.state.format.convention = state;
@@ -483,14 +495,16 @@ export default defineComponent({
     },
 
     watch: {
-        'settingsStore.time_convention': {
-            handler(state) { this.update_convention(state); },
-
-            deep: true
-        }
+        'settingsStore.time_convention'(state) { this.update_convention(state); }
     },
 
-    components: { draggable },
+    computed: mapState(['settingsStore']),
 
-    computed: mapState(['settingsStore'])
+    props: {
+        standalone: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    }
 });
