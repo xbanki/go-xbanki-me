@@ -109,6 +109,8 @@ const MAXIMUM_DELIMITERS_OVERALL = 10;
 
 export default defineComponent({
 
+    components: { draggable },
+
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
@@ -312,10 +314,11 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Automatically updates persisted format with internal state.
+         */
         update_active_format() { store.dispatch('settingsStore/SetDateFormat', [this.state.format.active, this.state.format.inactive]); }
     },
-
-    components: { draggable },
 
     computed: mapState(['settingsStore']),
 

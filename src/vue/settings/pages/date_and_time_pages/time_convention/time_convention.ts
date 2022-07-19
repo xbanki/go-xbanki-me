@@ -14,7 +14,7 @@ interface ComponentState {
      * Active clock display convention.
      * @type {ClockConvention}
      */
-    selected_clock_convention: ClockConvention;
+    convention: ClockConvention;
 }
 
 export default defineComponent({
@@ -22,16 +22,20 @@ export default defineComponent({
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
-        const selected_clock_convention = typed_store.state.settingsStore.time_convention;
+        const convention = typed_store.state.settingsStore.time_convention;
 
-        const state: ComponentState = { selected_clock_convention };
+        const state: ComponentState = { convention };
 
         return { state };
     },
 
     methods: {
+
+        /**
+         * Updates current clock convention & updating meridem token state.
+         */
         update() {
-            if (this.settingsStore.time_convention != this.state.selected_clock_convention) {
+            if (this.settingsStore.time_convention != this.state.convention) {
 
                 // Denotes wether or not the meridem token is in active format.
                 let meridem_index: number | undefined;
@@ -49,12 +53,12 @@ export default defineComponent({
                     const inactive: FormatToken[] = this.settingsStore.time_format_inactive;
                     const active:   FormatToken[] = this.settingsStore.time_format_active;
 
-                    active[meridem_index] = Object.assign(active[meridem_index], { disabled: this.state.selected_clock_convention == ClockConvention.EUROPEAN ? true : false });
+                    active[meridem_index] = Object.assign(active[meridem_index], { disabled: this.state.convention == ClockConvention.EUROPEAN ? true : false });
 
                     store.dispatch('settingsStore/SetTimeFormat', [active, inactive]);
                 }
 
-                store.commit('settingsStore/SET_CLOCK_CONVENTION', this.state.selected_clock_convention);
+                store.commit('settingsStore/SET_CLOCK_CONVENTION', this.state.convention);
             }
         }
     },

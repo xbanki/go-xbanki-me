@@ -147,6 +147,8 @@ const MAXIMUM_DELIMITERS_OVERALL = 10;
 
 export default defineComponent({
 
+    components: { draggable },
+
     data() {
         const typed_store = store as Store<{ settingsStore: ModuleState }>;
 
@@ -407,6 +409,9 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Updates the currently used date display delimiter.
+         */
         update_delimiter() {
 
             if (this.state.format.delimiter != this.settingsStore.time_delimiter) {
@@ -417,6 +422,9 @@ export default defineComponent({
             }
         },
 
+        /**
+         * Updates dynamic tokens with given clock convention automatically.
+         */
         update_convention(state: ClockConvention) {
 
             this.state.format.convention = state;
@@ -483,14 +491,8 @@ export default defineComponent({
     },
 
     watch: {
-        'settingsStore.time_convention': {
-            handler(state) { this.update_convention(state); },
-
-            deep: true
-        }
+        'settingsStore.time_convention'(state) { this.update_convention(state); }
     },
-
-    components: { draggable },
 
     computed: mapState(['settingsStore']),
 
