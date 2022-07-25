@@ -1,7 +1,7 @@
 <template>
-
-    <!-- Scaleable component parent canvas component //-->
-    <main class="component-canvas"/>
+    <main class="component-canvas">
+        <component-draggable/>
+    </main>
 </template>
 
 <script lang="ts" src="./canvas.ts"></script>

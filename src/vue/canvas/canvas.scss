@@ -1,0 +1,10 @@
+/**
+ * The canvas component acts as the orchestrator to all scaleable components, where
+ * it handles all the event handling, scaling, dragging and other things related to
+ * draggable items.
+ */
+main.component-canvas {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}

@@ -1,0 +1,160 @@
+@use "sass:math";
+
+/**
+ * Minimum required item size.
+ */
+$min-size: 32px;
+
+/**
+ * Size of all scale handles, with drag handle being double size.
+ */
+$handle-size: 8px;
+
+/**
+ * The actual color of all handles.
+ */
+$handle-color: lightskyblue;
+
+/**
+ * Handle positional offset.
+ */
+$handle-offset: - math.div($handle-size, 2);
+
+/**
+ * Mixin for all scale handles.
+ */
+@mixin scale-handle {
+  background: $handle-color;
+  height: $handle-size;
+  width: $handle-size;
+  position: absolute;
+}
+
+/**
+ * The main body of the draggable component. This component on it's own does not
+ * have any other functionality, other than displaying states.
+ */
+main.component-draggable {
+  box-sizing: border-box;
+  min-height: $min-size;
+  min-width: $min-size;
+  height: fit-content;
+  position: absolute;
+  width: fit-content;
+
+  /**
+   * Edit mode styles.
+   */
+  &.state-editing {
+    background: rgba(lightblue, 50%);
+    border: 1px solid lightblue;
+  }
+
+  /**
+   * Handles wrapper, which is only shown if the user is in edit mode.
+   */
+  section.draggable-handles {
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    /**
+     * Drag handle styling.
+     */
+    div.handle-drag {
+      background: $handle-color;
+      height: $handle-size * 2;
+      width: $handle-size * 2;
+      cursor: grab;
+
+      &:active { cursor: grabbing }
+    }
+
+    /**
+     * Bottom right scale handle.
+     */
+    div.handle-bottom-right {
+      @include scale-handle;
+
+      bottom: $handle-offset;
+      right: $handle-offset;
+      cursor: nwse-resize;
+    }
+
+    /**
+     * Bottom left scale handle.
+     */
+    div.handle-bottom-left {
+      @include scale-handle;
+
+      bottom: $handle-offset;
+      left: $handle-offset;
+      cursor: nesw-resize;
+    }
+
+    /**
+     * Top right scale handle.
+     */
+    div.handle-top-right {
+      @include scale-handle;
+
+      right: $handle-offset;
+      top: $handle-offset;
+      cursor: nesw-resize;
+    }
+
+    /**
+     * Top left scale handle.
+     */
+    div.handle-top-left {
+      @include scale-handle;
+
+      left: $handle-offset;
+      top: $handle-offset;
+      cursor: nwse-resize;
+    }
+
+    /**
+     * Bottom scale handle.
+     */
+    div.handle-bottom {
+      @include scale-handle;
+
+      bottom: $handle-offset;
+      cursor: ns-resize;
+    }
+
+    /**
+     * Right scale handle.
+     */
+    div.handle-right {
+      @include scale-handle;
+
+      right: $handle-offset;
+      cursor: ew-resize;
+    }
+
+    /**
+     * Left scale handle.
+     */
+    div.handle-left {
+      @include scale-handle;
+
+      left: $handle-offset;
+      cursor: ew-resize;
+    }
+
+    /**
+     * Top scale handle.
+     */
+    div.handle-top {
+      @include scale-handle;
+
+      top: $handle-offset;
+      cursor: ns-resize;
+    }
+  }
+}

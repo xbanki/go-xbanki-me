@@ -4,7 +4,7 @@
 
     <!-- Content display master element //-->
     <main class="component-root">
-        <clock-component/>
+        <canvas-component/>
     </main>
 </template>
 
