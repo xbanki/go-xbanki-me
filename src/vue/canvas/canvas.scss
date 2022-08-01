@@ -4,7 +4,9 @@
  * draggable items.
  */
 main.component-canvas {
+  box-sizing: border-box;
   position: relative;
+  padding: 16px;
   height: 100%;
   width: 100%;
 }
