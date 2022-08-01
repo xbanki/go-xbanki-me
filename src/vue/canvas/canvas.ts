@@ -264,8 +264,32 @@ export default defineComponent({
             this.state.mouse.x = event.clientX;
             this.state.mouse.y = event.clientY;
 
-            if (this.state.resizing)
-                this;
+            if (this.state.resizing) switch(this.state.handle) {
+
+                case Handle.TOP_LEFT:
+                    break;
+
+                case Handle.TOP:
+                    break;
+
+                case Handle.TOP_RIGHT:
+                    break;
+
+                case Handle.LEFT:
+                    break;
+
+                case Handle.RIGHT:
+                    break;
+
+                case Handle.BOTTOM_LEFT:
+                    break;
+
+                case Handle.BOTTOM:
+                    break;
+
+                case Handle.BOTTOM_RIGHT:
+                    break;
+            }
 
             // Move target element around
             else if (this.state.dragging) {
