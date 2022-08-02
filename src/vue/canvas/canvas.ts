@@ -320,29 +320,74 @@ export default defineComponent({
 
             if (this.state.resizing) switch(this.state.handle) {
 
-                case Handle.TOP_LEFT:
-                    break;
+                case Handle.TOP_LEFT: {
 
-                case Handle.TOP:
-                    break;
+                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    this.state.active.y = this.state.mouse.y;
 
-                case Handle.TOP_RIGHT:
-                    break;
+                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    this.state.active.x = this.state.mouse.x;
 
-                case Handle.LEFT:
                     break;
+                }
 
-                case Handle.RIGHT:
-                    break;
+                case Handle.TOP: {
 
-                case Handle.BOTTOM_LEFT:
-                    break;
+                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    this.state.active.y = this.state.mouse.y;
 
-                case Handle.BOTTOM:
                     break;
+                }
 
-                case Handle.BOTTOM_RIGHT:
+                case Handle.TOP_RIGHT: {
+
+                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    this.state.active.y = this.state.mouse.y;
+
+                    this.state.active.w = this.state.mouse.x - this.state.active.x;
+
                     break;
+                }
+
+                case Handle.LEFT: {
+
+                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    this.state.active.x = this.state.mouse.x;
+
+                    break;
+                }
+
+                case Handle.RIGHT: {
+
+                    this.state.active.w = this.state.mouse.x - this.state.active.x;
+
+                    break;
+                }
+
+                case Handle.BOTTOM_LEFT: {
+
+                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    this.state.active.x = this.state.mouse.x;
+
+                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+
+                    break;
+                }
+
+                case Handle.BOTTOM: {
+
+                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+
+                    break;
+                }
+
+                case Handle.BOTTOM_RIGHT: {
+
+                    this.state.active.w = this.state.mouse.x - this.state.active.x;
+                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+
+                    break;
+                }
             }
 
             // Move target element around

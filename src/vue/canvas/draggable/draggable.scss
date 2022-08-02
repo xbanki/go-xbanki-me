@@ -41,6 +41,7 @@ main.component-draggable {
   &.state-editing {
     background: rgba(lightblue, 50%);
     border: 1px solid lightblue;
+    user-select: none;
   }
 
   /**
