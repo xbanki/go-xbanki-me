@@ -2,6 +2,13 @@
 
     <main class="component-draggable" v-bind:class="{ 'state-editing': state.edit }">
 
+        <!-- Component actual display //-->
+        <section class="draggable-content">
+
+            <!-- Display slot //-->
+            <slot name="default"/>
+        </section>
+
         <!-- Component handles //-->
         <section class="draggable-handles" v-if="state.edit">
 

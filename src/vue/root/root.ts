@@ -1,6 +1,7 @@
-import { mapState }        from 'vuex';
-import { defineComponent } from 'vue';
+import { mapState }                 from 'vuex';
+import { defineComponent, markRaw } from 'vue';
 
+import { DraggableItemRaw } from '@/vue/canvas/canvas';
 import { AvaillableThemes } from '@/lib/store_settings';
 
 import backgroundComponent from '@/vue/background/background.vue';
@@ -21,6 +22,18 @@ interface ComponentState {
     match_os_theme: boolean;
 }
 
+/**
+ * Component data internal description interface.
+ */
+interface ComponentData {
+
+    /**
+     * Draggable component items.
+     * @type {DraggableItemRaw}
+     */
+    items: DraggableItemRaw[];
+}
+
 export default defineComponent({
 
     components: {
@@ -35,9 +48,25 @@ export default defineComponent({
 
     data() {
 
-        const state: ComponentState = { match_os_theme: false };
+        // State & data constants
 
-        return { state };
+        const items: DraggableItemRaw[] = [
+            { editable: true, component: markRaw(clockComponent) }
+        ];
+
+        const match_os_theme = false;
+
+        // Assembled state & data objects
+
+        const state: ComponentState = {
+            match_os_theme
+        };
+
+        const data: ComponentData = {
+            items
+        };
+
+        return { state, data };
     },
 
     methods: {

@@ -4,7 +4,7 @@
 
     <!-- Content display master element //-->
     <main class="component-root">
-        <canvas-component/>
+        <canvas-component v-bind:items="data.items"/>
     </main>
 </template>
 

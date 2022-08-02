@@ -157,4 +157,16 @@ main.component-draggable {
       cursor: ns-resize;
     }
   }
+
+  /**
+   * Content display wrapper.
+   */
+  section.draggable-content {
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
 }

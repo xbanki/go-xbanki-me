@@ -4,13 +4,15 @@
  *     https://github.com/nikitasnv/vue-resizable
  */
 
-import { mapState }        from 'vuex';
-import { defineComponent } from 'vue';
+import { mapState }                   from 'vuex';
+import { Component, defineComponent } from 'vue';
 
 import componentDraggable from './draggable/draggable.vue';
 
+export type DraggableItemRaw = { component: Component, editable: boolean };
+
 /**
- * Individual 
+ * Individual draggable item.
  */
 interface TrackedItem {
 
@@ -27,10 +29,28 @@ interface TrackedItem {
     y: number;
 
     /**
-     * HTML element where this item exists.
+     * Items width from the origin point.
+     * @type {number}
+     */
+    w: number;
+
+    /**
+     * Items height from the origin point.
+     * @type {number}
+     */
+    h: number;
+
+    /**
+     * Vue component instance which to render as a resizable component.
      * @type {Element}
      */
-    element: Element;
+    component: Component;
+
+    /**
+     * Denotes wether or not this item is editable or not.
+     * @type {boolean}
+     */
+    editable: boolean;
 }
 
 /**
@@ -163,6 +183,24 @@ export default defineComponent({
         // Data constants
 
         const items: TrackedItem[] = [];
+
+        // Populate items with prop data
+
+        if (this.$props.items) for (const item of this.$props.items as { component: Component, editable: boolean }[]) {
+
+            // @TODO(xbanki): Get the X & Y values from storage!
+            const x = 16;
+            const y = 16;
+
+            //@TODO (xbanki): Same with width & height.
+            const w = 32;
+            const h = 32;
+
+            const component = item.component;
+            const editable  = item.editable;
+
+            items.push({ component, editable, x, y, w, h });
+        }
 
         // Final state & data objects
 
@@ -323,5 +361,7 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['eventBusStore'])
+    computed: mapState(['eventBusStore']),
+
+    props: ['items']
 });
