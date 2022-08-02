@@ -51,7 +51,7 @@ export default defineComponent({
         // State & data constants
 
         const items: DraggableItemRaw[] = [
-            { editable: true, component: markRaw(clockComponent) }
+            { id: 'clock-component', editable: true, component: markRaw(clockComponent) }
         ];
 
         const match_os_theme = false;

@@ -4,7 +4,7 @@
 
             v-bind:style="{
 
-                'height': `${items.h}px`,
+                'height': `${item.h}px`,
 
                 'width': `${item.w}px`,
 
@@ -13,13 +13,12 @@
                 'top': `${item.y}px`
 
             }"
-        
-            v-bind:key="data.items.indexOf(item)"
 
             v-bind:scaleable="item.editable"
 
             v-for="item of data.items"
         
+            v-bind:key="item.id"
         >
 
             <!-- Binds component to the draggable content slot //-->

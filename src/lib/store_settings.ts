@@ -115,6 +115,36 @@ export enum AvaillableThemes {
 }
 
 /**
+ * Draggable canvas content components data.
+ */
+export interface CanvasItemData {
+
+    /**
+     * Height of the canvas item in pixels.
+     * @type {number}
+     */
+    height: number;
+
+    /**
+     * Width of the canvas item in pixels.
+     * @type {number}
+     */
+    width: number;
+
+    /**
+     * Horizontal coordinate of this canvas item in pixels.
+     * @type {number}
+     */
+    x: number;
+
+    /**
+     * Vertical coordinate of this canvas item in pixels.
+     * @type {number}
+     */
+    y: number;
+}
+
+/**
  * Settings VueX module interface.
  * @see {VueX}
  */
@@ -203,6 +233,12 @@ export interface ModuleState {
      * @type {Array<FormatToken>}
      */
     time_format_inactive: Array<FormatToken>;
+
+    /**
+     * Resizeable canvas items data.
+     * @type {Record<string, CanvasItemData>}
+     */
+    canvas_items: Record<string, CanvasItemData>;
 }
 
 /**
@@ -226,6 +262,13 @@ const store: { state: ModuleState, [name: string]: any } = {
         date_size: DateTimeSize.SMALL,
         time_size: DateTimeSize.MEDIUM,
         time_display_format: 'HH:mm:ss',
+
+        canvas_items: {
+
+            // @TODO(xbanki): Replace these values with actual data!
+            'clock-component': { x: 16, y: 16, width: 32, height: 32 }
+        },
+
         date_format_inactive: [
             { disabled: false, delimiter: false, index: 0, dynamic: false, token: 'dd', description: 'Day of the month padded to two digits' },
             { disabled: false, delimiter: false, index: 1, dynamic: false, token: 'E', description: 'Day of the week in number form' },
@@ -298,10 +341,15 @@ const store: { state: ModuleState, [name: string]: any } = {
 
         UPDATE_DATE_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.date_format_active = payload,
 
-        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload
+        UPDATE_TIME_FORMAT_ACTIVE: (state: any, payload: Array<FormatToken>) => state.time_format_active = payload,
+
+        UPDATE_CANVAS_ITEMS: (state: ModuleState, payload: Record<string, CanvasItemData>) => state.canvas_items = payload
     },
 
     actions: {
+
+        UpdateCanvasItem: (context: any, payload: { name: string, data: CanvasItemData }) =>
+            context.commit('UPDATE_CANVAS_ITEMS', Object.assign(context.state.canvas_items, { [payload.name]: payload.data })),
 
         UpdateDisplayMethod: (context: any, payload: BackgroundDisplayMethod) => {
 

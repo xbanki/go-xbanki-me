@@ -1,11 +1,6 @@
 @use "sass:math";
 
 /**
- * Minimum required item size.
- */
-$min-size: 32px;
-
-/**
  * Size of all scale handles, with drag handle being double size.
  */
 $handle-size: 8px;
@@ -36,8 +31,6 @@ $handle-offset: - math.div($handle-size, 2);
  */
 main.component-draggable {
   box-sizing: border-box;
-  min-height: $min-size;
-  min-width: $min-size;
   height: fit-content;
   position: absolute;
   width: fit-content;

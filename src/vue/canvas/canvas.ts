@@ -4,12 +4,15 @@
  *     https://github.com/nikitasnv/vue-resizable
  */
 
-import { mapState }                   from 'vuex';
+import { mapState, Store }            from 'vuex';
 import { Component, defineComponent } from 'vue';
 
-import componentDraggable from './draggable/draggable.vue';
+import { CanvasItemData, ModuleState } from '@/lib/store_settings';
 
-export type DraggableItemRaw = { component: Component, editable: boolean };
+import componentDraggable from './draggable/draggable.vue';
+import store              from '@/lib/store';
+
+export type DraggableItemRaw = { component: Component, editable: boolean, id: string };
 
 /**
  * Individual draggable item.
@@ -39,6 +42,12 @@ interface TrackedItem {
      * @type {number}
      */
     h: number;
+
+    /**
+     * Unique identifier for this draggable item.
+     * @type {string}
+     */
+    id: string;
 
     /**
      * Vue component instance which to render as a resizable component.
@@ -161,6 +170,8 @@ export default defineComponent({
 
     data() {
 
+        const typed_store = store as Store<{ settingsStore: ModuleState }>;
+
         // State constants
 
         const resizing = false;
@@ -186,20 +197,22 @@ export default defineComponent({
 
         // Populate items with prop data
 
-        if (this.$props.items) for (const item of this.$props.items as { component: Component, editable: boolean }[]) {
+        if (this.$props.items) for (const item of this.$props.items as DraggableItemRaw[]) {
 
-            // @TODO(xbanki): Get the X & Y values from storage!
-            const x = 16;
-            const y = 16;
+            const target_data = typed_store.state.settingsStore.canvas_items[item.id];
 
-            //@TODO (xbanki): Same with width & height.
-            const w = 32;
-            const h = 32;
+            const id = item.id;
+
+            const x = target_data.x;
+            const y = target_data.y;
+
+            const h = target_data.height;
+            const w = target_data.width;
 
             const component = item.component;
             const editable  = item.editable;
 
-            items.push({ component, editable, x, y, w, h });
+            items.push({ component, editable, id, x, y, w, h });
         }
 
         // Final state & data objects
@@ -347,6 +360,35 @@ export default defineComponent({
          * Handles the mouse click exit event, setting all states to initial.
          */
         handle_up() {
+
+            for (const item of this.data.items) {
+
+                const target: CanvasItemData = this.settingsStore.canvas_items[item.id];
+
+                if (
+                    !target                 ||
+                    target.x      != item.x ||
+                    target.y      != item.y ||
+                    target.height != item.h ||
+                    target.width  != item.w
+                ) {
+
+                    const height = item.h;
+
+                    const width = item.w;
+
+                    const name = item.id;
+
+                    const x = item.x;
+
+                    const y = item.y;
+
+                    const data: CanvasItemData = { height, width, x, y };
+
+                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data });
+                }
+            }
+
             if (this.state.dragging)
                 this.state.dragging = false;
 
@@ -361,7 +403,7 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['eventBusStore']),
+    computed: mapState(['eventBusStore', 'settingsStore']),
 
     props: ['items']
 });
