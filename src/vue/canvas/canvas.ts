@@ -164,6 +164,10 @@ const ALLOWED_SCALE_CLASSES = [
     'handle-top'
 ];
 
+// The closest draggable components are allowed to get to the edge (in pixels)
+
+const EDGE_PADDING = 24;
+
 export default defineComponent({
 
     components: { componentDraggable },
@@ -284,34 +288,6 @@ export default defineComponent({
 
         handle_move(event: MouseEvent) {
 
-            /**
-             * Returns a padded constant of the X value.
-             */
-            const get_x = (value: number) => {
-
-                if (value < 16)
-                    return 16;
-
-                if (value > document.documentElement.clientWidth - 48)
-                    return document.documentElement.clientWidth - 48;
-
-                return value;
-            };
-
-            /**
-             * Returns a padded constant of the X value.
-             */
-             const get_y = (value: number) => {
-
-                if (value < 16)
-                    return 16;
-
-                if (value > document.documentElement.clientHeight - 48)
-                    return document.documentElement.clientHeight - 48;
-
-                return value;
-            };
-
             // Do nothing if we don't have a target element
             if (!this.state.active) return;
 
@@ -322,69 +298,165 @@ export default defineComponent({
 
                 case Handle.TOP_LEFT: {
 
-                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
-                    this.state.active.y = this.state.mouse.y;
+                    // Target constants
+                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    const width  = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const left   = this.state.mouse.x;
+                    const top    = this.state.mouse.y;
 
-                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
-                    this.state.active.x = this.state.mouse.x;
+                    let allowed_left = true;
+                    let allowed_top = true;
+
+                    if (left <= EDGE_PADDING)
+                        allowed_left = false;
+
+                    if (top <= EDGE_PADDING)
+                        allowed_top = false;
+
+                    // Vertical
+                    if (allowed_top) this.state.active.h = height;
+                    if (allowed_top) this.state.active.y = top;
+
+                    // Horizontal
+                    if (allowed_left) this.state.active.w = width;
+                    if (allowed_left) this.state.active.x = left;
 
                     break;
                 }
 
                 case Handle.TOP: {
 
-                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
-                    this.state.active.y = this.state.mouse.y;
+                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    const top    = this.state.mouse.y;
+
+                    let allowed_top = true;
+
+                    if (top <= EDGE_PADDING)
+                        allowed_top = false;
+
+                    if (allowed_top) this.state.active.h = height;
+                    if (allowed_top) this.state.active.y = top;
 
                     break;
                 }
 
                 case Handle.TOP_RIGHT: {
 
-                    this.state.active.h = this.state.active.h - (this.state.mouse.y - this.state.active.y);
-                    this.state.active.y = this.state.mouse.y;
+                    const parent = this.$el as Element;
 
-                    this.state.active.w = this.state.mouse.x - this.state.active.x;
+                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    const width  = this.state.mouse.x - this.state.active.x;
+                    const top    = this.state.mouse.y;
+
+                    let allowed_right = true;
+                    let allowed_top   = true;
+
+                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                        allowed_right = false;
+
+                    if (top <= EDGE_PADDING)
+                        allowed_top = false;
+
+                    if (allowed_right) this.state.active.w = width;
+
+                    if (allowed_top) this.state.active.h = height;
+                    if (allowed_top) this.state.active.y = top;
 
                     break;
                 }
 
                 case Handle.LEFT: {
 
-                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
-                    this.state.active.x = this.state.mouse.x;
+                    const width = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const left  = this.state.mouse.x;
+
+                    let allowed_left = true;
+
+                    if (left <= EDGE_PADDING)
+                        allowed_left = false;
+
+                    if (allowed_left) this.state.active.w = width;
+                    if (allowed_left) this.state.active.x = left;
 
                     break;
                 }
 
                 case Handle.RIGHT: {
 
-                    this.state.active.w = this.state.mouse.x - this.state.active.x;
+                    const parent = this.$el as Element;
+
+                    const width = this.state.mouse.x - this.state.active.x;
+
+                    let allowed_right = true;
+
+                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                        allowed_right = false;
+
+                    if (allowed_right) this.state.active.w = width;
 
                     break;
                 }
 
                 case Handle.BOTTOM_LEFT: {
 
-                    this.state.active.w = this.state.active.w - (this.state.mouse.x - this.state.active.x);
-                    this.state.active.x = this.state.mouse.x;
+                    const parent = this.$el as Element;
 
-                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+                    const height = this.state.mouse.y - this.state.active.y;
+                    const width  = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const left   = this.state.mouse.x;
+
+                    let allowed_height = true;
+                    let allowed_left   = true;
+
+                    if (left <= EDGE_PADDING)
+                        allowed_left = false;
+
+                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                        allowed_height = false;
+
+                    if (allowed_height) this.state.active.h = height;
+
+                    if (allowed_left) this.state.active.w = width;
+                    if (allowed_left) this.state.active.x = left;
 
                     break;
                 }
 
                 case Handle.BOTTOM: {
 
-                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+                    const parent = this.$el as Element;
+
+                    const height = this.state.mouse.y - this.state.active.y;
+
+                    let allowed_height = true;
+
+                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                        allowed_height = false;
+
+                    if (allowed_height) this.state.active.h = height;
 
                     break;
                 }
 
                 case Handle.BOTTOM_RIGHT: {
 
-                    this.state.active.w = this.state.mouse.x - this.state.active.x;
-                    this.state.active.h = this.state.mouse.y - this.state.active.y;
+                    const parent = this.$el as Element;
+
+                    const height = this.state.mouse.y - this.state.active.y;
+                    const width  = this.state.mouse.x - this.state.active.x;
+
+                    let allowed_height = true;
+                    let allowed_width  = true;
+
+                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                        allowed_height = false;
+
+                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                        allowed_width = false;
+
+                    if (allowed_height) this.state.active.h = height;
+
+                    if (allowed_width) this.state.active.w = width;
 
                     break;
                 }
@@ -393,11 +465,24 @@ export default defineComponent({
             // Move target element around
             else if (this.state.dragging) {
 
-                const left_offset = this.state.active.w / 2;
-                const top_offset  = this.state.active.h / 2;
+                const parent = this.$el as Element;
 
-                this.state.active.x =  get_x(this.state.mouse.x - left_offset);
-                this.state.active.y = get_y(this.state.mouse.y - top_offset);
+                const height = this.state.mouse.y + (this.state.active.h / 2);
+                const width  = this.state.mouse.x + (this.state.active.w / 2);
+                const left   = this.state.mouse.x - (this.state.active.w / 2);
+                const top    = this.state.mouse.y - (this.state.active.h / 2);
+
+                let allowed_left = true;
+                let allowed_top  = true;
+
+                if (left <= EDGE_PADDING || width >= parent.clientWidth - EDGE_PADDING)
+                    allowed_left = false;
+
+                if (top <= EDGE_PADDING || height >= parent.clientHeight - EDGE_PADDING)
+                    allowed_top = false;
+
+                if (allowed_left) this.state.active.x = left;
+                if (allowed_top)  this.state.active.y = top;
             }
         },
 
