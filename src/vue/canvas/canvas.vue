@@ -14,9 +14,12 @@
 
             }"
 
+
             v-bind:scaleable="item.editable"
 
             v-for="item of data.items"
+
+            v-bind:class="item.id"
         
             v-bind:key="item.id"
         >

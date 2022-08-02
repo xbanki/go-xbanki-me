@@ -110,10 +110,10 @@ interface ComponentState {
     handle?: Handle;
 
     /**
-     * Currently active dragged element.
-     * @type {HTMLElement}
+     * Currently active tracked item.
+     * @type {TrackedItem}
      */
-    el?: HTMLElement;
+    active?: TrackedItem;
 
     /**
      * Current mouse position data.
@@ -252,8 +252,12 @@ export default defineComponent({
                 if (target.classList.contains(CLASS_HANDLE_DRAG)) {
                     this.state.dragging = true;
 
-                    if (target.parentElement?.parentElement)
-                        this.state.el = target.parentElement?.parentElement;
+                    if (target.parentElement?.parentElement) for (const item of this.data.items) if (target.parentElement.parentElement.classList.contains(item.id)) {
+
+                        this.state.active = item;
+
+                        break;
+                    }
                 }
 
                 // Resize whatever we're handling right now
@@ -263,8 +267,12 @@ export default defineComponent({
 
                     if (!target_class || !ALLOWED_SCALE_CLASSES.includes(target_class)) continue;
 
-                    if (target.parentElement?.parentElement)
-                        this.state.el = target.parentElement?.parentElement;
+                    if (target.parentElement?.parentElement) for (const item of this.data.items) if (target.parentElement.parentElement.classList.contains(item.id)) {
+
+                        this.state.active = item;
+
+                        break;
+                    }
 
                     this.state.handle   = target_class;
                     this.state.resizing = true;
@@ -304,13 +312,8 @@ export default defineComponent({
                 return value;
             };
 
-            /**
-             * Returns `value` param in CSS pixel string.
-             */
-            const get_pixels = (value: number) => `${value}px`;
-
             // Do nothing if we don't have a target element
-            if (!this.state.el) return;
+            if (!this.state.active) return;
 
             this.state.mouse.x = event.clientX;
             this.state.mouse.y = event.clientY;
@@ -345,14 +348,11 @@ export default defineComponent({
             // Move target element around
             else if (this.state.dragging) {
 
-                const left_offset = this.state.el.clientWidth / 2;
-                const top_offset  = this.state.el.clientHeight / 2;
+                const left_offset = this.state.active.w / 2;
+                const top_offset  = this.state.active.h / 2;
 
-                const left = get_x(this.state.mouse.x - left_offset);
-                const top = get_y(this.state.mouse.y - top_offset);
-
-                this.state.el.style.left = get_pixels(left);
-                this.state.el.style.top = get_pixels(top);
+                this.state.active.x =  get_x(this.state.mouse.x - left_offset);
+                this.state.active.y = get_y(this.state.mouse.y - top_offset);
             }
         },
 
@@ -398,8 +398,8 @@ export default defineComponent({
             if (this.state.handle)
                 this.state.handle = undefined;
 
-            if (this.state.el)
-                this.state.el = undefined;
+            if (this.state.active)
+                this.state.active = undefined;
         }
     },
 
