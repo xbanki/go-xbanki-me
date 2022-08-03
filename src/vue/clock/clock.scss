@@ -5,13 +5,10 @@ main.component-clock {
   width: fit-content;
   display: flex;
 
-  span.clock-time, span.clock-date {
+  span.clock-time {
     text-shadow: var(--color) 0px 0px 4px;
     color: var(--bg);
     font-size: 62px;
     display: block;
-
-    &.clock-date { margin-bottom: 8px }
-    &.clock-time { font-size: 18px }
   }
 }
