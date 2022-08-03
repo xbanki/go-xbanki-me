@@ -20,28 +20,40 @@ export type DraggableItemRaw = { component: Component, editable: boolean, id: st
 interface TrackedItem {
 
     /**
-     * Item's X coordinate relative to the parent.
-     * @type {number}
+     * Tracked item position data.
      */
-    x: number;
+    position: {
+
+        /**
+         * Item's X coordinate relative to the parent.
+         * @type {number}
+         */
+        x: number;
+
+        /**
+         * Item's Y coordinate relative to the parent.
+         * @type {number}
+         */
+        y: number;
+    }
 
     /**
-     * Item's Y coordinate relative to the parent.
-     * @type {number}
+     * Tracked item sizing data.
      */
-    y: number;
+    size: {
 
-    /**
-     * Items width from the origin point.
-     * @type {number}
-     */
-    w: number;
+        /**
+         * Items width from the origin point.
+         * @type {number}
+         */
+        w: number;
 
-    /**
-     * Items height from the origin point.
-     * @type {number}
-     */
-    h: number;
+        /**
+         * Items height from the origin point.
+         * @type {number}
+         */
+        h: number;
+    }
 
     /**
      * Unique identifier for this draggable item.
@@ -216,7 +228,10 @@ export default defineComponent({
             const component = item.component;
             const editable  = item.editable;
 
-            items.push({ component, editable, id, x, y, w, h });
+            const position = { x, y };
+            const size     = { w, h };
+
+            items.push({ component, editable, id, position, size });
         }
 
         // Final state & data objects
@@ -299,8 +314,8 @@ export default defineComponent({
                 case Handle.TOP_LEFT: {
 
                     // Target constants
-                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
-                    const width  = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const height = this.state.active.size.h - (this.state.mouse.y - this.state.active.position.y);
+                    const width  = this.state.active.size.w - (this.state.mouse.x - this.state.active.position.x);
                     const left   = this.state.mouse.x;
                     const top    = this.state.mouse.y;
 
@@ -314,19 +329,19 @@ export default defineComponent({
                         allowed_top = false;
 
                     // Vertical
-                    if (allowed_top) this.state.active.h = height;
-                    if (allowed_top) this.state.active.y = top;
+                    if (allowed_top) this.state.active.size.h = height;
+                    if (allowed_top) this.state.active.position.y = top;
 
                     // Horizontal
-                    if (allowed_left) this.state.active.w = width;
-                    if (allowed_left) this.state.active.x = left;
+                    if (allowed_left) this.state.active.size.w = width;
+                    if (allowed_left) this.state.active.position.x = left;
 
                     break;
                 }
 
                 case Handle.TOP: {
 
-                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
+                    const height = this.state.active.size.h - (this.state.mouse.y - this.state.active.position.y);
                     const top    = this.state.mouse.y;
 
                     let allowed_top = true;
@@ -334,8 +349,8 @@ export default defineComponent({
                     if (top <= EDGE_PADDING)
                         allowed_top = false;
 
-                    if (allowed_top) this.state.active.h = height;
-                    if (allowed_top) this.state.active.y = top;
+                    if (allowed_top) this.state.active.size.h = height;
+                    if (allowed_top) this.state.active.position.y = top;
 
                     break;
                 }
@@ -344,30 +359,30 @@ export default defineComponent({
 
                     const parent = this.$el as Element;
 
-                    const height = this.state.active.h - (this.state.mouse.y - this.state.active.y);
-                    const width  = this.state.mouse.x - this.state.active.x;
+                    const height = this.state.active.size.h - (this.state.mouse.y - this.state.active.position.y);
+                    const width  = this.state.mouse.x - this.state.active.position.x;
                     const top    = this.state.mouse.y;
 
                     let allowed_right = true;
                     let allowed_top   = true;
 
-                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
                         allowed_right = false;
 
                     if (top <= EDGE_PADDING)
                         allowed_top = false;
 
-                    if (allowed_right) this.state.active.w = width;
+                    if (allowed_right) this.state.active.size.w = width;
 
-                    if (allowed_top) this.state.active.h = height;
-                    if (allowed_top) this.state.active.y = top;
+                    if (allowed_top) this.state.active.size.h = height;
+                    if (allowed_top) this.state.active.position.y = top;
 
                     break;
                 }
 
                 case Handle.LEFT: {
 
-                    const width = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const width = this.state.active.size.w - (this.state.mouse.x - this.state.active.position.x);
                     const left  = this.state.mouse.x;
 
                     let allowed_left = true;
@@ -375,8 +390,8 @@ export default defineComponent({
                     if (left <= EDGE_PADDING)
                         allowed_left = false;
 
-                    if (allowed_left) this.state.active.w = width;
-                    if (allowed_left) this.state.active.x = left;
+                    if (allowed_left) this.state.active.position.x = left;
+                    if (allowed_left) this.state.active.size.w = width;
 
                     break;
                 }
@@ -385,14 +400,14 @@ export default defineComponent({
 
                     const parent = this.$el as Element;
 
-                    const width = this.state.mouse.x - this.state.active.x;
+                    const width = this.state.mouse.x - this.state.active.position.x;
 
                     let allowed_right = true;
 
-                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
                         allowed_right = false;
 
-                    if (allowed_right) this.state.active.w = width;
+                    if (allowed_right) this.state.active.size.w = width;
 
                     break;
                 }
@@ -401,8 +416,8 @@ export default defineComponent({
 
                     const parent = this.$el as Element;
 
-                    const height = this.state.mouse.y - this.state.active.y;
-                    const width  = this.state.active.w - (this.state.mouse.x - this.state.active.x);
+                    const height = this.state.mouse.y - this.state.active.position.y;
+                    const width  = this.state.active.size.w - (this.state.mouse.x - this.state.active.position.x);
                     const left   = this.state.mouse.x;
 
                     let allowed_height = true;
@@ -411,13 +426,13 @@ export default defineComponent({
                     if (left <= EDGE_PADDING)
                         allowed_left = false;
 
-                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
                         allowed_height = false;
 
-                    if (allowed_height) this.state.active.h = height;
+                    if (allowed_height) this.state.active.size.h = height;
 
-                    if (allowed_left) this.state.active.w = width;
-                    if (allowed_left) this.state.active.x = left;
+                    if (allowed_left) this.state.active.position.x = left;
+                    if (allowed_left) this.state.active.size.w = width;
 
                     break;
                 }
@@ -426,14 +441,14 @@ export default defineComponent({
 
                     const parent = this.$el as Element;
 
-                    const height = this.state.mouse.y - this.state.active.y;
+                    const height = this.state.mouse.y - this.state.active.position.y;
 
                     let allowed_height = true;
 
-                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
                         allowed_height = false;
 
-                    if (allowed_height) this.state.active.h = height;
+                    if (allowed_height) this.state.active.size.h = height;
 
                     break;
                 }
@@ -442,21 +457,21 @@ export default defineComponent({
 
                     const parent = this.$el as Element;
 
-                    const height = this.state.mouse.y - this.state.active.y;
-                    const width  = this.state.mouse.x - this.state.active.x;
+                    const height = this.state.mouse.y - this.state.active.position.y;
+                    const width  = this.state.mouse.x - this.state.active.position.x;
 
                     let allowed_height = true;
                     let allowed_width  = true;
 
-                    if (height + this.state.active.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
                         allowed_height = false;
 
-                    if (width + this.state.active.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
                         allowed_width = false;
 
-                    if (allowed_height) this.state.active.h = height;
+                    if (allowed_height) this.state.active.size.h = height;
 
-                    if (allowed_width) this.state.active.w = width;
+                    if (allowed_width) this.state.active.size.w = width;
 
                     break;
                 }
@@ -467,10 +482,10 @@ export default defineComponent({
 
                 const parent = this.$el as Element;
 
-                const height = this.state.mouse.y + (this.state.active.h / 2);
-                const width  = this.state.mouse.x + (this.state.active.w / 2);
-                const left   = this.state.mouse.x - (this.state.active.w / 2);
-                const top    = this.state.mouse.y - (this.state.active.h / 2);
+                const height = this.state.mouse.y + (this.state.active.size.h / 2);
+                const width  = this.state.mouse.x + (this.state.active.size.w / 2);
+                const left   = this.state.mouse.x - (this.state.active.size.w / 2);
+                const top    = this.state.mouse.y - (this.state.active.size.h / 2);
 
                 let allowed_left = true;
                 let allowed_top  = true;
@@ -481,8 +496,8 @@ export default defineComponent({
                 if (top <= EDGE_PADDING || height >= parent.clientHeight - EDGE_PADDING)
                     allowed_top = false;
 
-                if (allowed_left) this.state.active.x = left;
-                if (allowed_top)  this.state.active.y = top;
+                if (allowed_left) this.state.active.position.x = left;
+                if (allowed_top)  this.state.active.position.y = top;
             }
         },
 
@@ -496,22 +511,22 @@ export default defineComponent({
                 const target: CanvasItemData = this.settingsStore.canvas_items[item.id];
 
                 if (
-                    !target                 ||
-                    target.x      != item.x ||
-                    target.y      != item.y ||
-                    target.height != item.h ||
-                    target.width  != item.w
+                    !target                          ||
+                    target.x      != item.position.x ||
+                    target.y      != item.position.y ||
+                    target.height != item.size.h     ||
+                    target.width  != item.size.w
                 ) {
 
-                    const height = item.h;
+                    const height = item.size.h;
 
-                    const width = item.w;
+                    const width = item.size.w;
 
                     const name = item.id;
 
-                    const x = item.x;
+                    const x = item.position.x;
 
-                    const y = item.y;
+                    const y = item.position.y;
 
                     const data: CanvasItemData = { height, width, x, y };
 
