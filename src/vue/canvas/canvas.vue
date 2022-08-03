@@ -4,13 +4,13 @@
 
             v-bind:style="{
 
-                'height': `${item.h}px`,
+                'left': `${item.position.x}px`,
 
-                'width': `${item.w}px`,
+                'top': `${item.position.y}px`,
 
-                'left': `${item.x}px`,
+                'height': `${item.size.h}px`,
 
-                'top': `${item.y}px`
+                'width': `${item.size.w}px`
 
             }"
 
