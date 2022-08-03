@@ -12,7 +12,25 @@ import { CanvasItemData, ModuleState } from '@/lib/store_settings';
 import componentDraggable from './draggable/draggable.vue';
 import store              from '@/lib/store';
 
-export type DraggableItemRaw = { component: Component, editable: boolean, id: string };
+/**
+ * Minimum or maximum sizing data for raw items.
+ */
+export interface DraggableItemRawSizes {
+
+    /**
+     * Minimum/ maximum width of this item.
+     * @type {number}
+     */
+    w: number;
+
+    /**
+     * Minimum/ maximum height of this item.
+     * @type {number}
+     */
+    h: number;
+}
+
+export type DraggableItemRaw = { component: Component, editable: boolean, id: string, min?: DraggableItemRawSizes };
 
 /**
  * Individual draggable item.
@@ -50,6 +68,24 @@ interface TrackedItem {
 
         /**
          * Items height from the origin point.
+         * @type {number}
+         */
+        h: number;
+    }
+
+    /**
+     * Tracked item minimum data.
+     */
+    min: {
+
+        /**
+         * Minimum allowed with.
+         * @type {number}
+         */
+        w: number;
+
+        /**
+         * Minimum allowed height.
          * @type {number}
          */
         h: number;
@@ -219,6 +255,9 @@ export default defineComponent({
 
             const id = item.id;
 
+            const min_w = item.min?.w ?? 0;
+            const min_h = item.min?.h ?? 0;
+
             const x = target_data.x;
             const y = target_data.y;
 
@@ -228,10 +267,11 @@ export default defineComponent({
             const component = item.component;
             const editable  = item.editable;
 
-            const position = { x, y };
-            const size     = { w, h };
+            const position =               { x, y };
+            const size     =               { w, h };
+            const min      = { w: min_w, h: min_h };
 
-            items.push({ component, editable, id, position, size });
+            items.push({ component, editable, position, size, min, id });
         }
 
         // Final state & data objects
@@ -322,10 +362,10 @@ export default defineComponent({
                     let allowed_left = true;
                     let allowed_top = true;
 
-                    if (left <= EDGE_PADDING)
+                    if (left <= EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_left = false;
 
-                    if (top <= EDGE_PADDING)
+                    if (top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
                     // Vertical
@@ -346,7 +386,7 @@ export default defineComponent({
 
                     let allowed_top = true;
 
-                    if (top <= EDGE_PADDING)
+                    if (top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
                     if (allowed_top) this.state.active.size.h = height;
@@ -366,10 +406,10 @@ export default defineComponent({
                     let allowed_right = true;
                     let allowed_top   = true;
 
-                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_right = false;
 
-                    if (top <= EDGE_PADDING)
+                    if (top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
                     if (allowed_right) this.state.active.size.w = width;
@@ -387,7 +427,7 @@ export default defineComponent({
 
                     let allowed_left = true;
 
-                    if (left <= EDGE_PADDING)
+                    if (left <= EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_left = false;
 
                     if (allowed_left) this.state.active.position.x = left;
@@ -404,7 +444,7 @@ export default defineComponent({
 
                     let allowed_right = true;
 
-                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_right = false;
 
                     if (allowed_right) this.state.active.size.w = width;
@@ -423,10 +463,10 @@ export default defineComponent({
                     let allowed_height = true;
                     let allowed_left   = true;
 
-                    if (left <= EDGE_PADDING)
+                    if (left <= EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_left = false;
 
-                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
                     if (allowed_height) this.state.active.size.h = height;
@@ -445,7 +485,7 @@ export default defineComponent({
 
                     let allowed_height = true;
 
-                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
                     if (allowed_height) this.state.active.size.h = height;
@@ -463,10 +503,10 @@ export default defineComponent({
                     let allowed_height = true;
                     let allowed_width  = true;
 
-                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING)
+                    if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
-                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING)
+                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_width = false;
 
                     if (allowed_height) this.state.active.size.h = height;

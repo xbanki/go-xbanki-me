@@ -14,7 +14,6 @@
 
             }"
 
-
             v-bind:scaleable="item.editable"
 
             v-for="item of data.items"
