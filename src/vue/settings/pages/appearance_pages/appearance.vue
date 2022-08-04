@@ -22,6 +22,11 @@
             <div class="content-item" ref="background-fit-category">
                 <background-fit-page-component/>
             </div>
+
+            <!-- UI display edit section //-->
+            <div class="content-item" ref="ui-layout-category">
+                <ui-layout-page-component/>
+            </div>
         </section>
     </main>
 </template>

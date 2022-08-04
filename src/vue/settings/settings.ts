@@ -77,6 +77,15 @@ export default defineComponent({
             ]
         };
 
+        const appearance_category_ui_layout: CategoryItem = {
+            name: 'UI Layout',
+            critical: false,
+            id: 'ui-layout-category',
+            keywords: [
+                'reset layout'
+            ]
+        };
+
         // Date & Time categories
 
         const date_time_parent: CategoryParent = {
@@ -158,7 +167,7 @@ export default defineComponent({
 
         // Final categories constants
 
-        const appearance_category: CategoryTuple = [appearance_parent, [appearance_category_theme, appearance_category_background_fit]];
+        const appearance_category: CategoryTuple = [appearance_parent, [appearance_category_theme, appearance_category_background_fit, appearance_category_ui_layout]];
 
         const date_time_category: CategoryTuple = [date_time_parent, [date_time_category_time_convention, date_time_category_time_display, date_time_category_date_display]];
 

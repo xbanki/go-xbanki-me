@@ -4,12 +4,14 @@ import { defineComponent } from 'vue';
 import anime from 'animejs';
 
 import backgroundFitPageComponent from '@/vue/settings/pages/appearance_pages/background_fit/background_fit.vue';
+import uiLayoutPageComponent      from '@/vue/settings/pages/appearance_pages/ui_layout/ui_layout.vue';
 import themePageComponent         from '@/vue/settings/pages/appearance_pages/theme/theme.vue';
 
 export default defineComponent({
 
     components: {
         backgroundFitPageComponent,
+        uiLayoutPageComponent,
         themePageComponent
     },
 
@@ -23,7 +25,7 @@ export default defineComponent({
         handle_category_click(name?: string) {
 
             // All categories that can be found on this page
-            const categories = ['theme-category', 'background-fit-category'];
+            const categories = ['theme-category', 'ui-layout-category', 'background-fit-category'];
 
             if (name && this.componentSettingsStore.is_searching && categories.includes(name)) {
 

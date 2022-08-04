@@ -1,0 +1,34 @@
+/**
+ * Section title display sizing.
+ */
+$title-size: 16px;
+
+/**
+ * The 'UI Layout' page allows the user to modify the application UI to their needs, with
+ * the included editable options being:
+ *
+ *  - Clock display
+ *  - Calendar display
+ *  - Search bar display
+ *
+ * And many other components. Most of these components can be scaled, and all of them
+ * can be panned around on the canvas to wherever the user wants.
+ */
+main.component-ui-layout {
+  flex-direction: column;
+  height: fit-content;
+  display: flex;
+  width: 100%;
+
+  /**
+   * Options section title display.
+   */
+  span.ui-layout-title {
+    padding-bottom: $title-size;
+    line-height: $title-size;
+    font-size: $title-size;
+    height: $title-size;
+    font-weight: 500;
+    display: block;
+  }
+}
