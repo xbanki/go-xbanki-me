@@ -271,9 +271,9 @@ export default defineComponent({
                             if (source.search) if (target.includes(search))
                                 found = true;
 
-                            for (const keyword of el.keywords) {
+                            if (!found) for (const keyword of el.keywords) {
 
-                                if (target.includes(keyword.trim().toLowerCase())) {
+                                if (keyword.trim().toLowerCase().includes(search)) {
 
                                     found = true;
 
