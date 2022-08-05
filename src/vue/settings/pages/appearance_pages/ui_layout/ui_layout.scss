@@ -31,4 +31,27 @@ main.component-ui-layout {
     font-weight: 500;
     display: block;
   }
+
+  /**
+   * Buttons parent wrapper to allow both to sit side by side.
+   */
+  section.ui-layout-buttons {
+    box-sizing: border-box;
+    flex-direction: row;
+    margin-bottom: 16px;
+    display: flex;
+    height: 28px;
+    width: 100%;
+
+    /**
+     * Reset & edit buttons.
+     */
+    button.buttons-edit, button.buttons-reset {
+      margin-right: 8px;
+      height: 100%;
+      flex: 1;
+
+      &:last-of-type { margin-right: unset }
+    }
+  }
 }
