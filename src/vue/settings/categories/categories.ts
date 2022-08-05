@@ -198,6 +198,9 @@ export default defineComponent({
 
             const data = this.data as ComponentData;
 
+            for (const [parent, items] of data.items) for (const item of items) if (!this.state.items.includes(item))
+                this.state.items.push(item);
+
             if (data?.items && data.items.length >= 1)
                 this.load_category_icons(data.items);
 
