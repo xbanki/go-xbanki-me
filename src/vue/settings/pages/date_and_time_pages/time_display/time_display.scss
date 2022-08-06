@@ -182,6 +182,8 @@ main.component-time-display {
             display: block;
             cursor: grab;
             width: 24px;
+
+            &:active { cursor: grabbing }
           }
 
           /**

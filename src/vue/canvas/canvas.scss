@@ -1,4 +1,14 @@
 /**
+ * Settings panel width.
+ */
+$settings-width: 320px;
+
+/**
+ * Settings panel padding.
+ */
+$settings-padding: 8px;
+
+/**
  * The canvas component acts as the orchestrator to all scaleable components, where
  * it handles all the event handling, scaling, dragging and other things related to
  * draggable items.
@@ -6,7 +16,70 @@
 main.component-canvas {
   box-sizing: border-box;
   position: relative;
-  padding: 16px;
+  padding: 24px;
   height: 100%;
   width: 100%;
+
+  /**
+   * Canvas settings panel.
+   */
+  section.canvas-settings {
+    padding: $settings-padding;
+    width: $settings-width;
+    flex-direction: column;
+    background: var(--bg);
+    position: absolute;
+    display: flex;
+    z-index: 200;
+
+    /**
+     * Faint effect whenever the user pans or resizes a component.
+     */
+    &.settings-faint {
+      pointer-events: none;
+      user-select: none;
+      opacity: 25%;
+    }
+
+    /**
+     * Settings upper bar, displaying the drag handle and panel title.
+     */
+    div.settings-bar {
+      flex-direction: row;
+      display: flex;
+      height: 24px;
+      width: 100%;
+
+      /**
+       * Bar grab handle.
+       */
+      span.bar-handle {
+        text-align: center;
+        user-select: none;
+        line-height: 24px;
+        font-size: 14px;
+        display: block;
+        cursor: grab;
+        width: 24px;
+
+        &:active { cursor: grabbing }
+      }
+
+      /**
+       * Bar title.
+       */
+      span.bar-title {
+        text-transform: uppercase;
+        color: var(--accent);
+        padding-right: 4px;
+        width: fit-content;
+        text-align: center;
+        margin-left: auto;
+        line-height: 24px;
+        font-size: 14px;
+        display: block;
+        height: 24px;
+      }
+    }
+  }
 }

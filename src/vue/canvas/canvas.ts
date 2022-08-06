@@ -129,6 +129,30 @@ interface ComponentStateMouse {
 }
 
 /**
+ * Settings panel data.
+ */
+interface ComponentStateSettings {
+
+    /**
+     * Denotes wether or not the settings component is being panned or not.
+     * @type {boolean}
+     */
+    active: boolean;
+
+    /**
+     * X position of the settings panel.
+     * @type {number}
+     */
+    x: number;
+
+    /**
+     * Y position of the settings panel.
+     * @type {number}
+     */
+    y: number;
+}
+
+/**
  * Comonent internal state.
  */
 interface ComponentState {
@@ -168,6 +192,12 @@ interface ComponentState {
      * @type {ComponentStateMouse}
      */
     mouse: ComponentStateMouse;
+
+    /**
+     * Settings panel state data.
+     * @type {ComponentStateSettings}
+     */
+    settings: ComponentStateSettings;
 }
 
 /**
@@ -177,8 +207,15 @@ interface ComponentData {
 
     /**
      * An array containing all tracked 
+     * @type {Array<TrackedItem>}
      */
     items: TrackedItem[];
+
+    /**
+     * Settings panel element.
+     * @type {HTMLElement}
+     */
+    panel?: HTMLElement;
 }
 
 /**
@@ -198,6 +235,10 @@ enum Handle {
 // Middle drag handle
 
 const CLASS_HANDLE_DRAG = 'handle-drag';
+
+// Settings panel drag handle
+
+const SETTINGS_PANEL_DRAG = 'bar-handle';
 
 // All known classes
 
@@ -232,20 +273,36 @@ export default defineComponent({
 
         const edit = true;
 
-        const x = 0;
+        const mouse_x = 0;
+
+        const mouse_y = 0;
+
+        // Data constants
+
+        const panel = undefined;
+
+        const items: TrackedItem[] = [];
+
+        // Settings panel constants
+
+        const active = false;
 
         const y = 0;
+
+        const x = 0;
 
         // Assembled sub-objects
 
         const mouse: ComponentStateMouse = {
+            x: mouse_x,
+            y: mouse_y
+        };
+
+        const settings: ComponentStateSettings = {
+            active,
             x,
             y
         };
-
-        // Data constants
-
-        const items: TrackedItem[] = [];
 
         // Populate items with prop data
 
@@ -277,6 +334,7 @@ export default defineComponent({
         // Final state & data objects
 
         const state: ComponentState = {
+            settings,
             resizing,
             dragging,
             mouse,
@@ -284,6 +342,7 @@ export default defineComponent({
         };
 
         const data: ComponentData = {
+            panel,
             items
         };
 
@@ -294,9 +353,21 @@ export default defineComponent({
         document.documentElement.addEventListener('mousedown', this.handle_down, true);
         document.documentElement.addEventListener('mousemove', this.handle_move, true);
         document.documentElement.addEventListener('mouseup',   this.handle_up,   true);
+
+        this.mount_settings_panel();
     },
 
     methods: {
+
+        mount_settings_panel() {
+
+            if (!this.componentCanvasStore.edit) return;
+
+            this.data.panel = this.$refs.panel as HTMLElement;
+
+            this.state.settings.y = (document.documentElement.clientHeight / 2) - (this.data.panel.clientHeight / 2);
+            this.state.settings.x = document.documentElement.clientWidth - this.data.panel.clientWidth - EDGE_PADDING;
+        },
 
         handle_down(event: MouseEvent) {
 
@@ -308,7 +379,7 @@ export default defineComponent({
                 this.state.mouse.y = event.clientY;
 
                 // Move the dragged thing
-                if (target.classList.contains(CLASS_HANDLE_DRAG)) {
+                if (target.classList.contains(CLASS_HANDLE_DRAG) && !target.classList.contains(SETTINGS_PANEL_DRAG)) {
                     this.state.dragging = true;
 
                     if (target.parentElement?.parentElement) for (const item of this.data.items) if (target.parentElement.parentElement.classList.contains(item.id)) {
@@ -318,6 +389,10 @@ export default defineComponent({
                         break;
                     }
                 }
+
+                // Handle settings panel panning
+                else if (target.classList.contains(SETTINGS_PANEL_DRAG) && !target.classList.contains(CLASS_HANDLE_DRAG))
+                    this.state.settings.active = true;
 
                 // Resize whatever we're handling right now
                 else for (let i = 0; i < target.classList.length; i++) {
@@ -343,13 +418,10 @@ export default defineComponent({
 
         handle_move(event: MouseEvent) {
 
-            // Do nothing if we don't have a target element
-            if (!this.state.active) return;
-
             this.state.mouse.x = event.clientX;
             this.state.mouse.y = event.clientY;
 
-            if (this.state.resizing) switch(this.state.handle) {
+            if (this.state.active && this.state.resizing) switch(this.state.handle) {
 
                 case Handle.TOP_LEFT: {
 
@@ -518,7 +590,7 @@ export default defineComponent({
             }
 
             // Move target element around
-            else if (this.state.dragging) {
+            else if (this.state.active && this.state.dragging) {
 
                 const parent = this.$el as Element;
 
@@ -538,6 +610,16 @@ export default defineComponent({
 
                 if (allowed_left) this.state.active.position.x = left;
                 if (allowed_top)  this.state.active.position.y = top;
+            }
+
+            // Move settings panel around
+            else if (this.state.settings.active) {
+
+                const X_OFFSET = 18;
+                const Y_OFFSET = 20;
+
+                this.state.settings.x = this.state.mouse.x - X_OFFSET;
+                this.state.settings.y = this.state.mouse.y - Y_OFFSET;
             }
         },
 
@@ -574,6 +656,9 @@ export default defineComponent({
                 }
             }
 
+            if (this.state.settings.active)
+                this.state.settings.active = false;
+
             if (this.state.dragging)
                 this.state.dragging = false;
 
@@ -588,7 +673,16 @@ export default defineComponent({
         }
     },
 
-    computed: mapState(['eventBusStore', 'settingsStore']),
+    watch: {
+        'componentCanvasStore.edit': {
+
+            handler() { this.$nextTick(() => this.mount_settings_panel()); },
+
+            immediate: true
+        }
+    },
+
+    computed: mapState(['eventBusStore', 'settingsStore', 'componentCanvasStore']),
 
     props: ['items']
 });

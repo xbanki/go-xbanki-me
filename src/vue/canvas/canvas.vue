@@ -1,5 +1,37 @@
 <template>
     <main class="component-canvas">
+
+        <!-- Canvas settings panel //-->
+        <section
+
+            v-bind:style="{
+
+                'left': `${state.settings.x}px`,
+
+                'top': `${state.settings.y}px`
+            }"
+
+            v-bind:class="{ 'settings-faint': state.dragging || state.resizing }"
+
+            v-if="componentCanvasStore.edit"
+
+            class="canvas-settings"
+
+            ref="panel"
+            
+        >
+            
+            <!-- Settings panel titlebar //-->
+            <div class="settings-bar">
+
+                <!-- Drag handle //-->
+                <span class="bar-handle"> ☰ </span>
+
+                <!-- Panel title //-->
+                <span class="bar-title"> UI Layout </span>
+            </div>
+        </section>
+
         <component-draggable
 
             v-bind:style="{
