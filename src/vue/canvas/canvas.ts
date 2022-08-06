@@ -13,6 +13,14 @@ import componentDraggable from './draggable/draggable.vue';
 import store              from '@/lib/store';
 
 /**
+ * Reset button labels.
+ */
+enum ResetLabels {
+    DEFAULT = 'Revert Changes',
+    CONFIRM = 'Confirm?'
+}
+
+/**
  * Minimum or maximum sizing data for raw items.
  */
 export interface DraggableItemRawSizes {
@@ -138,6 +146,11 @@ interface ComponentStateSettings {
      * @type {boolean}
      */
     active: boolean;
+
+    /**
+     * Currently active settings panel reset label.
+     */
+    label: ResetLabels;
 
     /**
      * X position of the settings panel.
@@ -287,6 +300,8 @@ export default defineComponent({
 
         const active = false;
 
+        const label = ResetLabels.DEFAULT;
+
         const y = 0;
 
         const x = 0;
@@ -300,6 +315,7 @@ export default defineComponent({
 
         const settings: ComponentStateSettings = {
             active,
+            label,
             x,
             y
         };
@@ -623,10 +639,25 @@ export default defineComponent({
             }
         },
 
-        /**
-         * Handles the mouse click exit event, setting all states to initial.
-         */
         handle_up() {
+
+            if (this.state.settings.active)
+                this.state.settings.active = false;
+
+            if (this.state.dragging)
+                this.state.dragging = false;
+
+            if (this.state.resizing)
+                this.state.resizing = false;
+
+            if (this.state.handle)
+                this.state.handle = undefined;
+
+            if (this.state.active)
+                this.state.active = undefined;
+        },
+
+        handle_click_confirm() {
 
             for (const item of this.data.items) {
 
@@ -656,20 +687,39 @@ export default defineComponent({
                 }
             }
 
-            if (this.state.settings.active)
-                this.state.settings.active = false;
+            store.commit('componentCanvasStore/UPDATE_EDIT_MODE', false);
 
-            if (this.state.dragging)
-                this.state.dragging = false;
+            this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true));
+        },
 
-            if (this.state.resizing)
-                this.state.resizing = false;
+        handle_click_reset() {
 
-            if (this.state.handle)
-                this.state.handle = undefined;
+            if (this.state.settings.label == ResetLabels.DEFAULT)
+                this.state.settings.label = ResetLabels.CONFIRM;
 
-            if (this.state.active)
-                this.state.active = undefined;
+            else if (this.state.settings.label == ResetLabels.CONFIRM) {
+
+                const typed_store = store as Store<{ settingsStore: ModuleState }>;
+
+                for (const item of this.data.items) {
+
+                    const source = typed_store.state.settingsStore.canvas_items[item.id];
+
+                    if (source) {
+                        item.position.x = source.x;
+                        item.position.y = source.y;
+
+                        item.size.h = source.height;
+                        item.size.w = source.width;
+                    }
+                }
+
+                this.state.settings.label = ResetLabels.DEFAULT;
+
+                store.commit('componentCanvasStore/UPDATE_EDIT_MODE', false);
+
+                this.$nextTick(() => store.commit('componentSettingsStore/UPDATE_RENDER_STATE', true));
+            }
         }
     },
 

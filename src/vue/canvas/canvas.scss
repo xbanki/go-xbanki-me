@@ -24,6 +24,7 @@ main.component-canvas {
    * Canvas settings panel.
    */
   section.canvas-settings {
+    transition: opacity linear 0.06s;
     padding: $settings-padding;
     width: $settings-width;
     flex-direction: column;
@@ -46,6 +47,7 @@ main.component-canvas {
      */
     div.settings-bar {
       flex-direction: row;
+      margin-bottom: 16px;
       display: flex;
       height: 24px;
       width: 100%;
@@ -79,6 +81,28 @@ main.component-canvas {
         font-size: 14px;
         display: block;
         height: 24px;
+      }
+    }
+
+    /**
+     * Settings confirmation controls wrapper.
+     */
+    div.settings-buttons {
+      box-sizing: border-box;
+      flex-direction: row;
+      display: flex;
+      height: 28px;
+      width: 100%;
+
+      /**
+      * Reset & confirm buttons.
+      */
+      button.buttons-confirm, button.buttons-reset {
+        margin-right: 8px;
+        height: 100%;
+        flex: 1;
+
+        &:last-of-type { margin-right: unset }
       }
     }
   }

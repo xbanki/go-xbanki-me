@@ -30,6 +30,16 @@
                 <!-- Panel title //-->
                 <span class="bar-title"> UI Layout </span>
             </div>
+
+            <!-- Settings reset & confirmation buttons //-->
+            <div class="settings-buttons">
+                
+                <!-- Reset all edits button //-->
+                <button class="buttons-reset" v-on:click="handle_click_reset"> {{ state.settings.label }} </button>
+
+                <!-- Confirm edits button //-->
+                <button class="buttons-confirm" v-on:click="handle_click_confirm"> Confirm </button>
+            </div>
         </section>
 
         <component-draggable
