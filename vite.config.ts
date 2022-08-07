@@ -33,6 +33,6 @@ export default defineConfig(
             }
         },
 
-        server: { open: true, strictPort: true }
+        server: { open: true, strictPort: true, host: true }
     }
 );
