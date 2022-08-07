@@ -390,14 +390,14 @@ export default defineComponent({
 
             const id = item.id;
 
-            const min_w = item.min?.w ?? 0;
-            const min_h = item.min?.h ?? 0;
+            const min_w = Math.round(item.min?.w ?? 0);
+            const min_h = Math.round(item.min?.h ?? 0);
 
-            const x = target_data.x;
-            const y = target_data.y;
+            const x = Math.round(target_data.x);
+            const y = Math.round(target_data.y);
 
-            const h = target_data.height;
-            const w = target_data.width;
+            const h = Math.round(target_data.height);
+            const w = Math.round(target_data.width);
 
             const component = item.component;
             const editable  = item.editable;
@@ -443,8 +443,11 @@ export default defineComponent({
 
             this.data.panel = this.$refs.panel as HTMLElement;
 
-            this.state.settings.y = (document.documentElement.clientHeight / 2) - (this.data.panel.clientHeight / 2);
-            this.state.settings.x = document.documentElement.clientWidth - this.data.panel.clientWidth - EDGE_PADDING;
+            const x = document.documentElement.clientWidth - this.data.panel.clientWidth - EDGE_PADDING;
+            const y = (document.documentElement.clientHeight / 2) - (this.data.panel.clientHeight / 2);
+
+            this.state.settings.x = Math.round(x);
+            this.state.settings.y = Math.round(y);
         },
 
         handle_grid(state: boolean) {
@@ -455,8 +458,8 @@ export default defineComponent({
                 const y = document.documentElement.clientHeight / 2;
                 const x = document.documentElement.clientWidth  / 2;
 
-                this.state.settings.grid.x = x;
-                this.state.settings.grid.y = y;
+                this.state.settings.grid.x = Math.round(x);
+                this.state.settings.grid.y = Math.round(y);
 
                 this.state.settings.grid.enabled = true;
             }
@@ -476,8 +479,8 @@ export default defineComponent({
 
             if (this.state.edit && target && this.$el.contains(target)) {
 
-                this.state.mouse.x = event.clientX;
-                this.state.mouse.y = event.clientY;
+                this.state.mouse.x = Math.round(event.clientX);
+                this.state.mouse.y = Math.round(event.clientY);
 
                 // Move the dragged thing
                 if (target.classList.contains(CLASS_HANDLE_DRAG) && !target.classList.contains(SETTINGS_PANEL_DRAG)) {
@@ -519,8 +522,8 @@ export default defineComponent({
 
         handle_move(event: MouseEvent) {
 
-            this.state.mouse.x = event.clientX;
-            this.state.mouse.y = event.clientY;
+            this.state.mouse.x = Math.round(event.clientX);
+            this.state.mouse.y = Math.round(event.clientY);
 
             if (this.state.active && this.state.resizing) switch(this.state.handle) {
 
@@ -542,12 +545,12 @@ export default defineComponent({
                         allowed_top = false;
 
                     // Vertical
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = Math.round(height);
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = Math.round(top);
 
                     // Horizontal
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = Math.round(width);
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
 
                     break;
                 }
@@ -562,8 +565,8 @@ export default defineComponent({
                     if (top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = Math.round(height);
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = Math.round(top);
 
                     break;
                 }
@@ -585,10 +588,10 @@ export default defineComponent({
                     if (!this.state.settings.collisions || top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
-                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = Math.round(width);
 
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = Math.round(height);
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = Math.round(top);
 
                     break;
                 }
@@ -603,8 +606,8 @@ export default defineComponent({
                     if (left <= EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_left = false;
 
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = Math.round(width);
 
                     break;
                 }
@@ -620,7 +623,7 @@ export default defineComponent({
                     if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_right = false;
 
-                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = Math.round(width);
 
                     break;
                 }
@@ -642,10 +645,10 @@ export default defineComponent({
                     if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
-                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = Math.round(height);
 
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = Math.round(width);
 
                     break;
                 }
@@ -661,7 +664,7 @@ export default defineComponent({
                     if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
-                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = Math.round(height);
 
                     break;
                 }
@@ -682,9 +685,9 @@ export default defineComponent({
                     if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_width = false;
 
-                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = Math.round(height);
 
-                    if (!this.state.settings.collisions || allowed_width) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_width) this.state.active.size.w = Math.round(width);
 
                     break;
                 }
@@ -709,8 +712,8 @@ export default defineComponent({
                 if (top <= EDGE_PADDING || height >= parent.clientHeight - EDGE_PADDING)
                     allowed_top = false;
 
-                if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
-                if (!this.state.settings.collisions || allowed_top)  this.state.active.position.y = top;
+                if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
+                if (!this.state.settings.collisions || allowed_top)  this.state.active.position.y = Math.round(top);
             }
 
             // Move settings panel around
@@ -719,8 +722,8 @@ export default defineComponent({
                 const X_OFFSET = 18;
                 const Y_OFFSET = 20;
 
-                this.state.settings.x = this.state.mouse.x - X_OFFSET;
-                this.state.settings.y = this.state.mouse.y - Y_OFFSET;
+                this.state.settings.x = Math.round(this.state.mouse.x - X_OFFSET);
+                this.state.settings.y = Math.round(this.state.mouse.y - Y_OFFSET);
             }
         },
 
