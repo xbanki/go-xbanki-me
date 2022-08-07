@@ -31,6 +31,50 @@
                 <span class="bar-title"> UI Layout </span>
             </div>
 
+            <!-- Collisions setting //-->
+            <div class="settings-collisions" v-on:click="state.settings.collisions = !(state.settings.collisions)">
+
+                <!-- Setting ckecbox //-->
+                <input
+
+                    v-model="state.settings.collisions"
+                
+                    class="collisions-checkbox"
+
+                    name="settings-collisions"
+
+                    id="settings-collisions"
+
+                    type="checkbox"  
+                
+                >
+
+                <!-- Option display label //-->
+                <span class="collisions-label"> Enable collisions </span>
+            </div>
+
+            <!-- Collisions setting //-->
+            <div class="settings-snap" v-on:click="state.settings.snap = !(state.settings.snap)">
+
+                <!-- Setting ckecbox //-->
+                <input
+
+                    v-model="state.settings.snap"
+                
+                    class="snap-checkbox"
+
+                    name="settings-snap"
+
+                    id="settings-snap"
+
+                    type="checkbox"
+                
+                >
+
+                <!-- Option display label //-->
+                <span class="snap-label"> Snap to grid </span>
+            </div>
+
             <!-- Settings reset & confirmation buttons //-->
             <div class="settings-buttons">
                 

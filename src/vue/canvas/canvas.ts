@@ -142,6 +142,12 @@ interface ComponentStateMouse {
 interface ComponentStateSettings {
 
     /**
+     * Denotes wether or not collisions are enabled.
+     * @type {boolean}
+     */
+    collisions: boolean;
+
+    /**
      * Denotes wether or not the settings component is being panned or not.
      * @type {boolean}
      */
@@ -149,8 +155,15 @@ interface ComponentStateSettings {
 
     /**
      * Currently active settings panel reset label.
+     * @enum {ResetLabels}
      */
     label: ResetLabels;
+
+    /**
+     * Snap-to-grid state.
+     * @type {boolean}
+     */
+    snap: boolean;
 
     /**
      * X position of the settings panel.
@@ -298,9 +311,14 @@ export default defineComponent({
 
         // Settings panel constants
 
+        const collisions = true;
+
+
         const active = false;
 
         const label = ResetLabels.DEFAULT;
+
+        const snap = false;
 
         const y = 0;
 
@@ -314,8 +332,10 @@ export default defineComponent({
         };
 
         const settings: ComponentStateSettings = {
+            collisions,
             active,
             label,
+            snap,
             x,
             y
         };
