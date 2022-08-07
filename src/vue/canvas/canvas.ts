@@ -137,9 +137,45 @@ interface ComponentStateMouse {
 }
 
 /**
+ * Grid state data.
+ */
+interface ComponentStateSettingsGrid {
+
+    /**
+     * Enables the grid snapping.
+     * @type {boolean}
+     */
+    enabled: boolean;
+
+    /**
+     * Number of pixels (both in X & Y directions) that make up one grid cell.
+     * @type {number}
+     */
+    step: number;
+
+    /**
+     * The center point for the X axis.
+     * @type {number | undefined}
+     */
+    x?: number;
+
+    /**
+     * The center point for the Y axis.
+     * @type {number | undefined}
+     */
+    y?: number;
+}
+
+/**
  * Settings panel data.
  */
 interface ComponentStateSettings {
+
+    /**
+     * Grid snapping settings.
+     * @type {ComponentStateSettingsGrid}
+     */
+    grid: ComponentStateSettingsGrid;
 
     /**
      * Denotes wether or not collisions are enabled.
@@ -158,12 +194,6 @@ interface ComponentStateSettings {
      * @enum {ResetLabels}
      */
     label: ResetLabels;
-
-    /**
-     * Snap-to-grid state.
-     * @type {boolean}
-     */
-    snap: boolean;
 
     /**
      * X position of the settings panel.
@@ -313,12 +343,17 @@ export default defineComponent({
 
         const collisions = true;
 
+        const enabled = false;
 
         const active = false;
 
+        const grid_y = undefined;
+
+        const grid_x = undefined;
+
         const label = ResetLabels.DEFAULT;
 
-        const snap = false;
+        const step = 16;
 
         const y = 0;
 
@@ -331,11 +366,18 @@ export default defineComponent({
             y: mouse_y
         };
 
+        const grid: ComponentStateSettingsGrid = {
+            x: grid_x,
+            y: grid_y,
+            enabled,
+            step
+        };
+
         const settings: ComponentStateSettings = {
             collisions,
             active,
             label,
-            snap,
+            grid,
             x,
             y
         };
@@ -403,6 +445,29 @@ export default defineComponent({
 
             this.state.settings.y = (document.documentElement.clientHeight / 2) - (this.data.panel.clientHeight / 2);
             this.state.settings.x = document.documentElement.clientWidth - this.data.panel.clientWidth - EDGE_PADDING;
+        },
+
+        handle_grid(state: boolean) {
+
+            // Set up grid values
+            if (state) {
+
+                const y = document.documentElement.clientHeight / 2;
+                const x = document.documentElement.clientWidth  / 2;
+
+                this.state.settings.grid.x = x;
+                this.state.settings.grid.y = y;
+
+                this.state.settings.grid.enabled = true;
+            }
+
+            // Reset grid instance values
+            else {
+                this.state.settings.grid.x = undefined;
+                this.state.settings.grid.y = undefined;
+
+                this.state.settings.grid.enabled = false;
+            }
         },
 
         handle_down(event: MouseEvent) {
@@ -477,12 +542,12 @@ export default defineComponent({
                         allowed_top = false;
 
                     // Vertical
-                    if (allowed_top) this.state.active.size.h = height;
-                    if (allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
 
                     // Horizontal
-                    if (allowed_left) this.state.active.size.w = width;
-                    if (allowed_left) this.state.active.position.x = left;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
 
                     break;
                 }
@@ -497,8 +562,8 @@ export default defineComponent({
                     if (top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
-                    if (allowed_top) this.state.active.size.h = height;
-                    if (allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
 
                     break;
                 }
@@ -517,13 +582,13 @@ export default defineComponent({
                     if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_right = false;
 
-                    if (top <= EDGE_PADDING || height <= this.state.active.min.h)
+                    if (!this.state.settings.collisions || top <= EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_top = false;
 
-                    if (allowed_right) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = width;
 
-                    if (allowed_top) this.state.active.size.h = height;
-                    if (allowed_top) this.state.active.position.y = top;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = top;
 
                     break;
                 }
@@ -538,8 +603,8 @@ export default defineComponent({
                     if (left <= EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_left = false;
 
-                    if (allowed_left) this.state.active.position.x = left;
-                    if (allowed_left) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
 
                     break;
                 }
@@ -555,7 +620,7 @@ export default defineComponent({
                     if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_right = false;
 
-                    if (allowed_right) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = width;
 
                     break;
                 }
@@ -577,10 +642,10 @@ export default defineComponent({
                     if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
-                    if (allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
 
-                    if (allowed_left) this.state.active.position.x = left;
-                    if (allowed_left) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
+                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = width;
 
                     break;
                 }
@@ -596,7 +661,7 @@ export default defineComponent({
                     if (height + this.state.active.position.y >= parent.clientHeight - EDGE_PADDING || height <= this.state.active.min.h)
                         allowed_height = false;
 
-                    if (allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
 
                     break;
                 }
@@ -617,9 +682,9 @@ export default defineComponent({
                     if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
                         allowed_width = false;
 
-                    if (allowed_height) this.state.active.size.h = height;
+                    if (!this.state.settings.collisions || allowed_height) this.state.active.size.h = height;
 
-                    if (allowed_width) this.state.active.size.w = width;
+                    if (!this.state.settings.collisions || allowed_width) this.state.active.size.w = width;
 
                     break;
                 }
@@ -644,8 +709,8 @@ export default defineComponent({
                 if (top <= EDGE_PADDING || height >= parent.clientHeight - EDGE_PADDING)
                     allowed_top = false;
 
-                if (allowed_left) this.state.active.position.x = left;
-                if (allowed_top)  this.state.active.position.y = top;
+                if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = left;
+                if (!this.state.settings.collisions || allowed_top)  this.state.active.position.y = top;
             }
 
             // Move settings panel around
@@ -744,6 +809,14 @@ export default defineComponent({
     },
 
     watch: {
+
+        'state.settings.grid.enabled': {
+
+            handler(state: boolean) { if (state) this.handle_grid(state); },
+
+            immediate: true
+        },
+
         'componentCanvasStore.edit': {
 
             handler() { this.$nextTick(() => this.mount_settings_panel()); },

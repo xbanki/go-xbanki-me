@@ -54,12 +54,12 @@
             </div>
 
             <!-- Collisions setting //-->
-            <div class="settings-snap" v-on:click="state.settings.snap = !(state.settings.snap)">
+            <div class="settings-snap" v-on:click="state.settings.grid.enabled = !(state.settings.grid.enabled)">
 
                 <!-- Setting ckecbox //-->
                 <input
 
-                    v-model="state.settings.snap"
+                    v-model="state.settings.grid.enabled"
                 
                     class="snap-checkbox"
 
