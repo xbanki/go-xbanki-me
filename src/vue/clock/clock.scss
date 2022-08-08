@@ -1,14 +1,30 @@
+/**
+ * The clock component renders the current moment in time in a format
+ * selected by the user in an efficient manner.
+ */
 main.component-clock {
-  align-items: center;
   flex-direction: column;
-  height: fit-content;
-  width: fit-content;
+  align-items: center;
+  color: transparent;
   display: flex;
+  height: 100%;
+  width: 100%;
 
+  /**
+   * Actual clock state renderer.
+   */
   span.clock-time {
-    text-shadow: var(--color) 0px 0px 4px;
-    color: var(--bg);
+    transition: all 0.12s linear;
     font-size: 62px;
     display: block;
+
+    /**
+     * Without this class, the clock renderer is completely transparent
+     * making it invisible.
+     */
+    &.revealed {
+      text-shadow: var(--color) 0px 0px 4px;
+      color: var(--bg);
+    }
   }
 }
