@@ -266,7 +266,7 @@ const store: { state: ModuleState, [name: string]: any } = {
         canvas_items: {
 
             // @TODO(xbanki): Replace these values with actual data!
-            'clock-component': { x: 16, y: 16, width: 32, height: 32 }
+            'clock-component': { x: -1, y: -1, width: 320, height: 64 }
         },
 
         date_format_inactive: [

@@ -386,6 +386,38 @@ export default defineComponent({
 
         if (this.$props.items) for (const item of this.$props.items as DraggableItemRaw[]) {
 
+            const get_initial_clock_position = (axis: boolean) => {
+
+                const target_data = typed_store.state.settingsStore.canvas_items[item.id];
+
+                if (axis) {
+
+                    const name = item.id;
+
+                    const height = Math.round(target_data.height);
+                    const width  = Math.round(target_data.width);
+
+                    const x = Math.round(document.documentElement.clientWidth / 2);
+                    const y = Math.round(target_data.y);
+
+                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+
+                    return x;
+                }
+
+                const name = item.id;
+
+                const height = Math.round(target_data.height);
+                const width  = Math.round(target_data.width);
+
+                const y = Math.round(document.documentElement.clientHeight / 2);
+                const x = Math.round(target_data.x);
+
+                store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+
+                return y;
+            };
+
             const target_data = typed_store.state.settingsStore.canvas_items[item.id];
 
             const id = item.id;
@@ -393,11 +425,11 @@ export default defineComponent({
             const min_w = Math.round(item.min?.w ?? 0);
             const min_h = Math.round(item.min?.h ?? 0);
 
-            const x = Math.round(target_data.x);
-            const y = Math.round(target_data.y);
-
             const h = Math.round(target_data.height);
             const w = Math.round(target_data.width);
+
+            const x = target_data.x == -1 ? get_initial_clock_position(true)  : Math.round(target_data.x);
+            const y = target_data.y == -1 ? get_initial_clock_position(false) : Math.round(target_data.y);
 
             const component = item.component;
             const editable  = item.editable;
