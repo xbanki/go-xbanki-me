@@ -56,6 +56,28 @@ export default class TimerManager {
     }
 
     /**
+     * Removes a timer group from the active pool, disposing of any functions that may
+     * have been bound to the instance.
+     * @param {string} group_name The group which to dispose
+     */
+    public static RemoveTimerGroup(group_name: string) {
+
+        // Allow only existing groups to be deleted
+        if (!this.timer_groups.has(group_name)) {
+
+            if (config.dev_mode) console.error(`Tried to remove non-existent group: ${group_name}`);
+
+            return;
+        }
+
+        // Dispose of group functions
+        this.timer_group_functions.delete(group_name);
+
+        // Dispose of group itself
+        this.timer_groups.delete(group_name);
+    }
+
+    /**
      * Removes a function from the active timer group pool, without disposing of the
      * function itself.
      * @param {string} group_name Group name, which to remove the function from
