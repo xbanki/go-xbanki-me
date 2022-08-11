@@ -3,10 +3,9 @@
  * selected by the user in an efficient manner.
  */
 main.component-clock {
-  flex-direction: column;
   align-items: center;
   color: transparent;
-  display: flex;
+  resize: both;
   height: 100%;
   width: 100%;
 
@@ -14,9 +13,17 @@ main.component-clock {
    * Actual clock state renderer.
    */
   span.clock-time {
-    transition: all 0.12s linear;
+    transition: text-shadow 0.12s, color 0.12s linear;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    height: fit-content;
+    width: fit-content;
+    position: relative;
+    line-height: 62px;
     font-size: 62px;
     display: block;
+    left: 50%;
+    top: 50%;
 
     /**
      * Without this class, the clock renderer is completely transparent

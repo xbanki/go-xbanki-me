@@ -1,6 +1,6 @@
 import { DateTime }        from 'luxon';
 import { mapState }        from 'vuex';
-import { defineComponent } from 'vue';
+import { defineComponent, render } from 'vue';
 
 import { FormatToken }  from '@/lib/store_settings';
 import { TimerManager } from '@/lib/timers';
@@ -94,13 +94,18 @@ export default defineComponent({
     },
 
     mounted() {
-        this.data.observer = new ResizeObserver(this.handle_parent_resize);
-        this.data.observer.observe(this.$el);
-    },
+        this.$nextTick(
+            () => {
+
+                this.data.observer = new ResizeObserver(this.handle_parent_resize);
+
+                this.handle_parent_resize();
+            });
+        },
 
     methods: {
 
-        update_timer_updater(state: FormatToken[]) {
+        update_time_renderer(state: FormatToken[]) {
 
             let target_group = TokenUpdateType.LATE;
 
@@ -192,7 +197,18 @@ export default defineComponent({
         },
 
         handle_parent_resize() {
-            this;
+
+            const renderer = this.$refs.renderer as HTMLSpanElement;
+            const parent   = this.$el            as HTMLElement;
+
+            if (!renderer || !parent) return;
+
+            const scale = Math.min(
+                parent.clientWidth  / renderer.clientWidth,
+                parent.clientHeight / renderer.clientHeight
+            );
+
+            renderer.style.transform = `translate( -50%, -50%) scale(${scale})`;
         }
     },
 
@@ -200,13 +216,29 @@ export default defineComponent({
 
         'settingsStore.time_format_active': {
 
-            handler(state: FormatToken[]) { this.update_timer_updater(state); },
+            handler(state: FormatToken[]) { this.update_time_renderer(state); },
 
             immediate: true
         },
 
-        'settingsStore.time_convention'() { this.update_timer_updater(this.settingsStore.time_format_active); }
+        'componentCanvasStore.edit': {
+
+            handler(state: boolean) {
+
+                if (!this.data.observer) return;
+
+                if (state)
+                    this.data.observer.observe(this.$el);
+
+                else
+                    this.data.observer.unobserve(this.$el);
+            },
+
+            immediate: true
+        },
+
+        'settingsStore.time_convention'() { this.update_time_renderer(this.settingsStore.time_format_active); }
     },
 
-    computed: mapState(['settingsStore'])
+    computed: mapState(['settingsStore', 'componentCanvasStore'])
 });

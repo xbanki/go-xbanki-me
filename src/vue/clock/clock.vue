@@ -3,7 +3,7 @@
     <main class="component-clock">
 
         <!-- CLock current time display //-->
-        <span class="clock-time" v-bind:class="{ revealed: state.render }"> {{ state.time }} </span>
+        <span class="clock-time" v-bind:class="{ revealed: state.render }" ref="renderer"> {{ state.time }} </span>
     </main>
 </template>
 
