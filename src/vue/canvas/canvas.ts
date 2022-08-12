@@ -397,7 +397,7 @@ export default defineComponent({
                     const height = Math.round(target_data.height);
                     const width  = Math.round(target_data.width);
 
-                    const x = Math.round(document.documentElement.clientWidth / 2);
+                    const x = Math.round((document.documentElement.clientWidth - width) / 2);
                     const y = Math.round(target_data.y);
 
                     store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
@@ -410,7 +410,7 @@ export default defineComponent({
                 const height = Math.round(target_data.height);
                 const width  = Math.round(target_data.width);
 
-                const y = Math.round(document.documentElement.clientHeight / 2);
+                const y = Math.round((document.documentElement.clientHeight - height) / 2);
                 const x = Math.round(target_data.x);
 
                 store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
