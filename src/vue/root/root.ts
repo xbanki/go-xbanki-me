@@ -8,6 +8,7 @@ import backgroundComponent from '@/vue/background/background.vue';
 import settingsComponent   from '@/vue/settings/settings.vue';
 import canvasComponent     from '@/vue/canvas/canvas.vue';
 import clockComponent      from '@/vue/clock/clock.vue';
+import dateComponent       from '@/vue/date/date.vue';
 import store               from '@/lib/store';
 
 /**
@@ -51,7 +52,8 @@ export default defineComponent({
         // State & data constants
 
         const items: DraggableItemRaw[] = [
-            { id: 'clock-component', editable: true, component: markRaw(clockComponent) }
+            { id: 'clock-component', editable: true, component: markRaw(clockComponent) },
+            { id: 'date-component', editable: true, component: markRaw(dateComponent) }
         ];
 
         const match_os_theme = false;

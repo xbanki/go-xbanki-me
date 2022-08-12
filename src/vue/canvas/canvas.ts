@@ -386,36 +386,79 @@ export default defineComponent({
 
         if (this.$props.items) for (const item of this.$props.items as DraggableItemRaw[]) {
 
-            const get_initial_clock_position = (axis: boolean) => {
+            const get_initial_positions = (value: number, axis: boolean): number => {
 
-                const target_data = typed_store.state.settingsStore.canvas_items[item.id];
+                const get_initial_clock_position = (axis: boolean) => {
 
-                if (axis) {
+                    const target_data = typed_store.state.settingsStore.canvas_items[item.id];
+
+                    if (axis) {
+
+                        const name = item.id;
+
+                        const height = Math.round(target_data.height);
+                        const width  = Math.round(target_data.width);
+
+                        const x = Math.round((document.documentElement.clientWidth - width) / 2);
+                        const y = Math.round(target_data.y);
+
+                        store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+
+                        return x;
+                    }
 
                     const name = item.id;
 
                     const height = Math.round(target_data.height);
                     const width  = Math.round(target_data.width);
 
-                    const x = Math.round((document.documentElement.clientWidth - width) / 2);
-                    const y = Math.round(target_data.y);
+                    const y = Math.round((document.documentElement.clientHeight - height) / 2);
+                    const x = Math.round(target_data.x);
 
                     store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
 
-                    return x;
-                }
+                    return y;
+                };
 
-                const name = item.id;
+                const get_initial_date_position = (axis: boolean) => {
 
-                const height = Math.round(target_data.height);
-                const width  = Math.round(target_data.width);
+                    const target_data = typed_store.state.settingsStore.canvas_items[item.id];
 
-                const y = Math.round((document.documentElement.clientHeight - height) / 2);
-                const x = Math.round(target_data.x);
+                    if (axis) {
 
-                store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+                        const name = item.id;
 
-                return y;
+                        const height = Math.round(target_data.height);
+                        const width  = Math.round(target_data.width);
+
+                        const x = Math.round((document.documentElement.clientWidth - width) / 2);
+                        const y = Math.round(target_data.y);
+
+                        store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+
+                        return x;
+                    }
+
+                    const name = item.id;
+
+                    const height = Math.round(target_data.height);
+                    const width  = Math.round(target_data.width);
+
+                    const y = Math.round(((document.documentElement.clientHeight - height) + 64) / 2);
+                    const x = Math.round(target_data.x);
+
+                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
+
+                    return y;
+                };
+
+                if (value == -1)
+                    return get_initial_clock_position(axis);
+
+                if (value == -2)
+                    return get_initial_date_position(axis);
+
+                return Math.round(value);
             };
 
             const target_data = typed_store.state.settingsStore.canvas_items[item.id];
@@ -428,8 +471,8 @@ export default defineComponent({
             const h = Math.round(target_data.height);
             const w = Math.round(target_data.width);
 
-            const x = target_data.x == -1 ? get_initial_clock_position(true)  : Math.round(target_data.x);
-            const y = target_data.y == -1 ? get_initial_clock_position(false) : Math.round(target_data.y);
+            const x = get_initial_positions(target_data.x, true);
+            const y = get_initial_positions(target_data.y, false);
 
             const component = item.component;
             const editable  = item.editable;

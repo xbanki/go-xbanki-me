@@ -1,5 +1,4 @@
 <template>
-
     <main class="component-clock">
 
         <!-- CLock current time display //-->

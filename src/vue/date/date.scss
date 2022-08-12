@@ -1,0 +1,36 @@
+/**
+ * The date component renders the current date with a format elected by the user.
+ */
+main.component-date {
+  align-items: center;
+  color: transparent;
+  resize: both;
+  height: 100%;
+  width: 100%;
+
+  /**
+   * Actual date state renderer.
+   */
+  span.date-display {
+    transition: text-shadow 0.12s, color 0.12s linear;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    height: fit-content;
+    width: fit-content;
+    position: relative;
+    line-height: 18px;
+    font-size: 18px;
+    display: block;
+    left: 50%;
+    top: 50%;
+
+    /**
+     * Without this class, the date renderer is completely transparent
+     * making it invisible.
+     */
+    &.revealed {
+      text-shadow: var(--color) 0px 0px 4px;
+      color: var(--bg);
+    }
+  }
+}

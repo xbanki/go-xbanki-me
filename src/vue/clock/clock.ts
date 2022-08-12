@@ -1,6 +1,6 @@
 import { DateTime }        from 'luxon';
 import { mapState }        from 'vuex';
-import { defineComponent, render } from 'vue';
+import { defineComponent } from 'vue';
 
 import { FormatToken }  from '@/lib/store_settings';
 import { TimerManager } from '@/lib/timers';

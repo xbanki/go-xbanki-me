@@ -264,9 +264,8 @@ const store: { state: ModuleState, [name: string]: any } = {
         time_display_format: 'HH:mm:ss',
 
         canvas_items: {
-
-            // @TODO(xbanki): Replace these values with actual data!
-            'clock-component': { x: -1, y: -1, width: 320, height: 64 }
+            'clock-component': { x: -1, y: -1, width: 320, height: 64 },
+            'date-component' : { x: -2, y: -2, width: 320, height: 18 }
         },
 
         date_format_inactive: [
