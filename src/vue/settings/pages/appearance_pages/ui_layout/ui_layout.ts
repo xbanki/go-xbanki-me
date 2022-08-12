@@ -1,11 +1,21 @@
 import { Store, mapState } from 'vuex';
 import { defineComponent } from 'vue';
 
+import get_initial_positions from '@/lib/get_canvas_positions';
+
 import { ModuleState as CanvasComponentState } from '@/lib/store_component_canvas';
 import { ModuleState as EventBusState }        from '@/lib/store_event_bus';
 import { CanvasItemData }                      from '@/lib/store_settings';
 
 import store from '@/lib/store';
+
+/**
+ * Reset UI layout button labels.
+ */
+enum ResetLabels {
+    DEFAULT = 'Reset UI Layout',
+    CONFIRM = 'Confirm?'
+}
 
 /**
  * Disabled state data.
@@ -35,6 +45,12 @@ interface ComponentState {
      * @type {ComponentStateDisabled}
      */
     disable: ComponentStateDisabled;
+
+    /**
+     * Reset button display label.
+     * @enum {ResetLabels}
+     */
+    label: ResetLabels;
 }
 
 /**
@@ -57,10 +73,15 @@ export default defineComponent({
 
         // Data constants
 
-        // @TODO(xbanki): Replace this with actual good defaults.
-        const defaults: Record<string, CanvasItemData> = { };
+
+        const defaults: Record<string, CanvasItemData> = {
+            'clock-component': { x: -1, y: -1, width: 320, height: 64 },
+            'date-component' : { x: -2, y: -2, width: 320, height: 18 }
+        };
 
         // Disable state constants
+
+        const label = ResetLabels.DEFAULT;
 
         const reset = typed_store.state.componentCanvasStore.dirty;
 
@@ -78,7 +99,8 @@ export default defineComponent({
         };
 
         const state: ComponentState = {
-            disable
+            disable,
+            label
         };
 
         return { state, data };
@@ -93,7 +115,38 @@ export default defineComponent({
             this.$nextTick(() => store.commit('componentCanvasStore/UPDATE_EDIT_MODE', true));
         },
 
-        handle_click_reset() { this; }
+        handle_click_reset() {
+
+            if (this.state.label == ResetLabels.DEFAULT)
+                this.state.label = ResetLabels.CONFIRM;
+
+            else if (this.state.label == ResetLabels.CONFIRM) {
+
+                for (const name of Object.keys(this.data.defaults)) {
+
+                    const current: CanvasItemData = this.settingsStore.canvas_items[name];
+                    const target = this.data.defaults[name];
+
+                    // Reset the component to defaults before applying correct positioning
+                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height: target.height, width: target.width, x: target.x, y: target.y } });
+
+                    const height = target.height;
+                    const width  = target.width;
+
+                    const y = get_initial_positions(target.y, name, false);
+                    const x = get_initial_positions(target.x, name, true);
+
+                    console.log(name, target.x,  x, target.y, y);
+
+                    const data: CanvasItemData = { height, width, x, y };
+
+                    if (data != current)
+                        store.dispatch('settingsStore/UpdateCanvasItem', { name, data });
+                }
+
+                this.state.label = ResetLabels.DEFAULT;
+            }
+        }
     },
 
     watch: {

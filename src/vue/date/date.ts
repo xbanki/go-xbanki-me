@@ -145,6 +145,13 @@ export default defineComponent({
             },
 
             immediate: true
+        },
+
+        'settingsStore.canvas_items': {
+
+            handler() { this.$nextTick(() => this.handle_parent_resize()); },
+
+            deep: true
         }
     },
 

@@ -239,7 +239,14 @@ export default defineComponent({
             immediate: true
         },
 
-        'settingsStore.time_convention'() { this.update_time_renderer(this.settingsStore.time_format_active); }
+        'settingsStore.time_convention'() { this.update_time_renderer(this.settingsStore.time_format_active); },
+
+        'settingsStore.canvas_items': {
+
+            handler() { this.$nextTick(() => this.handle_parent_resize()); },
+
+            deep: true
+        }
     },
 
     computed: mapState(['settingsStore', 'componentCanvasStore'])

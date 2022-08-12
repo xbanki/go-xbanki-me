@@ -9,8 +9,9 @@ import { Component, defineComponent } from 'vue';
 
 import { CanvasItemData, ModuleState } from '@/lib/store_settings';
 
-import componentDraggable from './draggable/draggable.vue';
-import store              from '@/lib/store';
+import get_initial_positions from '@/lib/get_canvas_positions';
+import componentDraggable    from './draggable/draggable.vue';
+import store                 from '@/lib/store';
 
 /**
  * Reset button labels.
@@ -386,81 +387,6 @@ export default defineComponent({
 
         if (this.$props.items) for (const item of this.$props.items as DraggableItemRaw[]) {
 
-            const get_initial_positions = (value: number, axis: boolean): number => {
-
-                const get_initial_clock_position = (axis: boolean) => {
-
-                    const target_data = typed_store.state.settingsStore.canvas_items[item.id];
-
-                    if (axis) {
-
-                        const name = item.id;
-
-                        const height = Math.round(target_data.height);
-                        const width  = Math.round(target_data.width);
-
-                        const x = Math.round((document.documentElement.clientWidth - width) / 2);
-                        const y = Math.round(target_data.y);
-
-                        store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
-
-                        return x;
-                    }
-
-                    const name = item.id;
-
-                    const height = Math.round(target_data.height);
-                    const width  = Math.round(target_data.width);
-
-                    const y = Math.round((document.documentElement.clientHeight - height) / 2);
-                    const x = Math.round(target_data.x);
-
-                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
-
-                    return y;
-                };
-
-                const get_initial_date_position = (axis: boolean) => {
-
-                    const target_data = typed_store.state.settingsStore.canvas_items[item.id];
-
-                    if (axis) {
-
-                        const name = item.id;
-
-                        const height = Math.round(target_data.height);
-                        const width  = Math.round(target_data.width);
-
-                        const x = Math.round((document.documentElement.clientWidth - width) / 2);
-                        const y = Math.round(target_data.y);
-
-                        store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
-
-                        return x;
-                    }
-
-                    const name = item.id;
-
-                    const height = Math.round(target_data.height);
-                    const width  = Math.round(target_data.width);
-
-                    const y = Math.round((document.documentElement.clientHeight + 64) / 2);
-                    const x = Math.round(target_data.x);
-
-                    store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
-
-                    return y;
-                };
-
-                if (value == -1)
-                    return get_initial_clock_position(axis);
-
-                if (value == -2)
-                    return get_initial_date_position(axis);
-
-                return Math.round(value);
-            };
-
             const target_data = typed_store.state.settingsStore.canvas_items[item.id];
 
             const id = item.id;
@@ -471,8 +397,8 @@ export default defineComponent({
             const h = Math.round(target_data.height);
             const w = Math.round(target_data.width);
 
-            const x = get_initial_positions(target_data.x, true);
-            const y = get_initial_positions(target_data.y, false);
+            const x = get_initial_positions(target_data.x, id, true);
+            const y = get_initial_positions(target_data.y, id, false);
 
             const component = item.component;
             const editable  = item.editable;
@@ -900,6 +826,29 @@ export default defineComponent({
             handler() { this.$nextTick(() => this.mount_settings_panel()); },
 
             immediate: true
+        },
+
+        'settingsStore.canvas_items': {
+
+            handler(state: Record<string, CanvasItemData>) {
+
+                for (const item of this.data.items) {
+
+                    const target = state[item.id];
+
+                    if (!target) continue;
+
+                    item.position.x = target.x;
+                    item.position.y = target.y;
+
+                    item.size.h = target.height;
+                    item.size.w = target.width;
+                }
+            },
+
+            immediate: true,
+
+            deep: true
         }
     },
 
