@@ -444,7 +444,7 @@ export default defineComponent({
                     const height = Math.round(target_data.height);
                     const width  = Math.round(target_data.width);
 
-                    const y = Math.round(((document.documentElement.clientHeight - height) + 64) / 2);
+                    const y = Math.round((document.documentElement.clientHeight + 64) / 2);
                     const x = Math.round(target_data.x);
 
                     store.dispatch('settingsStore/UpdateCanvasItem', { name, data: { height, width, x, y }});
