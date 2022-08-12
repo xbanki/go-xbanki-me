@@ -140,6 +140,8 @@ export default defineComponent({
 
                 else
                     this.data.observer.unobserve(this.$el);
+
+                this.$nextTick(() => this.handle_parent_resize());
             },
 
             immediate: true
