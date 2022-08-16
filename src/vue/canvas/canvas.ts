@@ -704,17 +704,56 @@ export default defineComponent({
                 const left   = this.state.mouse.x - (this.state.active.size.w / 2);
                 const top    = this.state.mouse.y - (this.state.active.size.h / 2);
 
-                let allowed_left = true;
-                let allowed_top  = true;
+                // Ignore all collisions
+                if (!this.state.settings.collisions) {
 
-                if (left <= EDGE_PADDING || width >= parent.clientWidth - EDGE_PADDING)
-                    allowed_left = false;
+                    this.state.active.position.x = Math.round(left);
+                    this.state.active.position.y = Math.round(top);
+                }
 
-                if (top <= EDGE_PADDING || height >= parent.clientHeight - EDGE_PADDING)
-                    allowed_top = false;
+                else {
 
-                if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
-                if (!this.state.settings.collisions || allowed_top)  this.state.active.position.y = Math.round(top);
+                    let mutated_x = false;
+                    let mutated_y = false;
+
+                    // Do minimum edge padding horizontally
+                    if (!mutated_x && left <= EDGE_PADDING) {
+
+                        this.state.active.position.x = Math.round(EDGE_PADDING);
+
+                        mutated_x = true;
+                    }
+
+                    // Do maximum edge padding horizontally
+                    if (!mutated_x && width >= parent.clientWidth - EDGE_PADDING) {
+
+                        console.log(width - (width - (parent.clientWidth - EDGE_PADDING)));
+
+                        this.state.active.position.x = Math.round((parent.clientWidth - EDGE_PADDING) - this.state.active.size.w);
+
+                        mutated_x = true;
+                    }
+
+                    // Do minimum edge padding vertically
+                    if (!mutated_y && top <= EDGE_PADDING) {
+
+                        this.state.active.position.y = Math.round(EDGE_PADDING);
+
+                        mutated_y = true;
+                    }
+
+                    // Do maximum edge padding vertically
+                    if (!mutated_y && height >= parent.clientHeight - EDGE_PADDING) {
+
+                        this.state.active.position.y = Math.round((parent.clientHeight - EDGE_PADDING) - this.state.active.size.h);
+
+                        mutated_y = true;
+                    }
+
+                    // Just do normal movement if nothing intersects
+                    if (!mutated_x) this.state.active.position.x = Math.round(left);
+                    if (!mutated_y) this.state.active.position.y = Math.round(top);
+                }
             }
 
             // Move settings panel around
