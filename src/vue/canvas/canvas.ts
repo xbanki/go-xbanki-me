@@ -727,8 +727,6 @@ export default defineComponent({
                     // Do maximum edge padding horizontally
                     if (!mutated_x && width >= parent.clientWidth - EDGE_PADDING) {
 
-                        console.log(width - (width - (parent.clientWidth - EDGE_PADDING)));
-
                         this.state.active.position.x = Math.round((parent.clientWidth - EDGE_PADDING) - this.state.active.size.w);
 
                         mutated_x = true;
