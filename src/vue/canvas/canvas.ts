@@ -716,6 +716,54 @@ export default defineComponent({
                     let mutated_x = false;
                     let mutated_y = false;
 
+                    // Do individual item collisions
+                    for (const item of this.data.items) {
+
+                        if (this.state.active == item) continue;
+
+                        if (item.position.x <= width && item.position.x + item.size.w >= left) {
+
+                            if (!(item.position.y <= height && item.position.y + item.size.h >= top)) continue;
+
+                            const side_bottom = (item.position.y - top) + item.size.h;
+                            const side_right  = (item.position.x - left) + item.size.w;
+                            const side_left   = width - item.position.x;
+                            const side_top    = height - item.position.y;
+
+                            // Horizontal axis
+
+                            if (!mutated_x && side_left < side_right && side_left < side_top && side_left < side_bottom) {
+
+                                this.state.active.position.x = item.position.x - this.state.active.size.w;
+
+                                mutated_x = true;
+                            }
+
+                            if (!mutated_x && side_right < side_left && side_right < side_top && side_right < side_bottom) {
+
+                                this.state.active.position.x = item.position.x + item.size.w;
+
+                                mutated_x = true;
+                            }
+
+                            // Vertical axis
+
+                            if (!mutated_y && side_top < side_bottom && side_top < side_left && side_top < side_right) {
+
+                                this.state.active.position.y = item.position.y - this.state.active.size.h;
+
+                                mutated_y = true;
+                            }
+
+                            if (!mutated_y && side_bottom < side_top && side_bottom < side_left && side_bottom < side_right) {
+
+                                this.state.active.position.y = item.position.y + item.size.h;
+
+                                mutated_y = true;
+                            }
+                        }
+                    }
+
                     // Do minimum edge padding horizontally
                     if (!mutated_x && left <= EDGE_PADDING) {
 
