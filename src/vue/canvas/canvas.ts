@@ -536,7 +536,7 @@ export default defineComponent({
                     const left   = this.state.mouse.x;
                     const top    = this.state.mouse.y;
 
-                    if (!this.state.settings.collisions) {
+                    if (!this.state.settings.grid.enabled && !this.state.settings.collisions) {
 
                         this.state.active.size.h     = Math.round(height);
                         this.state.active.position.y = Math.round(top);
