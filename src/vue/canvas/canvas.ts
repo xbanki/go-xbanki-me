@@ -536,22 +536,93 @@ export default defineComponent({
                     const left   = this.state.mouse.x;
                     const top    = this.state.mouse.y;
 
-                    let allowed_left = true;
-                    let allowed_top = true;
+                    if (!this.state.settings.collisions) {
 
-                    if (left <= EDGE_PADDING || width <= this.state.active.min.w)
-                        allowed_left = false;
+                        this.state.active.size.h     = Math.round(height);
+                        this.state.active.position.y = Math.round(top);
 
-                    if (top <= EDGE_PADDING || height <= this.state.active.min.h)
-                        allowed_top = false;
+                        this.state.active.size.w     = Math.round(width);
+                        this.state.active.position.x = Math.round(left);
+                    }
 
-                    // Vertical
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = Math.round(height);
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = Math.round(top);
+                    else if (!this.state.settings.grid.enabled && this.state.settings.collisions) {
 
-                    // Horizontal
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.size.w = Math.round(width);
-                    if (!this.state.settings.collisions || allowed_left) this.state.active.position.x = Math.round(left);
+                        let mutated_x_w = false;
+                        let mutated_y_h = false;
+
+                        // Minimum size enforcement
+
+                        if (!mutated_x_w && width <= this.state.active.min.w) {
+
+                            this.state.active.size.w = this.state.active.min.w;
+
+                            mutated_x_w = true;
+                        }
+
+                        if (!mutated_y_h && height <= this.state.active.min.h) {
+
+                            this.state.active.size.h = this.state.active.min.h;
+
+                            mutated_y_h = true;
+                        }
+
+                        // Overlap enforcement
+
+                        for (const item of this.data.items) {
+
+                            if (item == this.state.active) continue;
+
+                            if (
+                                item.position.x <= this.state.mouse.x + width       && // X Axis
+                                item.position.x + item.size.w >= this.state.mouse.x && //
+
+                                item.position.y <= this.state.mouse.y + height      && // Y Axis
+                                item.position.y + item.size.h >= this.state.mouse.y    //
+
+                            ) {
+
+                                // Active item is on the right of target
+                                if (this.state.active.position.x >= item.position.x + item.size.w && this.state.active.position.y <= item.position.y + item.size.h) {
+
+                                    this.state.active.size.w     = this.state.active.position.x - (item.size.w + item.position.x) + this.state.active.size.w;
+                                    this.state.active.position.x = item.position.x + item.size.w;
+
+                                    mutated_x_w = true;
+                                }
+
+                                // Active item is on the bottom of target
+                                if (this.state.active.position.y >= item.position.y + item.size.h && this.state.active.position.x <= item.position.x + item.size.w) {
+
+                                    this.state.active.size.h     = this.state.active.position.y - (item.size.h + item.position.y) + this.state.active.size.h;
+                                    this.state.active.position.y = item.position.y + item.size.h;
+
+                                    mutated_y_h = true;
+                                }
+                            }
+                        }
+
+                        // Minimum padding edges
+
+                        if (!mutated_x_w && left <= EDGE_PADDING) {
+
+                            this.state.active.position.x = Math.round(EDGE_PADDING);
+
+                            mutated_x_w = true;
+                        }
+
+                        if (!mutated_y_h && top <= EDGE_PADDING) {
+
+                            this.state.active.position.y = Math.round(EDGE_PADDING);
+
+                            mutated_y_h = true;
+                        }
+
+                        if (!mutated_x_w) this.state.active.position.x = Math.round(left);
+                        if (!mutated_x_w) this.state.active.size.w = Math.round(width);
+
+                        if (!mutated_y_h) this.state.active.position.y = Math.round(top);
+                        if (!mutated_y_h) this.state.active.size.h = Math.round(height);
+                    }
 
                     break;
                 }
