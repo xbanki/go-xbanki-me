@@ -554,14 +554,14 @@ export default defineComponent({
 
                         if (!mutated_x_w && width <= this.state.active.min.w) {
 
-                            this.state.active.size.w = this.state.active.min.w;
+                            this.state.active.size.w = Math.round(this.state.active.min.w);
 
                             mutated_x_w = true;
                         }
 
                         if (!mutated_y_h && height <= this.state.active.min.h) {
 
-                            this.state.active.size.h = this.state.active.min.h;
+                            this.state.active.size.h = Math.round(this.state.active.min.h);
 
                             mutated_y_h = true;
                         }
@@ -584,8 +584,8 @@ export default defineComponent({
                                 // Active item is on the right of target
                                 if (this.state.active.position.x >= item.position.x + item.size.w && this.state.active.position.y <= item.position.y + item.size.h) {
 
-                                    this.state.active.size.w     = this.state.active.position.x - (item.size.w + item.position.x) + this.state.active.size.w;
-                                    this.state.active.position.x = item.position.x + item.size.w;
+                                    this.state.active.size.w     = Math.round(this.state.active.position.x - (item.size.w + item.position.x) + this.state.active.size.w);
+                                    this.state.active.position.x = Math.round(item.position.x + item.size.w);
 
                                     mutated_x_w = true;
                                 }
@@ -593,8 +593,8 @@ export default defineComponent({
                                 // Active item is on the bottom of target
                                 if (this.state.active.position.y >= item.position.y + item.size.h && this.state.active.position.x <= item.position.x + item.size.w) {
 
-                                    this.state.active.size.h     = this.state.active.position.y - (item.size.h + item.position.y) + this.state.active.size.h;
-                                    this.state.active.position.y = item.position.y + item.size.h;
+                                    this.state.active.size.h     = Math.round(this.state.active.position.y - (item.size.h + item.position.y) + this.state.active.size.h);
+                                    this.state.active.position.y = Math.round(item.position.y + item.size.h);
 
                                     mutated_y_h = true;
                                 }
@@ -617,11 +617,13 @@ export default defineComponent({
                             mutated_y_h = true;
                         }
 
-                        if (!mutated_x_w) this.state.active.position.x = Math.round(left);
-                        if (!mutated_x_w) this.state.active.size.w = Math.round(width);
+                        // Normal movement
 
+                        if (!mutated_x_w) this.state.active.size.w     = Math.round(width);
+                        if (!mutated_x_w) this.state.active.position.x = Math.round(left);
+
+                        if (!mutated_y_h) this.state.active.size.h     = Math.round(height);
                         if (!mutated_y_h) this.state.active.position.y = Math.round(top);
-                        if (!mutated_y_h) this.state.active.size.h = Math.round(height);
                     }
 
                     break;
