@@ -703,19 +703,77 @@ export default defineComponent({
                     const width  = this.state.mouse.x - this.state.active.position.x;
                     const top    = this.state.mouse.y;
 
-                    let allowed_right = true;
-                    let allowed_top   = true;
+                    if (!this.state.settings.grid.enabled && !this.state.settings.collisions) {
 
-                    if (width + this.state.active.position.x >= parent.clientWidth - EDGE_PADDING || width <= this.state.active.min.w)
-                        allowed_right = false;
+                        this.state.active.size.w = Math.round(width);
 
-                    if (!this.state.settings.collisions || top <= EDGE_PADDING || height <= this.state.active.min.h)
-                        allowed_top = false;
+                        this.state.active.size.h     = Math.round(height);
+                        this.state.active.position.y = Math.round(top);
+                    }
 
-                    if (!this.state.settings.collisions || allowed_right) this.state.active.size.w = Math.round(width);
+                    else if (!this.state.settings.grid.enabled && this.state.settings.collisions) {
 
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.size.h = Math.round(height);
-                    if (!this.state.settings.collisions || allowed_top) this.state.active.position.y = Math.round(top);
+                        let mutated_y_h = false;
+                        let mutated_w   = false;
+
+                        // Minimum size enforcement
+
+                        if (!mutated_w && width <= this.state.active.min.w) {
+
+                            this.state.active.size.w = Math.round(this.state.active.min.w);
+
+                            mutated_w = true;
+                        }
+
+                        if (!mutated_y_h && height <= this.state.active.min.h) {
+
+                            this.state.active.size.h = Math.round(this.state.active.min.h);
+
+                            mutated_y_h = true;
+                        }
+
+                        // Overlap enforcement
+
+                        for (const item of this.data.items) {
+
+                            if (item == this.state.active) continue;
+
+                            if (
+                                item.position.x <= this.state.active.position.x + width       && // X Axis
+                                item.position.x + item.size.w >= this.state.active.position.x && //
+
+                                item.position.y <= this.state.active.position.y + height      && // Y Axis
+                                item.position.y + item.size.h >= this.state.active.position.y    //
+
+                            ) {
+                                // TO-DO
+                            }
+                        }
+
+                        // Minimum & maximum edge padding
+
+                        if (!mutated_y_h && top <= EDGE_PADDING) {
+
+                            this.state.active.size.h     = Math.round((this.state.active.position.y - EDGE_PADDING) + this.state.active.size.h);
+                            this.state.active.position.y = Math.round(EDGE_PADDING);
+
+                            mutated_y_h = true;
+                        }
+
+                        if (!mutated_w && this.state.mouse.x >= (parent.clientWidth - EDGE_PADDING)) {
+
+                            this.state.active.size.w = Math.round(this.state.active.size.w - ((this.state.active.size.w + this.state.active.position.x) - (parent.clientWidth - EDGE_PADDING)));
+
+                            mutated_w = true;
+                        }
+
+                        // Normal movement
+
+                        if (!mutated_w) this.state.active.size.w = Math.round(width);
+
+                        if (!mutated_y_h) this.state.active.size.h     = Math.round(height);
+                        if (!mutated_y_h) this.state.active.position.y = Math.round(top);
+                    }
 
                     break;
                 }
